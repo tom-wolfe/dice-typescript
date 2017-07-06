@@ -1,0 +1,49 @@
+{
+  "name": "dice",
+  "version": "0.0.1",
+  "description": "A TypeScript library for parsing dice rolling expressions, most commonly used in tabletop RPGs.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "npm run clean && npm run lint && npm run tsc",
+    "clean": "rimraf ./dist && rimraf ./coverage",
+    "coverage": "istanbul coverage",
+    "codacy": "cat ./coverage/lcov/lcov.info | codacy-coverage --verbose",
+    "lint": "tslint --type-check -p ./tsconfig.json",
+    "tsc": "tsc --project ./tsconfig.build.json",
+    "test": "karma start --single-run",
+    "test_watch": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trwolfe13/dice.git"
+  },
+  "keywords": [
+    "dice",
+    "parser",
+    "generator",
+    "random",
+    "typescript"
+  ],
+  "author": "Tom Wolfe <trwolfe13@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trwolfe13/dice/issues"
+  },
+  "homepage": "https://github.com/trwolfe13/dice#readme",
+  "devDependencies": {
+    "codacy-coverage": "^2.0.2",
+    "istanbul": "^0.4.5",
+    "jasmine-core": "^2.6.4",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-typescript": "^3.0.4",
+    "rimraf": "^2.6.1",
+    "tslint": "^5.4.3",
+    "typescript": "^2.4.1",
+    "typings": "^2.1.1"
+  },
+  "dependencies": {
+    
+  }
+}
