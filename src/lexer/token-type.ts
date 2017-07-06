@@ -15,6 +15,7 @@ export enum TokenType {
     NumberNatural,
     ParenthesisClose,
     ParenthesisOpen,
+    Terminator,
     UnOpExplode,
     UnOpPenetrate
 }

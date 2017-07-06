@@ -12,7 +12,7 @@ export class TokenDefinition {
         const matches: TokenMatch[] = [];
         let result: RegExpExecArray;
         while (result = this.pattern.exec(input)) {
-            matches.push(new TokenMatch(result.index, this.type, result[0],));
+            matches.push(new TokenMatch(result.index, this.type, result[0], this.precedence));
         }
         return matches;
     }

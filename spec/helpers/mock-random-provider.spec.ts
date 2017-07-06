@@ -9,11 +9,11 @@ describe("MockRandomProvider", () => {
         });
     });
     describe("numberBetween", () => {
-        it("returns number passed into the constructor (hard-coded)", function () {
+        it("returns number passed into the constructor (hard-coded).", function () {
             const random = new MockRandomProvider(4);
             expect(random.numberBetween(-100, 100)).toEqual(4);
         });
-        it("returns number passed into the constructor (random)", function () {
+        it("returns number passed into the constructor (random).", function () {
             const number = Math.random() * 100;
             const random = new MockRandomProvider(number);
             expect(random.numberBetween(-100, 100)).toEqual(number);

@@ -25,9 +25,15 @@ describe("TokenDefinition", () => {
             const expression = "this(doesn't(do(anything)))";
             const matches = def.matches(expression);
             expect(matches.length).toBe(3);
-            expect(matches[0]).toEqual(new Lexer.TokenMatch(4, Lexer.TokenType.ParenthesisOpen, "("));
-            expect(matches[1]).toEqual(new Lexer.TokenMatch(12, Lexer.TokenType.ParenthesisOpen, "("));
-            expect(matches[2]).toEqual(new Lexer.TokenMatch(15, Lexer.TokenType.ParenthesisOpen, "("));
+            expect(matches[0]).toEqual(new Lexer.TokenMatch(4, Lexer.TokenType.ParenthesisOpen, "(", 1));
+            expect(matches[1]).toEqual(new Lexer.TokenMatch(12, Lexer.TokenType.ParenthesisOpen, "(", 1));
+            expect(matches[2]).toEqual(new Lexer.TokenMatch(15, Lexer.TokenType.ParenthesisOpen, "(", 1));
+        });
+        it("does not loop infinitely.", function () {
+            const def = new Lexer.TokenDefinition(Lexer.TokenType.ParenthesisOpen, /\(\(\(/g, 1);
+            const expression = "(((((((";
+            const matches = def.matches(expression);
+            expect(true).toBe(true);
         });
     });
 });
