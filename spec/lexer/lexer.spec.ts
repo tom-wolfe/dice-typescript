@@ -1,63 +1,129 @@
 import * as Lexer from "../../src/lexer";
+import { MockLexer } from "../helpers/mock-lexer";
 
 describe("Lexer", () => {
+    const input = "floor(4d6!!+5d10kl2/2+4)"
     describe("constructor", () => {
         it("does not throw.", function () {
             expect(() => {
-                const lexer = new Lexer.Lexer();
+                const lexer = new Lexer.Lexer(input);
             }).not.toThrow();
         });
     });
-    describe("findMatches", () => {
-        const input = "(((((((";
-        const TokenDefinitions: Lexer.TokenDefinition[] = [
-            new Lexer.TokenDefinition(Lexer.TokenType.ParenthesisOpen, /\(/g, 1),
-            new Lexer.TokenDefinition(Lexer.TokenType.ParenthesisOpen, /\(\(/g, 2),
-            new Lexer.TokenDefinition(Lexer.TokenType.ParenthesisOpen, /\(\(\(/g, 3)
-        ];
-        it("groups results correctly by start index.", () => {
-            const lexer = new Lexer.Lexer();
-            const matches = lexer.findMatches(input);
-            const searchedIndexes: number[] = [];
-            matches.forEach(match => {
-                const startIndex = match[0].start
-                match.forEach(e => {
-                    // All elements should have the same start index.
-                    expect(e.start).toEqual(startIndex);
-                    // The start index should not have been one we've seen before.
-                    expect(searchedIndexes).not.toContain(e.start);
-                });
-                searchedIndexes.push(startIndex);
-            });
+    describe("currentCharacter", () => {
+        it("starts as null", () => {
+            const lexer = new MockLexer("face");
+            expect(lexer.currentCharacterPub).toEqual(null);
         });
-        it("sorts correctly by start index.", () => {
-            const lexer = new Lexer.Lexer();
-            const matches = lexer.findMatches(input);
-            let curIndex: number;
-            matches.forEach(match => {
-                const newIndex = match[0].start;
-                // No check required for the first element.
-                if (curIndex) {
-                    // Indexes must increment in value.
-                    expect(newIndex).toBeGreaterThan(curIndex);
-                }
-                curIndex = newIndex;
-            });
+        it("returns the current character", () => {
+            const lexer = new MockLexer("face");
+            lexer.getNextCharacter();
+            expect(lexer.currentCharacterPub).toEqual("f");
+            expect(lexer.currentCharacterPub).toEqual("f");
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            expect(lexer.currentCharacterPub).toEqual("c");
         });
-        it("sorts correctly by precedence.", () => {
-            const lexer = new Lexer.Lexer();
-            const matches = lexer.findMatches(input);
-            matches.forEach(match => {
-                let curPrecedence = 0;
-                match.forEach(e => {
-                    // Elements should be sorted by precedence.
-                    expect(e.precedence).toBeGreaterThanOrEqual(curPrecedence);
-                    curPrecedence = e.precedence;
-                });
-            });
+        it("returns null at the end.", () => {
+            const lexer = new MockLexer("face");
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            expect(lexer.currentCharacterPub).toBeNull();
+        });
+    });
+    describe("getNextCharacter", () => {
+        it("progresses through the characters, finishing with null.", () => {
+            const lexer = new MockLexer(input);
+            expect(lexer.getNextCharacter()).toEqual("f");
+            expect(lexer.getNextCharacter()).toEqual("l");
+            expect(lexer.getNextCharacter()).toEqual("o");
+            expect(lexer.getNextCharacter()).toEqual("o");
+            expect(lexer.getNextCharacter()).toEqual("r");
+            expect(lexer.getNextCharacter()).toEqual("(");
+            expect(lexer.getNextCharacter()).toEqual("4");
+            expect(lexer.getNextCharacter()).toEqual("d");
+            expect(lexer.getNextCharacter()).toEqual("6");
+            expect(lexer.getNextCharacter()).toEqual("!");
+            expect(lexer.getNextCharacter()).toEqual("!");
+            expect(lexer.getNextCharacter()).toEqual("+");
+            expect(lexer.getNextCharacter()).toEqual("5");
+            expect(lexer.getNextCharacter()).toEqual("d");
+            expect(lexer.getNextCharacter()).toEqual("1");
+            expect(lexer.getNextCharacter()).toEqual("0");
+            expect(lexer.getNextCharacter()).toEqual("k");
+            expect(lexer.getNextCharacter()).toEqual("l");
+            expect(lexer.getNextCharacter()).toEqual("2");
+            expect(lexer.getNextCharacter()).toEqual("/");
+            expect(lexer.getNextCharacter()).toEqual("2");
+            expect(lexer.getNextCharacter()).toEqual("+");
+            expect(lexer.getNextCharacter()).toEqual("4");
+            expect(lexer.getNextCharacter()).toEqual(")");
+            expect(lexer.getNextCharacter()).toBeNull();
+        });
+        it("returns null when stream ends.", () => {
+            const lexer = new MockLexer("abc");
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            for (let x = 0; x < 10; x++) {
+                expect(lexer.getNextCharacter()).toBeNull();
+            }
+        });
+    });
+    describe("peekNextCharacter", () => {
+        it("gives next character without cycling through.", () => {
+            const lexer = new MockLexer(input);
+            lexer.getNextCharacter();
+            expect(lexer.peekNextCharacter()).toEqual("l");
+            expect(lexer.peekNextCharacter()).toEqual("l");
+            lexer.getNextCharacter();
+            expect(lexer.peekNextCharacter()).toEqual("o");
+            lexer.getNextCharacter();
+            lexer.getNextCharacter();
+            expect(lexer.peekNextCharacter()).toEqual("r");
         });
     });
     describe("tokenize", () => {
-        
+        it("last token is a terminator", () => {
+            const lexer = new Lexer.Lexer("");
+            const token = lexer.getNextToken();
+            expect(token).toEqual(new Lexer.Token(Lexer.TokenType.Terminator));
+        });
+        it("returns correct tokens (simple)", () => {
+            const inputSimple = "floor(4d6!!)";
+            const lexer = new Lexer.Lexer(inputSimple);
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "floor"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisOpen, "("));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "4"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "6"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.UnOpPenetrate, "!!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisClose, ")"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator));
+        });
+        it("returns correct tokens (complex)", () => {
+            const lexer = new Lexer.Lexer(input);
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "floor"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisOpen, "("));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "4"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "6"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.UnOpPenetrate, "!!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpAdd, "+"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "5"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "10"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "kl"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpDivide, "/"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpAdd, "+"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "4"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisClose, ")"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator));
+        });
     });
 });

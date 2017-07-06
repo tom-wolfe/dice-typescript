@@ -12,7 +12,6 @@ export enum TokenType {
     MathOpMultiply,
     MathOpSubtract,
     NumberInteger,
-    NumberNatural,
     ParenthesisClose,
     ParenthesisOpen,
     Terminator,

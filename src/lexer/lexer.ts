@@ -1,71 +1,96 @@
 import { Token } from "./token";
-import { TokenDefinition } from "./token-definition";
-import { TokenMatch } from "./token-match";
 import { TokenType } from "./token-type";
 
-const TokenDefinitions: TokenDefinition[] = [
-    new TokenDefinition(TokenType.ParenthesisOpen, /\(/g, 1),
-    new TokenDefinition(TokenType.ParenthesisClose, /\)/g, 1),
-    new TokenDefinition(TokenType.UnOpPenetrate, /!!/g, 1),
-    new TokenDefinition(TokenType.UnOpExplode, /!/g, 2),
-    new TokenDefinition(TokenType.MathOpSubtract, /-/g, 1),
-    new TokenDefinition(TokenType.MathOpAdd, /\+/g, 1),
-    new TokenDefinition(TokenType.MathOpExponent, /\*\*/g, 1),
-    new TokenDefinition(TokenType.MathOpMultiply, /\*/g, 2),
-    new TokenDefinition(TokenType.MathOpDivide, /\//g, 1),
-    new TokenDefinition(TokenType.MathOpModulo, /%/g, 1),
-    new TokenDefinition(TokenType.BoolOpGreaterOrEq, />=/g, 1),
-    new TokenDefinition(TokenType.BoolOpLessOrEq, /<=/g, 1),
-    new TokenDefinition(TokenType.BoolOpEq, /=/g, 2),
-    new TokenDefinition(TokenType.BoolOpGreater, />/g, 2),
-    new TokenDefinition(TokenType.BoolOpLess, /</g, 2),
-    new TokenDefinition(TokenType.Identifier, /[a-zA-Z_]\w*/g, 1),
-    new TokenDefinition(TokenType.NumberInteger, /[-+]?[1-9]\d*/g, 2),
-    new TokenDefinition(TokenType.NumberNatural, /[1-9]\d*/g, 3)
-];
-
 export class Lexer {
+    private index = -1;
 
-    constructor(private tokenDefinitions: TokenDefinition[] = TokenDefinitions) { }
+    private numCharRegex: RegExp = /[0-9]/;
+    private idCharRegex: RegExp = /[a-zA-Z]/;
 
-    tokenize(input: string): Token[] {
-        const output: Token[] = [];
-        const matches = this.findMatches(input);
-        let lastMatch: TokenMatch = null;
-        for (const match of matches) {
-            const bestMatch = match[0];
-            if (lastMatch && bestMatch.start < lastMatch.start) {
-                return;
+    constructor(protected input: string) { }
+
+    public getNextToken(): Token {
+        // Terminator at end of stream.
+        let curChar: string;
+        while (curChar = this.getNextCharacter()) {
+            switch (true) {
+                case this.idCharRegex.test(curChar): return this.parseIdentifier();
+                case this.numCharRegex.test(curChar): return this.parseNumber();
+                case curChar === "(": return new Token(TokenType.ParenthesisOpen, curChar);
+                case curChar === ")": return new Token(TokenType.ParenthesisClose, curChar);
+                case curChar === "=": return new Token(TokenType.BoolOpEq, curChar);
+                case curChar === "+": return new Token(TokenType.MathOpAdd, curChar);
+                case curChar === "/": return new Token(TokenType.MathOpDivide, curChar);
+                case curChar === "-": return new Token(TokenType.MathOpSubtract, curChar);
+                case curChar === "%": return new Token(TokenType.MathOpModulo, curChar);
+                case curChar === "*":
+                    if (this.peekNextCharacter() === "*") {
+                        this.getNextCharacter();
+                        return new Token(TokenType.MathOpExponent, curChar + this.currentCharacter);
+                    } else {
+                        return new Token(TokenType.MathOpMultiply, curChar);
+                    }
+                case curChar === ">":
+                    if (this.peekNextCharacter() === "=") {
+                        this.getNextCharacter();
+                        return new Token(TokenType.BoolOpGreater, curChar + this.currentCharacter);
+                    } else {
+                        return new Token(TokenType.BoolOpGreaterOrEq, curChar);
+                    }
+                case curChar === "<":
+                    if (this.peekNextCharacter() === "=") {
+                        this.getNextCharacter();
+                        return new Token(TokenType.BoolOpLess, curChar + this.currentCharacter);
+                    } else {
+                        return new Token(TokenType.BoolOpLessOrEq, curChar);
+                    }
+                case curChar === "!":
+                    if (this.peekNextCharacter() === "!") {
+                        this.getNextCharacter();
+                        return new Token(TokenType.UnOpPenetrate, curChar + this.currentCharacter);
+                    } else {
+                        return new Token(TokenType.UnOpExplode, curChar);
+                    }
+                case /\W/.test(curChar):
+                    // Ignore whitespace.
+                    break;
+                default: throw new Error(`Unknown token: '${curChar}'.`);
             }
-            output.push(new Token(bestMatch.type, bestMatch.value));
-            lastMatch = bestMatch;
         }
-        output.push(new Token(TokenType.Terminator));
-        return output;
+        return new Token(TokenType.Terminator);
     }
 
-    findMatches(input: string): TokenMatch[][] {
-        const indexes: number[] = []
-        const matches: { [startIndex: number]: TokenMatch[] } = {};
-
-        // Group by start index.
-        this.tokenDefinitions.forEach(tokenDef => {
-            tokenDef.matches(input).forEach(match => {
-                if (indexes.indexOf(match.start) < 0) {
-                    indexes.push(match.start);
-                    matches[match.start] = [];
-                }
-                matches[match.start].push(match);
-            })
-        });
-
-        // Sort each index group by precedence.
-        const sortedMatches: TokenMatch[][] = [];
-        indexes.sort().forEach(index => {
-            sortedMatches.push(matches[index].sort((a, b) => {
-                return b.precedence - a.precedence;
-            }));
-        });
-        return sortedMatches;
+    protected parseIdentifier(): Token {
+        let buffer = this.currentCharacter;
+        while (this.idCharRegex.test(this.peekNextCharacter())) {
+            buffer += this.getNextCharacter();
+        }
+        return new Token(TokenType.Identifier, buffer);
     }
+
+    protected parseNumber(): Token {
+        let buffer = this.currentCharacter;
+        while (this.numCharRegex.test(this.peekNextCharacter())) {
+            buffer += this.getNextCharacter();
+        }
+        return new Token(TokenType.NumberInteger, buffer);
+    }
+
+    protected getNextCharacter(): string {
+        this.index = Math.min(this.index + 1, this.input.length);
+        if (this.index >= this.input.length) { return null; }
+        return this.input[this.index];
+    }
+
+    protected get currentCharacter(): string {
+        if (this.index < 0 || this.index >= this.input.length) { return null; }
+        return this.input[this.index];
+    }
+
+    protected peekNextCharacter(): string {
+        if (this.index >= this.input.length) { return null; }
+        return this.input[this.index + 1];
+    }
+
+    protected
 }
