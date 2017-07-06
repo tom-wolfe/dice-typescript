@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/trwolfe13/dice.svg?branch=master)](https://travis-ci.org/trwolfe13/dice)
+[![Build Status](https://travis-ci.org/trwolfe13/dice.svg?branch=master)](https://travis-ci.org/trwolfe13/dice) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/716da84c753b474e8d84ddf6cf00de4b)](https://www.codacy.com/app/trwolfe13/dice?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=trwolfe13/dice&amp;utm_campaign=Badge_Grade)
 
 # Dice
 
