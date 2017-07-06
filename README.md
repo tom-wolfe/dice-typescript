@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/trwolfe13/dice.svg?branch=master)](https://travis-ci.org/trwolfe13/dice)
+
 # Dice
 
 A TypeScript library for parsing dice rolling expressions, most commonly used in tabletop RPGs.
