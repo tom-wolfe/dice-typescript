@@ -1,0 +1,20 @@
+export enum TokenType {
+    BoolOpEq,
+    BoolOpGreater,
+    BoolOpGreaterOrEq,
+    BoolOpLess,
+    BoolOpLessOrEq,
+    Identifier,
+    MathOpAdd,
+    MathOpDivide,
+    MathOpExponent,
+    MathOpModulo,
+    MathOpMultiply,
+    MathOpSubtract,
+    NumberInteger,
+    NumberNatural,
+    ParenthesisClose,
+    ParenthesisOpen,
+    UnOpExplode,
+    UnOpPenetrate
+}
