@@ -125,5 +125,38 @@ describe("Lexer", () => {
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisClose, ")"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator));
         });
+        it("interprets remaining operators correctly", () => {
+            const lexer = new Lexer.Lexer("2d10 % 8 - 2 * 3 ** 1d4 > 1 < 2 <= 2 >= 2d3!!");
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "10"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpModulo, "%"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "8"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpSubtract, "-"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpMultiply, "*"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "3"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpExponent, "**"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "1"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "4"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BoolOpGreater, ">"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "1"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BoolOpLess, "<"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BoolOpLessOrEq, "<="));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BoolOpGreaterOrEq, ">="));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "3"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.UnOpPenetrate, "!!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator));
+        });
+        it("throws on unrecognized tokens", () => {
+            const lexer = new Lexer.Lexer("test_face");
+            lexer.getNextToken();
+            expect(() => { lexer.getNextToken() }).toThrow();
+        });
     });
 });

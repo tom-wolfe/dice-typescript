@@ -33,16 +33,16 @@ export class Lexer {
                 case curChar === ">":
                     if (this.peekNextCharacter() === "=") {
                         this.getNextCharacter();
-                        return new Token(TokenType.BoolOpGreater, curChar + this.currentCharacter);
+                        return new Token(TokenType.BoolOpGreaterOrEq, curChar + this.currentCharacter);
                     } else {
-                        return new Token(TokenType.BoolOpGreaterOrEq, curChar);
+                        return new Token(TokenType.BoolOpGreater, curChar);
                     }
                 case curChar === "<":
                     if (this.peekNextCharacter() === "=") {
                         this.getNextCharacter();
-                        return new Token(TokenType.BoolOpLess, curChar + this.currentCharacter);
+                        return new Token(TokenType.BoolOpLessOrEq, curChar + this.currentCharacter);
                     } else {
-                        return new Token(TokenType.BoolOpLessOrEq, curChar);
+                        return new Token(TokenType.BoolOpLess, curChar);
                     }
                 case curChar === "!":
                     if (this.peekNextCharacter() === "!") {
@@ -91,6 +91,4 @@ export class Lexer {
         if (this.index >= this.input.length) { return null; }
         return this.input[this.index + 1];
     }
-
-    protected
 }
