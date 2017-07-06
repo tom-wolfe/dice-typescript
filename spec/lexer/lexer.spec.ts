@@ -126,7 +126,7 @@ describe("Lexer", () => {
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator));
         });
         it("interprets remaining operators correctly", () => {
-            const lexer = new Lexer.Lexer("2d10 % 8 - 2 * 3 ** 1d4 > 1 < 2 <= 2 >= 2d3!!");
+            const lexer = new Lexer.Lexer("2d10 % 8 - 2 * 3 ** 1d4 > 1 < 2 <= 2 >= 2d3!! = 3");
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "2"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "10"));
@@ -151,6 +151,8 @@ describe("Lexer", () => {
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, "d"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "3"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.UnOpPenetrate, "!!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BoolOpEq, "="));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "3"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator));
         });
         it("throws on unrecognized tokens", () => {
