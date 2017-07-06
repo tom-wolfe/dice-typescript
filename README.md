@@ -22,6 +22,14 @@ These instructions will get you a copy of the project up and running on your loc
 
 The dice rolling syntax is based on the same system used by Roll20, a detailed explanation of which can be found on the [Roll20 Wiki](https://wiki.roll20.net/Dice_Reference#Roll20_Dice_Specification).
 
+## Installing Dependencies
+
+Installing the dependencies is done using a standard ```npm i```, followed by ```typings install```. For convenience, this has been condensed to the following command:
+
+```
+npm run install
+```
+
 ## Running the Tests
 
 ```

@@ -8,6 +8,7 @@
     "clean": "rimraf ./dist && rimraf ./coverage",
     "coverage": "istanbul coverage",
     "codacy": "cat ./coverage/lcov/lcov.info | codacy-coverage --verbose",
+    "install": "npm install && \"./node_modules/.bin/typings\" install",
     "lint": "tslint --type-check -p ./tsconfig.json",
     "tsc": "tsc --project ./tsconfig.build.json",
     "test": "karma start --single-run",
