@@ -22,7 +22,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 #### Dice Expression Syntax
 
-The dice rolling syntax is based on the same system used by Roll20, a detailed explanation of which can be found on the [Roll20 Wiki](https://wiki.roll20.net/Dice_Reference#Roll20_Dice_Specification).
+The dice rolling syntax is based on the system used by Roll20, a detailed explanation of which can be found on the [Roll20 Wiki](https://wiki.roll20.net/Dice_Reference#Roll20_Dice_Specification).
 
 ## Installing Dependencies
 
