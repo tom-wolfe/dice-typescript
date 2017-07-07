@@ -1,11 +1,17 @@
 import * as Lexer from "../../src/lexer";
+import { StringCharacterStream } from "../../src/lexer/string-character-stream";
 
 describe("DiceLexer", () => {
     const input = "floor(4d6!!+5d10kl2/2+4)"
     describe("constructor", () => {
-        it("does not throw.", function () {
+        it("does not throw for string input.", function () {
             expect(() => {
                 const lexer = new Lexer.DiceLexer(input);
+            }).not.toThrow();
+        });
+        it("does not throw for stream input.", function () {
+            expect(() => {
+                const lexer = new Lexer.DiceLexer(new StringCharacterStream(input));
             }).not.toThrow();
         });
         it("throws for invalid input.", function () {

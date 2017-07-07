@@ -194,10 +194,15 @@ export class Parser {
         let root: Ast.ExpressionNode;
 
         if (!rollTimes) {
-            if (this.lexer.peekNextToken().type !== TokenType.NumberInteger) {
-                throw new Error("Expected integer");
+            switch (this.lexer.peekNextToken().type) {
+                case TokenType.NumberInteger:
+                    rollTimes = this.parseInteger();
+                    break;
+                case TokenType.ParenthesisOpen:
+                    rollTimes = this.parseBracketedExpression();
+                    break;
+                default: throw new Error("Expected integer");
             }
-            rollTimes = this.parseInteger();
         }
 
         const token = this.lexer.peekNextToken();

@@ -6,10 +6,6 @@ simple_expression =
     [ "+" | "-" ], term, { [ "+" | "-" ], term }
 ;
 
-bracketed_expression = 
-    "(", expression, ")"
-;
-
 term =
     factor, { ( "**" | "*" | "/" | % ), factor }
 ;
@@ -18,11 +14,14 @@ factor =
     integer |
     dice_roll |
     function_call |
-    bracketed_expression
+    bracketed_expression |
+    expression_group
 ;
 
 function_call = 
     identifier, "(", expression, ")"
 ;
 
-(* TODO: Compare points. 1d4>3f1 *)
+bracketed_expression = 
+    "(", expression, ")"
+;
