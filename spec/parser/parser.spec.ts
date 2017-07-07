@@ -4,7 +4,7 @@ describe("Parser", () => {
     describe("constructor", () => {
         it("does not throw.", () => {
             expect(() => {
-                const parser = new Parser.Parser();
+                const parser = new Parser.Parser("");
             }).not.toThrow();
         });
     });

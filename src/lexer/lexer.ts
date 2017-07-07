@@ -1,17 +1,66 @@
+import { CharacterStream } from "./character-stream";
+import { StringCharacterStream } from "./string-character-stream";
 import { Token } from "./token";
 import { TokenType } from "./token-type";
 
 export class Lexer {
-    private index = -1;
+    protected stream: CharacterStream;
+    private currentToken: Token;
+    private nextToken: Token;
 
     private numCharRegex: RegExp = /[0-9]/;
     private idCharRegex: RegExp = /[a-zA-Z]/;
 
-    constructor(protected input: string) { }
+    constructor(input: CharacterStream | string) {
+        if (this.isCharacterStream(input)) {
+            this.stream = input;
+        } else if (typeof input === "string") {
+            this.stream = new StringCharacterStream(input);
+        } else {
+            throw new Error("Unrecognized input type. input must be of type 'CharacterStream | string'.")
+        }
+    }
+
+    private isCharacterStream(input: any): input is CharacterStream {
+        return input.getCurrentCharacter;
+    }
+
+    public peekNextToken(): Token {
+        if (!this.nextToken) {
+            this.nextToken = this.constructNextToken();
+        }
+        return this.nextToken;
+    }
 
     public getNextToken(): Token {
+        if (this.nextToken) {
+            this.currentToken = this.nextToken;
+            this.nextToken = null;
+        } else {
+            this.currentToken = this.constructNextToken();
+        }
+        return this.currentToken;
+    }
+
+    protected parseIdentifier(): Token {
+        let buffer = this.stream.getCurrentCharacter();
+        while (this.idCharRegex.test(this.stream.peekNextCharacter())) {
+            buffer += this.stream.getNextCharacter();
+        }
+        return new Token(TokenType.Identifier, buffer);
+    }
+
+    protected parseNumber(): Token {
+        let buffer = this.stream.getCurrentCharacter();
+        while (this.numCharRegex.test(this.stream.peekNextCharacter())) {
+            buffer += this.stream.getNextCharacter();
+        }
+        return new Token(TokenType.NumberInteger, buffer);
+    }
+
+    private constructNextToken() {
         let curChar: string;
-        while (curChar = this.getNextCharacter()) {
+        while (curChar = this.stream.getNextCharacter()) {
             switch (true) {
                 case this.idCharRegex.test(curChar): return this.parseIdentifier();
                 case this.numCharRegex.test(curChar): return this.parseNumber();
@@ -26,30 +75,30 @@ export class Lexer {
                 case curChar === "-": return new Token(TokenType.MathOpSubtract, curChar);
                 case curChar === "%": return new Token(TokenType.MathOpModulo, curChar);
                 case curChar === "*":
-                    if (this.peekNextCharacter() === "*") {
-                        this.getNextCharacter();
-                        return new Token(TokenType.MathOpExponent, curChar + this.currentCharacter);
+                    if (this.stream.peekNextCharacter() === "*") {
+                        this.stream.getNextCharacter();
+                        return new Token(TokenType.MathOpExponent, curChar + this.stream.getCurrentCharacter());
                     } else {
                         return new Token(TokenType.MathOpMultiply, curChar);
                     }
                 case curChar === ">":
-                    if (this.peekNextCharacter() === "=") {
-                        this.getNextCharacter();
-                        return new Token(TokenType.BoolOpGreaterOrEq, curChar + this.currentCharacter);
+                    if (this.stream.peekNextCharacter() === "=") {
+                        this.stream.getNextCharacter();
+                        return new Token(TokenType.BoolOpGreaterOrEq, curChar + this.stream.getCurrentCharacter());
                     } else {
                         return new Token(TokenType.BoolOpGreater, curChar);
                     }
                 case curChar === "<":
-                    if (this.peekNextCharacter() === "=") {
-                        this.getNextCharacter();
-                        return new Token(TokenType.BoolOpLessOrEq, curChar + this.currentCharacter);
+                    if (this.stream.peekNextCharacter() === "=") {
+                        this.stream.getNextCharacter();
+                        return new Token(TokenType.BoolOpLessOrEq, curChar + this.stream.getCurrentCharacter());
                     } else {
                         return new Token(TokenType.BoolOpLess, curChar);
                     }
                 case curChar === "!":
-                    if (this.peekNextCharacter() === "!") {
-                        this.getNextCharacter();
-                        return new Token(TokenType.UnOpPenetrate, curChar + this.currentCharacter);
+                    if (this.stream.peekNextCharacter() === "!") {
+                        this.stream.getNextCharacter();
+                        return new Token(TokenType.UnOpPenetrate, curChar + this.stream.getCurrentCharacter());
                     } else {
                         return new Token(TokenType.UnOpExplode, curChar);
                     }
@@ -61,37 +110,5 @@ export class Lexer {
         }
         // Terminator at end of stream.
         return new Token(TokenType.Terminator);
-    }
-
-    protected parseIdentifier(): Token {
-        let buffer = this.currentCharacter;
-        while (this.idCharRegex.test(this.peekNextCharacter())) {
-            buffer += this.getNextCharacter();
-        }
-        return new Token(TokenType.Identifier, buffer);
-    }
-
-    protected parseNumber(): Token {
-        let buffer = this.currentCharacter;
-        while (this.numCharRegex.test(this.peekNextCharacter())) {
-            buffer += this.getNextCharacter();
-        }
-        return new Token(TokenType.NumberInteger, buffer);
-    }
-
-    protected getNextCharacter(): string {
-        this.index = Math.min(this.index + 1, this.input.length);
-        if (this.index >= this.input.length) { return null; }
-        return this.input[this.index];
-    }
-
-    protected get currentCharacter(): string {
-        if (this.index < 0 || this.index >= this.input.length) { return null; }
-        return this.input[this.index];
-    }
-
-    protected peekNextCharacter(): string {
-        if (this.index >= this.input.length) { return null; }
-        return this.input[this.index + 1];
     }
 }

@@ -1,5 +1,4 @@
 import * as Lexer from "../../src/lexer";
-import { MockLexer } from "../helpers/mock-lexer";
 
 describe("Lexer", () => {
     const input = "floor(4d6!!+5d10kl2/2+4)"
@@ -10,83 +9,7 @@ describe("Lexer", () => {
             }).not.toThrow();
         });
     });
-    describe("currentCharacter", () => {
-        it("starts as null", () => {
-            const lexer = new MockLexer("face");
-            expect(lexer.currentCharacterPub).toEqual(null);
-        });
-        it("returns the current character", () => {
-            const lexer = new MockLexer("face");
-            lexer.getNextCharacter();
-            expect(lexer.currentCharacterPub).toEqual("f");
-            expect(lexer.currentCharacterPub).toEqual("f");
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            expect(lexer.currentCharacterPub).toEqual("c");
-        });
-        it("returns null at the end.", () => {
-            const lexer = new MockLexer("face");
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            expect(lexer.currentCharacterPub).toBeNull();
-        });
-    });
-    describe("getNextCharacter", () => {
-        it("progresses through the characters, finishing with null.", () => {
-            const lexer = new MockLexer(input);
-            expect(lexer.getNextCharacter()).toEqual("f");
-            expect(lexer.getNextCharacter()).toEqual("l");
-            expect(lexer.getNextCharacter()).toEqual("o");
-            expect(lexer.getNextCharacter()).toEqual("o");
-            expect(lexer.getNextCharacter()).toEqual("r");
-            expect(lexer.getNextCharacter()).toEqual("(");
-            expect(lexer.getNextCharacter()).toEqual("4");
-            expect(lexer.getNextCharacter()).toEqual("d");
-            expect(lexer.getNextCharacter()).toEqual("6");
-            expect(lexer.getNextCharacter()).toEqual("!");
-            expect(lexer.getNextCharacter()).toEqual("!");
-            expect(lexer.getNextCharacter()).toEqual("+");
-            expect(lexer.getNextCharacter()).toEqual("5");
-            expect(lexer.getNextCharacter()).toEqual("d");
-            expect(lexer.getNextCharacter()).toEqual("1");
-            expect(lexer.getNextCharacter()).toEqual("0");
-            expect(lexer.getNextCharacter()).toEqual("k");
-            expect(lexer.getNextCharacter()).toEqual("l");
-            expect(lexer.getNextCharacter()).toEqual("2");
-            expect(lexer.getNextCharacter()).toEqual("/");
-            expect(lexer.getNextCharacter()).toEqual("2");
-            expect(lexer.getNextCharacter()).toEqual("+");
-            expect(lexer.getNextCharacter()).toEqual("4");
-            expect(lexer.getNextCharacter()).toEqual(")");
-            expect(lexer.getNextCharacter()).toBeNull();
-        });
-        it("returns null when stream ends.", () => {
-            const lexer = new MockLexer("abc");
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            for (let x = 0; x < 10; x++) {
-                expect(lexer.getNextCharacter()).toBeNull();
-            }
-        });
-    });
-    describe("peekNextCharacter", () => {
-        it("gives next character without cycling through.", () => {
-            const lexer = new MockLexer(input);
-            lexer.getNextCharacter();
-            expect(lexer.peekNextCharacter()).toEqual("l");
-            expect(lexer.peekNextCharacter()).toEqual("l");
-            lexer.getNextCharacter();
-            expect(lexer.peekNextCharacter()).toEqual("o");
-            lexer.getNextCharacter();
-            lexer.getNextCharacter();
-            expect(lexer.peekNextCharacter()).toEqual("r");
-        });
-    });
-    describe("tokenize", () => {
+    describe("getNextToken", () => {
         it("last token is a terminator", () => {
             const lexer = new Lexer.Lexer("");
             const token = lexer.getNextToken();
@@ -166,6 +89,19 @@ describe("Lexer", () => {
             const lexer = new Lexer.Lexer("test_face");
             lexer.getNextToken();
             expect(() => { lexer.getNextToken() }).toThrow();
+        });
+    });
+    describe("peekNextToken", () => {
+        it("gives next token without cycling through.", () => {
+            const lexer = new Lexer.Lexer(input);
+            lexer.getNextToken();
+            expect(lexer.peekNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisOpen, "("));
+            expect(lexer.peekNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisOpen, "("));
+            lexer.getNextToken();
+            expect(lexer.peekNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "4"));
+            lexer.getNextToken();
+            lexer.getNextToken();
+            expect(lexer.peekNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, "6"));
         });
     });
 });
