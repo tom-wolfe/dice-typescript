@@ -1,5 +1,5 @@
 dice_roll = 
-    roll, { roll_modifier }
+    roll, [ roll_modifiers ]
 ;
 
 roll = 
@@ -14,6 +14,10 @@ fate_roll =
     (integer | bracketed_expression), "d", "F"
 ;
 
+roll_modifiers = 
+    roll_modifier, { ",", roll_modifier }
+;
+
 roll_modifier = 
     success_modifier |
     explode_modifier |
@@ -23,6 +27,5 @@ roll_modifier =
     drop_modifier |
     reroll_modifier |
     reroll_once_modifier |
-    sort_modifier |
-    compare_modifier
+    sort_modifier
 ; ? (* TODO: Implement. *)

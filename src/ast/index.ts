@@ -1,1 +1,6 @@
-export * from "./dice-expression";
+
+export * from "./expression";
+export * from "./expression-node";
+export * from "./factory";
+export * from "./node-attributes";
+export * from "./node-type";
