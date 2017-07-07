@@ -11,7 +11,7 @@
     "lint": "tslint --type-check -p ./tsconfig.json",
     "postinstall": "./node_modules/.bin/typings install",
     "tsc": "tsc --project ./tsconfig.build.json",
-    "test": "karma start --single-run",
+    "test": "npm run lint && karma start --single-run",
     "test_watch": "karma start"
   },
   "repository": {
