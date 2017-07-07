@@ -5,6 +5,7 @@ export enum NodeType {
 
     Add = <any>"Add",
     Subtract = <any>"Subtract",
+    Negate = <any>"Negate",
 
     Exponent = <any>"Exponent",
     Multiply = <any>"Multiply",

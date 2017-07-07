@@ -8,6 +8,11 @@ describe("Lexer", () => {
                 const lexer = new Lexer.Lexer(input);
             }).not.toThrow();
         });
+        it("throws for invalid input.", function () {
+            expect(() => {
+                const lexer = new Lexer.Lexer(6 as any);
+            }).toThrow();
+        });
     });
     describe("getNextToken", () => {
         it("last token is a terminator", () => {

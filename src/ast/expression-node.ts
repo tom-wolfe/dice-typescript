@@ -15,9 +15,11 @@ export class ExpressionNode {
 
     copy(): ExpressionNode {
         const copy = Factory.create(this.type);
-        Object.keys(this.attributes).forEach(attr => {
-            copy.attributes[attr] = this.attributes[attr];
-        });
+        if (this.attributes) {
+            Object.keys(this.attributes).forEach(attr => {
+                copy.setAttribute(attr, this.attributes[attr]);
+            });
+        }
         if (this.children) {
             this.children.forEach(child => {
                 copy.addChild(child.copy());
