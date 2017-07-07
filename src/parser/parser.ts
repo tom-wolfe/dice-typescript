@@ -15,10 +15,10 @@ AddOperatorMap[TokenType.MathOpAdd] = Ast.NodeType.Add;
 AddOperatorMap[TokenType.MathOpSubtract] = Ast.NodeType.Subtract;
 
 const MultiOperatorMap: { [token: string]: Ast.NodeType } = {};
-AddOperatorMap[TokenType.MathOpExponent] = Ast.NodeType.Exponent;
-AddOperatorMap[TokenType.MathOpMultiply] = Ast.NodeType.Multiply;
-AddOperatorMap[TokenType.MathOpDivide] = Ast.NodeType.Divide;
-AddOperatorMap[TokenType.MathOpModulo] = Ast.NodeType.Modulo;
+MultiOperatorMap[TokenType.MathOpExponent] = Ast.NodeType.Exponent;
+MultiOperatorMap[TokenType.MathOpMultiply] = Ast.NodeType.Multiply;
+MultiOperatorMap[TokenType.MathOpDivide] = Ast.NodeType.Divide;
+MultiOperatorMap[TokenType.MathOpModulo] = Ast.NodeType.Modulo;
 
 export class Parser {
     protected readonly lexer: Lexer;
@@ -113,7 +113,7 @@ export class Parser {
                 break;
             case TokenType.ParenthesisOpen:
                 root = this.parseBracketedExpression();
-                if (this.lexer.peekNextToken().type !== TokenType.Identifier) {
+                if (this.lexer.peekNextToken().type === TokenType.Identifier) {
                     root = this.parseDiceRoll(root);
                 }
                 break;
@@ -131,8 +131,37 @@ export class Parser {
     }
 
     parseFunctionCall(): Ast.ExpressionNode {
-        // TODO: Function call.
-        return null;
+        let root: Ast.ExpressionNode;
+        let token = this.lexer.getNextToken();
+
+        if (token.type !== TokenType.Identifier) {
+            throw new Error("Expected function name.");
+        }
+
+        root = Ast.Factory.create(Ast.NodeType.Function)
+            .setAttribute("name", token.value);
+
+        token = this.lexer.getNextToken();
+        if (token.type !== TokenType.ParenthesisOpen) {
+            throw new Error(`Expected "(", found "${token.type}".`);
+        }
+
+        // Parse function arguments.
+        token = this.lexer.peekNextToken();
+        if (token.type !== TokenType.ParenthesisClose) {
+            root.addChild(this.parseExpression());
+            while (this.lexer.peekNextToken().type === TokenType.Comma) {
+                this.lexer.getNextToken(); // Consume the comma.
+                root.addChild(this.parseExpression());
+            }
+        }
+
+        token = this.lexer.getNextToken();
+        if (token.type !== TokenType.ParenthesisClose) {
+            throw new Error("Missing closing parenthesis.");
+        }
+
+        return root;
     }
 
     parseInteger(): Ast.ExpressionNode {

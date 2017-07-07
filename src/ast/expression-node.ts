@@ -42,11 +42,11 @@ export class ExpressionNode {
     }
 
     getChildCount(): number {
-        return this.children.length;
+        return this.children ? this.children.length : 0;
     }
 
     getAttribute(key: string) {
-        return this.attributes[key];
+        return this.attributes ? this.attributes[key] : undefined;
     }
 
     setAttribute(key: string, value: any) {
