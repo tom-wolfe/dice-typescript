@@ -1,7 +1,7 @@
-digit_no_zero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+digit =
+    "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+;
 
-digit = "0" | digit_no_zero ;
-
-natural_number = digit_no_zero, { digit };
-
-integer = "0" | [ "-" ], natural number ;
+integer = 
+    digit, { digit }
+;

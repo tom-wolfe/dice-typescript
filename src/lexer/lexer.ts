@@ -10,7 +10,6 @@ export class Lexer {
     constructor(protected input: string) { }
 
     public getNextToken(): Token {
-        // Terminator at end of stream.
         let curChar: string;
         while (curChar = this.getNextCharacter()) {
             switch (true) {
@@ -60,6 +59,7 @@ export class Lexer {
                 default: throw new Error(`Unknown token: '${curChar}'.`);
             }
         }
+        // Terminator at end of stream.
         return new Token(TokenType.Terminator);
     }
 

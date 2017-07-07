@@ -1,1 +1,28 @@
-basic_roll = natural_number, "d", natural_number;
+dice_roll = 
+    roll, { roll_modifier }
+;
+
+roll = 
+    basic_roll | fate_roll
+;
+
+basic_roll = 
+    (integer | bracketed_expression), "d", integer
+;
+
+fate_roll = 
+    (integer | bracketed_expression), "d", "F"
+;
+
+roll_modifier = 
+    success_modifier |
+    explode_modifier |
+    compound_modifier |
+    penetrate_modifier |
+    keep_modifier |
+    drop_modifier |
+    reroll_modifier |
+    reroll_once_modifier |
+    sort_modifier |
+    compare_modifier
+; ? (* TODO: Implement. *)

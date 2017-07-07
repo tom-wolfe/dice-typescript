@@ -1,0 +1,10 @@
+expression_group = 
+    "{", expression, { ",", expression }, "}", [ group_modifier ]
+;
+
+group_modifier = 
+    keep_modifier |
+    drop_modifier |
+    success_modifier
+    ? (* TODO: Implement. *)
+;
