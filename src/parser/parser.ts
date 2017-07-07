@@ -1,6 +1,6 @@
 import * as Ast from "../ast";
 import { Lexer } from "../lexer";
-
+import { DiceLexer } from "../lexer/dice-lexer";
 import { TokenType } from "../lexer/token-type";
 
 const BooleanOperatorMap: { [token: string]: Ast.NodeType } = {};
@@ -24,13 +24,17 @@ export class Parser {
     protected readonly lexer: Lexer;
 
     constructor(input: Lexer | string) {
-        if (input instanceof Lexer) {
+        if (this.isLexer(input)) {
             this.lexer = input;
         } else if (typeof input === "string") {
-            this.lexer = new Lexer(input);
+            this.lexer = new DiceLexer(input);
         } else {
             throw new Error("Unrecognized input type. input must be of type 'Lexer | string'.")
         }
+    }
+
+    private isLexer(input: any): input is Lexer {
+        return input.getNextToken;
     }
 
     parse(): Ast.Expression {
@@ -147,8 +151,25 @@ export class Parser {
         return root;
     }
 
-    parseDiceRoll(rollTimes: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
         let root: Ast.ExpressionNode;
+
+        root = this.parseSimpleDiceRoll(rollTimes);
+
+        // TODO: Parse modifiers.
+
+        return root;
+    }
+
+    parseSimpleDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
+        let root: Ast.ExpressionNode;
+
+        if (!rollTimes) {
+            if (this.lexer.peekNextToken().type !== TokenType.NumberInteger) {
+                throw new Error("Expected integer");
+            }
+            rollTimes = this.parseInteger();
+        }
 
         const tokenValue = this.lexer.peekNextToken().value;
         if (tokenValue !== "d") {
@@ -165,8 +186,6 @@ export class Parser {
         }
         root.addChild(Ast.Factory.create(Ast.NodeType.Integer))
             .setAttribute("value", sidesToken.value);
-
-        // TODO: Parse modifiers.
 
         return root;
     }

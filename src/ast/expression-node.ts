@@ -37,6 +37,18 @@ export class ExpressionNode {
         return node;
     }
 
+    getChild(index: number): ExpressionNode {
+        return this.children[index];
+    }
+
+    getChildCount(): number {
+        return this.children.length;
+    }
+
+    getAttribute(key: string) {
+        return this.attributes[key];
+    }
+
     setAttribute(key: string, value: any) {
         if (!this.attributes) { this.attributes = new NodeAttributes(); }
         this.attributes[key] = value;
