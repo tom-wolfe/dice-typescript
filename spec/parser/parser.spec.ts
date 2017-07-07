@@ -10,9 +10,5 @@ describe("Parser", () => {
     });
     describe("parse", () => {
         // TODO: Write tests.
-        it("Face", () => {
-            const parser = new Parser.Parser();
-            console.log(JSON.stringify(parser.parse("")));
-        });
     });
 });

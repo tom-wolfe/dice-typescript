@@ -4,7 +4,7 @@ describe("Interpreter", () => {
     describe("constructor", () => {
         it("does not throw.", function () {
             expect(() => {
-                const lexer = new Interpreter.Interpreter();
+                const interpreter = new Interpreter.Interpreter();
             }).not.toThrow();
         });
     });
