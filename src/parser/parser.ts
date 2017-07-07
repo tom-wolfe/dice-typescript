@@ -167,7 +167,7 @@ export class Parser {
     parseInteger(): Ast.ExpressionNode {
         const numberToken = this.lexer.getNextToken();
         return Ast.Factory.create(Ast.NodeType.Integer)
-            .setAttribute("value", numberToken.value);
+            .setAttribute("value", Number(numberToken.value));
     }
 
     parseBracketedExpression(): Ast.ExpressionNode {
@@ -220,7 +220,7 @@ export class Parser {
                     throw new Error("Missing dice value");
                 }
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
-                    .setAttribute("value", sidesToken.value);
+                    .setAttribute("value", Number(sidesToken.value));
                 break;
             case "dF":
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))

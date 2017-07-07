@@ -19,7 +19,7 @@ describe("Parser", () => {
             const parser = new Parser.Parser(lexer);
             const node = parser.parseInteger();
             expect(node.type).toBe(NodeType.Integer);
-            expect(node.getAttribute("value")).toBe("12");
+            expect(node.getAttribute("value")).toBe(12);
         });
     });
 });

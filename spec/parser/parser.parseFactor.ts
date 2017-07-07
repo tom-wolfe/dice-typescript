@@ -13,7 +13,7 @@ describe("Parser", () => {
             const exp = parser.parseFactor();
             expect(exp.type).toBe(NodeType.Integer);
             expect(exp.getChildCount()).toBe(0);
-            expect(exp.getAttribute("value")).toBe("10");
+            expect(exp.getAttribute("value")).toBe(10);
         });
         it("can correctly identify a function call", () => {
             const lexer = new MockLexer([
@@ -27,7 +27,7 @@ describe("Parser", () => {
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
-            expect(exp.getChild(0).getAttribute("value")).toBe("10");
+            expect(exp.getChild(0).getAttribute("value")).toBe(10);
         });
         it("can correctly identify a bracketed expression", () => {
             const lexer = new MockLexer([
@@ -42,9 +42,9 @@ describe("Parser", () => {
             expect(exp.type).toBe(NodeType.Add);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
-            expect(exp.getChild(0).getAttribute("value")).toBe("6");
+            expect(exp.getChild(0).getAttribute("value")).toBe(6);
             expect(exp.getChild(1).type).toBe(NodeType.Integer);
-            expect(exp.getChild(1).getAttribute("value")).toBe("4");
+            expect(exp.getChild(1).getAttribute("value")).toBe(4);
         });
     });
 });
