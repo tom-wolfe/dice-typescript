@@ -30,5 +30,6 @@ export enum NodeType {
     Failure = <any>"Failure",
 
     Dice = <any>"Dice",
+    DiceSides = <any>"DiceSides",
     Integer = <any>"Integer"
 }

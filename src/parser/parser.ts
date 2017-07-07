@@ -200,21 +200,28 @@ export class Parser {
             rollTimes = this.parseInteger();
         }
 
-        const tokenValue = this.lexer.peekNextToken().value;
-        if (tokenValue !== "d") {
-            throw new Error(`Expected "d", got "${tokenValue}".`)
+        const token = this.lexer.peekNextToken();
+        if (token.type !== TokenType.Identifier) {
+            throw new Error(`Unexpected token "${token.type}".`)
         }
         this.lexer.getNextToken(); // Consume the d.
-
         root = Ast.Factory.create(Ast.NodeType.Dice);
         root.addChild(rollTimes);
 
-        const sidesToken = this.lexer.getNextToken();
-        if (sidesToken.type !== TokenType.NumberInteger) {
-            throw new Error("Missing dice value");
+        switch (token.value) {
+            case "d":
+                const sidesToken = this.lexer.getNextToken();
+                if (sidesToken.type !== TokenType.NumberInteger) {
+                    throw new Error("Missing dice value");
+                }
+                root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
+                    .setAttribute("value", sidesToken.value);
+                break;
+            case "dF":
+                root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
+                    .setAttribute("value", "fate");
+                break;
         }
-        root.addChild(Ast.Factory.create(Ast.NodeType.Integer))
-            .setAttribute("value", sidesToken.value);
 
         return root;
     }

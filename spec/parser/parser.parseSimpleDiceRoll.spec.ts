@@ -8,7 +8,7 @@ describe("Parser", () => {
         it("can correctly parse a simple dice roll", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.NumberInteger, "10"),
-                new Token(TokenType.NumberInteger, "d"),
+                new Token(TokenType.Identifier, "d"),
                 new Token(TokenType.NumberInteger, "6")
             ]);
             const parser = new Parser.Parser(lexer);
@@ -18,13 +18,13 @@ describe("Parser", () => {
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Integer);
             expect(dice.getChild(0).getAttribute("value")).toBe("10");
-            expect(dice.getChild(1).type).toBe(NodeType.Integer);
+            expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
             expect(dice.getChild(1).getAttribute("value")).toBe("6");
         });
         it("can correctly parse a simple dice roll with pre-parsed number", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.NumberInteger, "10"),
-                new Token(TokenType.NumberInteger, "d"),
+                new Token(TokenType.Identifier, "d"),
                 new Token(TokenType.NumberInteger, "6")
             ]);
             const parser = new Parser.Parser(lexer);
@@ -33,8 +33,22 @@ describe("Parser", () => {
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Integer);
             expect(dice.getChild(0).getAttribute("value")).toBe("10");
-            expect(dice.getChild(1).type).toBe(NodeType.Integer);
+            expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
             expect(dice.getChild(1).getAttribute("value")).toBe("6");
+        });
+        it("can correctly parse a simple fate dice roll", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.NumberInteger, "10"),
+                new Token(TokenType.Identifier, "dF")
+            ]);
+            const parser = new Parser.Parser(lexer);
+            const dice = parser.parseSimpleDiceRoll();
+            expect(dice.type).toBe(NodeType.Dice);
+            expect(dice.getChildCount()).toBe(2);
+            expect(dice.getChild(0).type).toBe(NodeType.Integer);
+            expect(dice.getChild(0).getAttribute("value")).toBe("10");
+            expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
+            expect(dice.getChild(1).getAttribute("value")).toBe("fate");
         });
     });
 });
