@@ -16,6 +16,9 @@ export class Lexer {
             switch (true) {
                 case this.idCharRegex.test(curChar): return this.parseIdentifier();
                 case this.numCharRegex.test(curChar): return this.parseNumber();
+                case curChar === "{": return new Token(TokenType.BraceOpen, curChar);
+                case curChar === "}": return new Token(TokenType.BraceClose, curChar);
+                case curChar === ",": return new Token(TokenType.Comma, curChar);
                 case curChar === "(": return new Token(TokenType.ParenthesisOpen, curChar);
                 case curChar === ")": return new Token(TokenType.ParenthesisClose, curChar);
                 case curChar === "=": return new Token(TokenType.BoolOpEq, curChar);
