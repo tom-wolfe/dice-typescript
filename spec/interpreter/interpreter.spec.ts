@@ -11,7 +11,7 @@ describe("Interpreter", () => {
     describe("interpret", () => {
         it("returns null.", () => {
             const interpreter = new Interpreter.Interpreter();
-            expect(() => interpreter.interpret(null)).toBeNull();
+            expect(interpreter.interpret(null)).toBeNull();
         });
     });
 });
