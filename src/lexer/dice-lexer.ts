@@ -48,7 +48,7 @@ export class DiceLexer implements Lexer {
         while (this.idCharRegex.test(this.stream.peekNextCharacter())) {
             buffer += this.stream.getNextCharacter();
         }
-        return new Token(TokenType.Identifier, buffer);
+        return this.createToken(TokenType.Identifier, buffer);
     }
 
     protected parseNumber(): Token {
@@ -56,7 +56,7 @@ export class DiceLexer implements Lexer {
         while (this.numCharRegex.test(this.stream.peekNextCharacter())) {
             buffer += this.stream.getNextCharacter();
         }
-        return new Token(TokenType.NumberInteger, buffer);
+        return this.createToken(TokenType.NumberInteger, buffer);
     }
 
     private constructNextToken() {
@@ -65,43 +65,43 @@ export class DiceLexer implements Lexer {
             switch (true) {
                 case this.idCharRegex.test(curChar): return this.parseIdentifier();
                 case this.numCharRegex.test(curChar): return this.parseNumber();
-                case curChar === "{": return new Token(TokenType.BraceOpen, curChar);
-                case curChar === "}": return new Token(TokenType.BraceClose, curChar);
-                case curChar === ",": return new Token(TokenType.Comma, curChar);
-                case curChar === "(": return new Token(TokenType.ParenthesisOpen, curChar);
-                case curChar === ")": return new Token(TokenType.ParenthesisClose, curChar);
-                case curChar === "=": return new Token(TokenType.BoolOpEq, curChar);
-                case curChar === "+": return new Token(TokenType.MathOpAdd, curChar);
-                case curChar === "/": return new Token(TokenType.MathOpDivide, curChar);
-                case curChar === "-": return new Token(TokenType.MathOpSubtract, curChar);
-                case curChar === "%": return new Token(TokenType.MathOpModulo, curChar);
+                case curChar === "{": return this.createToken(TokenType.BraceOpen, curChar);
+                case curChar === "}": return this.createToken(TokenType.BraceClose, curChar);
+                case curChar === ",": return this.createToken(TokenType.Comma, curChar);
+                case curChar === "(": return this.createToken(TokenType.ParenthesisOpen, curChar);
+                case curChar === ")": return this.createToken(TokenType.ParenthesisClose, curChar);
+                case curChar === "=": return this.createToken(TokenType.BoolOpEq, curChar);
+                case curChar === "+": return this.createToken(TokenType.MathOpAdd, curChar);
+                case curChar === "/": return this.createToken(TokenType.MathOpDivide, curChar);
+                case curChar === "-": return this.createToken(TokenType.MathOpSubtract, curChar);
+                case curChar === "%": return this.createToken(TokenType.MathOpModulo, curChar);
                 case curChar === "*":
                     if (this.stream.peekNextCharacter() === "*") {
                         this.stream.getNextCharacter();
-                        return new Token(TokenType.MathOpExponent, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.MathOpExponent, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return new Token(TokenType.MathOpMultiply, curChar);
+                        return this.createToken(TokenType.MathOpMultiply, curChar);
                     }
                 case curChar === ">":
                     if (this.stream.peekNextCharacter() === "=") {
                         this.stream.getNextCharacter();
-                        return new Token(TokenType.BoolOpGreaterOrEq, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.BoolOpGreaterOrEq, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return new Token(TokenType.BoolOpGreater, curChar);
+                        return this.createToken(TokenType.BoolOpGreater, curChar);
                     }
                 case curChar === "<":
                     if (this.stream.peekNextCharacter() === "=") {
                         this.stream.getNextCharacter();
-                        return new Token(TokenType.BoolOpLessOrEq, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.BoolOpLessOrEq, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return new Token(TokenType.BoolOpLess, curChar);
+                        return this.createToken(TokenType.BoolOpLess, curChar);
                     }
                 case curChar === "!":
                     if (this.stream.peekNextCharacter() === "!") {
                         this.stream.getNextCharacter();
-                        return new Token(TokenType.UnOpPenetrate, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.UnOpPenetrate, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return new Token(TokenType.UnOpExplode, curChar);
+                        return this.createToken(TokenType.UnOpExplode, curChar);
                     }
                 case /\W/.test(curChar):
                     // Ignore whitespace.
@@ -110,6 +110,12 @@ export class DiceLexer implements Lexer {
             }
         }
         // Terminator at end of stream.
-        return new Token(TokenType.Terminator);
+        return this.createToken(TokenType.Terminator);
+    }
+
+    private createToken(type: TokenType, value?: string): Token {
+        let position = this.stream.getCurrentPosition();
+        if (value) { position -= value.length - 1; }
+        return new Token(type, position, value);
     }
 }

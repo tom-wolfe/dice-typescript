@@ -4,16 +4,56 @@ import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("Parser", () => {
-    describe("parseSimpleDiceRoll", () => {
-        it("can correctly parse a simple dice roll with pre-parsed number.", () => {
+    describe("parseFactor", () => {
+        it("can correctly identify a number factor", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
-                new Token(TokenType.Identifier, 2, "d"),
-                new Token(TokenType.NumberInteger, 3, "6")
+                new Token(TokenType.NumberInteger, 0, "10")
             ]);
             const parser = new Parser.Parser(lexer);
-            const num = parser.parseInteger();
-            const dice = parser.parseSimpleDiceRoll(num);
+            const exp = parser.parseFactor();
+            expect(exp.type).toBe(NodeType.Integer);
+            expect(exp.getChildCount()).toBe(0);
+            expect(exp.getAttribute("value")).toBe(10);
+        });
+        it("can correctly identify a function call", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Identifier, 0, "floor"),
+                new Token(TokenType.ParenthesisOpen, 5, "("),
+                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.ParenthesisClose, 8, ")")
+            ]);
+            const parser = new Parser.Parser(lexer);
+            const exp = parser.parseFactor();
+            expect(exp.type).toBe(NodeType.Function);
+            expect(exp.getChildCount()).toBe(1);
+            expect(exp.getChild(0).type).toBe(NodeType.Integer);
+            expect(exp.getChild(0).getAttribute("value")).toBe(10);
+        });
+        it("can correctly identify a bracketed expression", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.ParenthesisOpen, 0, "("),
+                new Token(TokenType.NumberInteger, 1, "6"),
+                new Token(TokenType.MathOpAdd, 2, "+"),
+                new Token(TokenType.NumberInteger, 3, "4"),
+                new Token(TokenType.ParenthesisClose, 4, ")"),
+            ]);
+            const parser = new Parser.Parser(lexer);
+            const exp = parser.parseFactor();
+            expect(exp.type).toBe(NodeType.Add);
+            expect(exp.getChildCount()).toBe(2);
+            expect(exp.getChild(0).type).toBe(NodeType.Integer);
+            expect(exp.getChild(0).getAttribute("value")).toBe(6);
+            expect(exp.getChild(1).type).toBe(NodeType.Integer);
+            expect(exp.getChild(1).getAttribute("value")).toBe(4);
+        });
+        it("can correctly identify a simple dice roll.", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.NumberInteger, 0, "10"),
+                new Token(TokenType.Identifier, 1, "d"),
+                new Token(TokenType.NumberInteger, 2, "6")
+            ]);
+            const parser = new Parser.Parser(lexer);
+            const dice = parser.parseFactor();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Integer);
@@ -21,36 +61,7 @@ describe("Parser", () => {
             expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
             expect(dice.getChild(1).getAttribute("value")).toBe(6);
         });
-        it("can correctly parse a simple dice roll.", () => {
-            const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
-                new Token(TokenType.Identifier, 2, "d"),
-                new Token(TokenType.NumberInteger, 3, "6")
-            ]);
-            const parser = new Parser.Parser(lexer);
-            const dice = parser.parseSimpleDiceRoll();
-            expect(dice.type).toBe(NodeType.Dice);
-            expect(dice.getChildCount()).toBe(2);
-            expect(dice.getChild(0).type).toBe(NodeType.Integer);
-            expect(dice.getChild(0).getAttribute("value")).toBe(10);
-            expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
-            expect(dice.getChild(1).getAttribute("value")).toBe(6);
-        });
-        it("can correctly parse a simple fate dice roll", () => {
-            const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
-                new Token(TokenType.Identifier, 2, "dF")
-            ]);
-            const parser = new Parser.Parser(lexer);
-            const dice = parser.parseSimpleDiceRoll();
-            expect(dice.type).toBe(NodeType.Dice);
-            expect(dice.getChildCount()).toBe(2);
-            expect(dice.getChild(0).type).toBe(NodeType.Integer);
-            expect(dice.getChild(0).getAttribute("value")).toBe(10);
-            expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
-            expect(dice.getChild(1).getAttribute("value")).toBe("fate");
-        });
-        it("can correctly parse a dice roll with a bracketed number", () => {
+        it("can correctly identify a dice roll with a bracketed number", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
                 new Token(TokenType.NumberInteger, 1, "10"),
@@ -59,7 +70,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 5, "6")
             ]);
             const parser = new Parser.Parser(lexer);
-            const dice = parser.parseSimpleDiceRoll();
+            const dice = parser.parseFactor();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Integer);
@@ -67,7 +78,7 @@ describe("Parser", () => {
             expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
             expect(dice.getChild(1).getAttribute("value")).toBe(6);
         });
-        it("can correctly parse a dice roll with a bracketed expression", () => {
+        it("can correctly identify a dice roll with a bracketed expression", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
                 new Token(TokenType.NumberInteger, 1, "10"),
@@ -78,7 +89,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 7, "6")
             ]);
             const parser = new Parser.Parser(lexer);
-            const dice = parser.parseSimpleDiceRoll();
+            const dice = parser.parseFactor();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Add);
@@ -89,22 +100,6 @@ describe("Parser", () => {
             expect(dice.getChild(0).getChild(1).getAttribute("value")).toBe(3);
             expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
             expect(dice.getChild(1).getAttribute("value")).toBe(6);
-        });
-         it("throws on missing roll times", () => {
-            const lexer = new MockLexer([
-                new Token(TokenType.Identifier, 0, "d"),
-                new Token(TokenType.NumberInteger, 1, "10")
-            ]);
-            const parser = new Parser.Parser(lexer);
-            expect(() => parser.parseSimpleDiceRoll()).toThrow();
-        });
-        it("throws on missing dice value", () => {
-            const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "6"),
-                new Token(TokenType.Identifier, 1, "d")
-            ]);
-            const parser = new Parser.Parser(lexer);
-            expect(() => parser.parseSimpleDiceRoll()).toThrow();
         });
     });
 });

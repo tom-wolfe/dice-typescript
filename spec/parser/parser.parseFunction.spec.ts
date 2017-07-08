@@ -7,9 +7,9 @@ describe("Parser", () => {
     describe("parseFunction", () => {
         it("can correctly parse a function with no arguments", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.Identifier, "floor"),
-                new Token(TokenType.ParenthesisOpen, "("),
-                new Token(TokenType.ParenthesisClose, ")")
+                new Token(TokenType.Identifier, 0, "floor"),
+                new Token(TokenType.ParenthesisOpen, 5, "("),
+                new Token(TokenType.ParenthesisClose, 6, ")")
             ]);
             const parser = new Parser.Parser(lexer);
             const exp = parser.parseFunctionCall();
@@ -19,10 +19,10 @@ describe("Parser", () => {
         });
         it("can correctly parse a function with one simple argument", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.Identifier, "floor"),
-                new Token(TokenType.ParenthesisOpen, "("),
-                new Token(TokenType.NumberInteger, "10"),
-                new Token(TokenType.ParenthesisClose, ")")
+                new Token(TokenType.Identifier, 0, "floor"),
+                new Token(TokenType.ParenthesisOpen, 5, "("),
+                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.ParenthesisClose, 8, ")")
             ]);
             const parser = new Parser.Parser(lexer);
             const exp = parser.parseFunctionCall();
@@ -35,12 +35,12 @@ describe("Parser", () => {
         });
         it("can correctly parse a function with one complex argument", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.Identifier, "floor"),
-                new Token(TokenType.ParenthesisOpen, "("),
-                new Token(TokenType.NumberInteger, "10"),
-                new Token(TokenType.MathOpMultiply, "*"),
-                new Token(TokenType.NumberInteger, "2"),
-                new Token(TokenType.ParenthesisClose, ")")
+                new Token(TokenType.Identifier, 0, "floor"),
+                new Token(TokenType.ParenthesisOpen, 5, "("),
+                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.MathOpMultiply, 8, "*"),
+                new Token(TokenType.NumberInteger, 9, "2"),
+                new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
             const parser = new Parser.Parser(lexer);
             const exp = parser.parseFunctionCall();
@@ -57,12 +57,12 @@ describe("Parser", () => {
         });
         it("can correctly parse a function with two multiple arguments", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.Identifier, "floor"),
-                new Token(TokenType.ParenthesisOpen, "("),
-                new Token(TokenType.NumberInteger, "10"),
-                new Token(TokenType.Comma, ","),
-                new Token(TokenType.NumberInteger, "5"),
-                new Token(TokenType.ParenthesisClose, ")")
+                new Token(TokenType.Identifier, 0, "floor"),
+                new Token(TokenType.ParenthesisOpen, 5, "("),
+                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.Comma, 8, ","),
+                new Token(TokenType.NumberInteger, 9, "5"),
+                new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
             const parser = new Parser.Parser(lexer);
             const exp = parser.parseFunctionCall();
