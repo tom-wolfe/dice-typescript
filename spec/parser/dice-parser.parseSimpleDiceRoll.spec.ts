@@ -7,9 +7,9 @@ describe("DiceParser", () => {
     describe("parseSimpleDiceRoll", () => {
         it("can correctly parse a simple dice roll with pre-parsed number.", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
+                new Token(TokenType.Integer, 0, "10"),
                 new Token(TokenType.Identifier, 2, "d"),
-                new Token(TokenType.NumberInteger, 3, "6")
+                new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const num = parser.parseInteger();
@@ -23,9 +23,9 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a simple dice roll.", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
+                new Token(TokenType.Integer, 0, "10"),
                 new Token(TokenType.Identifier, 2, "d"),
-                new Token(TokenType.NumberInteger, 3, "6")
+                new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseSimpleDiceRoll();
@@ -38,7 +38,7 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a simple fate dice roll", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
+                new Token(TokenType.Integer, 0, "10"),
                 new Token(TokenType.Identifier, 2, "dF")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -53,10 +53,10 @@ describe("DiceParser", () => {
         it("can correctly parse a dice roll with a bracketed number", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "10"),
+                new Token(TokenType.Integer, 1, "10"),
                 new Token(TokenType.ParenthesisClose, 3, ")"),
                 new Token(TokenType.Identifier, 4, "d"),
-                new Token(TokenType.NumberInteger, 5, "6")
+                new Token(TokenType.Integer, 5, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseSimpleDiceRoll();
@@ -70,12 +70,12 @@ describe("DiceParser", () => {
         it("can correctly parse a dice roll with a bracketed expression", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "10"),
-                new Token(TokenType.MathOpAdd, 3, "+"),
-                new Token(TokenType.NumberInteger, 4, "3"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Plus, 3, "+"),
+                new Token(TokenType.Integer, 4, "3"),
                 new Token(TokenType.ParenthesisClose, 5, ")"),
                 new Token(TokenType.Identifier, 6, "d"),
-                new Token(TokenType.NumberInteger, 7, "6")
+                new Token(TokenType.Integer, 7, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseSimpleDiceRoll();
@@ -93,14 +93,14 @@ describe("DiceParser", () => {
          it("throws on missing roll times", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "d"),
-                new Token(TokenType.NumberInteger, 1, "10")
+                new Token(TokenType.Integer, 1, "10")
             ]);
             const parser = new Parser.DiceParser(lexer);
             expect(() => parser.parseSimpleDiceRoll()).toThrow();
         });
         it("throws on missing dice value", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "6"),
+                new Token(TokenType.Integer, 0, "6"),
                 new Token(TokenType.Identifier, 1, "d")
             ]);
             const parser = new Parser.DiceParser(lexer);

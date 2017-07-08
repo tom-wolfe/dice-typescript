@@ -3,21 +3,21 @@ import { Lexer, TokenType } from "../lexer";
 import { BasicParser } from "./basic-parser";
 
 const BooleanOperatorMap: { [token: string]: Ast.NodeType } = {};
-BooleanOperatorMap[TokenType.BoolOpEq] = Ast.NodeType.Equal;
-BooleanOperatorMap[TokenType.BoolOpGreater] = Ast.NodeType.Greater;
-BooleanOperatorMap[TokenType.BoolOpLess] = Ast.NodeType.Less;
-BooleanOperatorMap[TokenType.BoolOpGreaterOrEq] = Ast.NodeType.GreaterOrEqual;
-BooleanOperatorMap[TokenType.BoolOpLessOrEq] = Ast.NodeType.LessOrEqual;
+BooleanOperatorMap[TokenType.Equals] = Ast.NodeType.Equal;
+BooleanOperatorMap[TokenType.Greater] = Ast.NodeType.Greater;
+BooleanOperatorMap[TokenType.Less] = Ast.NodeType.Less;
+BooleanOperatorMap[TokenType.GreaterOrEqual] = Ast.NodeType.GreaterOrEqual;
+BooleanOperatorMap[TokenType.LessOrEqual] = Ast.NodeType.LessOrEqual;
 
 const AddOperatorMap: { [token: string]: Ast.NodeType } = {};
-AddOperatorMap[TokenType.MathOpAdd] = Ast.NodeType.Add;
-AddOperatorMap[TokenType.MathOpSubtract] = Ast.NodeType.Subtract;
+AddOperatorMap[TokenType.Plus] = Ast.NodeType.Add;
+AddOperatorMap[TokenType.Minus] = Ast.NodeType.Subtract;
 
 const MultiOperatorMap: { [token: string]: Ast.NodeType } = {};
-MultiOperatorMap[TokenType.MathOpExponent] = Ast.NodeType.Exponent;
-MultiOperatorMap[TokenType.MathOpMultiply] = Ast.NodeType.Multiply;
-MultiOperatorMap[TokenType.MathOpDivide] = Ast.NodeType.Divide;
-MultiOperatorMap[TokenType.MathOpModulo] = Ast.NodeType.Modulo;
+MultiOperatorMap[TokenType.DoubleAsterisk] = Ast.NodeType.Exponent;
+MultiOperatorMap[TokenType.Asterisk] = Ast.NodeType.Multiply;
+MultiOperatorMap[TokenType.Slash] = Ast.NodeType.Divide;
+MultiOperatorMap[TokenType.Percent] = Ast.NodeType.Modulo;
 
 export class DiceParser extends BasicParser {
     constructor(input: Lexer | string) { super(input); }
@@ -47,7 +47,7 @@ export class DiceParser extends BasicParser {
 
         let root = this.parseTerm();
 
-        if (tokenType === TokenType.MathOpSubtract) {
+        if (tokenType === TokenType.Minus) {
             const negateNode = Ast.Factory.create(Ast.NodeType.Negate);
             negateNode.addChild(root);
             root = negateNode;
@@ -104,7 +104,7 @@ export class DiceParser extends BasicParser {
             case TokenType.BraceOpen:
                 root = this.parseExpressionGroup();
                 break;
-            case TokenType.NumberInteger:
+            case TokenType.Integer:
                 const number = this.parseInteger();
                 if (this.lexer.peekNextToken().type !== TokenType.Identifier) {
                     root = number;
@@ -112,7 +112,7 @@ export class DiceParser extends BasicParser {
                     root = this.parseDiceRoll(number);
                 }
                 break;
-            default: this.error(TokenType.NumberInteger, token);
+            default: this.error(TokenType.Integer, token);
         }
         return root;
     }
@@ -182,9 +182,9 @@ export class DiceParser extends BasicParser {
         if (!rollTimes) {
             const rollToken = this.lexer.peekNextToken();
             switch (rollToken.type) {
-                case TokenType.NumberInteger: rollTimes = this.parseInteger(); break;
+                case TokenType.Integer: rollTimes = this.parseInteger(); break;
                 case TokenType.ParenthesisOpen: rollTimes = this.parseBracketedExpression(); break;
-                default: this.error(TokenType.NumberInteger, rollToken);
+                default: this.error(TokenType.Integer, rollToken);
             }
         }
 
@@ -195,7 +195,7 @@ export class DiceParser extends BasicParser {
 
         switch (token.value) {
             case "d":
-                const sidesToken = this.expectAndConsume(TokenType.NumberInteger);
+                const sidesToken = this.expectAndConsume(TokenType.Integer);
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
                     .setAttribute("value", Number(sidesToken.value));
                 break;

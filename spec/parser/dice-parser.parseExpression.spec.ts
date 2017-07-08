@@ -7,9 +7,9 @@ describe("DiceParser", () => {
     describe("parseExpression", () => {
         it("can correctly identify a boolean operator", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
-                new Token(TokenType.BoolOpGreater, 2, ">"),
-                new Token(TokenType.NumberInteger, 3, "5"),
+                new Token(TokenType.Integer, 0, "10"),
+                new Token(TokenType.Greater, 2, ">"),
+                new Token(TokenType.Integer, 3, "5"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseExpression();

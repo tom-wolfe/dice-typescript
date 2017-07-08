@@ -7,9 +7,9 @@ describe("DiceParser", () => {
     describe("parseTerm", () => {
         it("can correctly identify a multiplication", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "6"),
-                new Token(TokenType.MathOpMultiply, 1, "*"),
-                new Token(TokenType.NumberInteger, 2, "4"),
+                new Token(TokenType.Integer, 0, "6"),
+                new Token(TokenType.Asterisk, 1, "*"),
+                new Token(TokenType.Integer, 2, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
@@ -22,9 +22,9 @@ describe("DiceParser", () => {
         });
         it("can correctly identify a division", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "6"),
-                new Token(TokenType.MathOpDivide, 1, "/"),
-                new Token(TokenType.NumberInteger, 2, "4"),
+                new Token(TokenType.Integer, 0, "6"),
+                new Token(TokenType.Slash, 1, "/"),
+                new Token(TokenType.Integer, 2, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
@@ -37,9 +37,9 @@ describe("DiceParser", () => {
         });
         it("can correctly identify an exponent", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "6"),
-                new Token(TokenType.MathOpExponent, 1, "**"),
-                new Token(TokenType.NumberInteger, 3, "4"),
+                new Token(TokenType.Integer, 0, "6"),
+                new Token(TokenType.DoubleAsterisk, 1, "**"),
+                new Token(TokenType.Integer, 3, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
@@ -52,9 +52,9 @@ describe("DiceParser", () => {
         });
         it("can correctly identify a modulo", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "6"),
-                new Token(TokenType.MathOpModulo, 1, "%"),
-                new Token(TokenType.NumberInteger, 2, "4"),
+                new Token(TokenType.Integer, 0, "6"),
+                new Token(TokenType.Percent, 1, "%"),
+                new Token(TokenType.Integer, 2, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
@@ -67,11 +67,11 @@ describe("DiceParser", () => {
         });
         it("can correctly parse multiple operators", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "4"),
-                new Token(TokenType.MathOpMultiply, 1, "*"),
-                new Token(TokenType.NumberInteger, 2, "3"),
-                new Token(TokenType.MathOpDivide, 3, "/"),
-                new Token(TokenType.NumberInteger, 4, "1")
+                new Token(TokenType.Integer, 0, "4"),
+                new Token(TokenType.Asterisk, 1, "*"),
+                new Token(TokenType.Integer, 2, "3"),
+                new Token(TokenType.Slash, 3, "/"),
+                new Token(TokenType.Integer, 4, "1")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();

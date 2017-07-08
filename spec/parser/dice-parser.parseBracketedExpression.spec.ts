@@ -8,7 +8,7 @@ describe("DiceParser", () => {
         it("can correctly parse a simple expression", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "10"),
+                new Token(TokenType.Integer, 1, "10"),
                 new Token(TokenType.ParenthesisClose, 3, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -20,9 +20,9 @@ describe("DiceParser", () => {
         it("can correctly parse an addition", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "10"),
-                new Token(TokenType.MathOpAdd, 3, "+"),
-                new Token(TokenType.NumberInteger, 4, "6"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Plus, 3, "+"),
+                new Token(TokenType.Integer, 4, "6"),
                 new Token(TokenType.ParenthesisClose, 5, ")"),
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -37,9 +37,9 @@ describe("DiceParser", () => {
         it("throws on missing closing bracket", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "10"),
-                new Token(TokenType.MathOpAdd, 3, "+"),
-                new Token(TokenType.NumberInteger, 4, "6")
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Plus, 3, "+"),
+                new Token(TokenType.Integer, 4, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             expect(() => parser.parseBracketedExpression()).toThrow();

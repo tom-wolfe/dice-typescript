@@ -7,7 +7,7 @@ describe("DiceParser", () => {
     describe("parseFactor", () => {
         it("can correctly identify a number factor", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10")
+                new Token(TokenType.Integer, 0, "10")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFactor();
@@ -19,7 +19,7 @@ describe("DiceParser", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "floor"),
                 new Token(TokenType.ParenthesisOpen, 5, "("),
-                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.Integer, 6, "10"),
                 new Token(TokenType.ParenthesisClose, 8, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -32,9 +32,9 @@ describe("DiceParser", () => {
         it("can correctly identify a bracketed expression", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "6"),
-                new Token(TokenType.MathOpAdd, 2, "+"),
-                new Token(TokenType.NumberInteger, 3, "4"),
+                new Token(TokenType.Integer, 1, "6"),
+                new Token(TokenType.Plus, 2, "+"),
+                new Token(TokenType.Integer, 3, "4"),
                 new Token(TokenType.ParenthesisClose, 4, ")"),
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -48,9 +48,9 @@ describe("DiceParser", () => {
         });
         it("can correctly identify a simple dice roll.", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
+                new Token(TokenType.Integer, 0, "10"),
                 new Token(TokenType.Identifier, 1, "d"),
-                new Token(TokenType.NumberInteger, 2, "6")
+                new Token(TokenType.Integer, 2, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseFactor();
@@ -64,10 +64,10 @@ describe("DiceParser", () => {
         it("can correctly identify a dice roll with a bracketed number", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "10"),
+                new Token(TokenType.Integer, 1, "10"),
                 new Token(TokenType.ParenthesisClose, 3, ")"),
                 new Token(TokenType.Identifier, 4, "d"),
-                new Token(TokenType.NumberInteger, 5, "6")
+                new Token(TokenType.Integer, 5, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseFactor();
@@ -81,12 +81,12 @@ describe("DiceParser", () => {
         it("can correctly identify a dice roll with a bracketed expression", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.ParenthesisOpen, 0, "("),
-                new Token(TokenType.NumberInteger, 1, "10"),
-                new Token(TokenType.MathOpAdd, 3, "+"),
-                new Token(TokenType.NumberInteger, 4, "3"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Plus, 3, "+"),
+                new Token(TokenType.Integer, 4, "3"),
                 new Token(TokenType.ParenthesisClose, 5, ")"),
                 new Token(TokenType.Identifier, 6, "d"),
-                new Token(TokenType.NumberInteger, 7, "6")
+                new Token(TokenType.Integer, 7, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseFactor();
@@ -104,9 +104,9 @@ describe("DiceParser", () => {
         it("can correctly identify a group.", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.Integer, 6, "10"),
                 new Token(TokenType.Comma, 8, ","),
-                new Token(TokenType.NumberInteger, 9, "5"),
+                new Token(TokenType.Integer, 9, "5"),
                 new Token(TokenType.BraceClose, 10, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -119,6 +119,14 @@ describe("DiceParser", () => {
 
             expect(exp.getChild(1).type).toBe(NodeType.Integer);
             expect(exp.getChild(1).getAttribute("value")).toBe(5);
+        });
+        it("throws on unexpected token type.", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Comma, 5, ","),
+                new Token(TokenType.Integer, 6, "10"),
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            expect(() => parser.parseFactor()).toThrow();
         });
     });
 });

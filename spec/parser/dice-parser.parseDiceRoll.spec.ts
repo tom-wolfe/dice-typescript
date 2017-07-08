@@ -7,9 +7,9 @@ describe("DiceParser", () => {
     describe("parseDiceRoll", () => {
         it("can correctly parse a simple dice roll with pre-parsed number.", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
+                new Token(TokenType.Integer, 0, "10"),
                 new Token(TokenType.Identifier, 2, "d"),
-                new Token(TokenType.NumberInteger, 3, "6")
+                new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const num = parser.parseInteger();
@@ -23,9 +23,9 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a simple dice roll.", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
+                new Token(TokenType.Integer, 0, "10"),
                 new Token(TokenType.Identifier, 2, "d"),
-                new Token(TokenType.NumberInteger, 3, "6")
+                new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseDiceRoll();

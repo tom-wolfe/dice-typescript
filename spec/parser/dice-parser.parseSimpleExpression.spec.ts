@@ -7,9 +7,9 @@ describe("DiceParser", () => {
     describe("parseSimpleExpression", () => {
         it("can correctly parse a simple addition", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
-                new Token(TokenType.MathOpAdd, 2, "+"),
-                new Token(TokenType.NumberInteger, 3, "6")
+                new Token(TokenType.Integer, 0, "10"),
+                new Token(TokenType.Plus, 2, "+"),
+                new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();
@@ -22,9 +22,9 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a simple subtraction", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "10"),
-                new Token(TokenType.MathOpSubtract, 2, "-"),
-                new Token(TokenType.NumberInteger, 3, "6")
+                new Token(TokenType.Integer, 0, "10"),
+                new Token(TokenType.Minus, 2, "-"),
+                new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();
@@ -37,8 +37,8 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a simple negation", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.MathOpSubtract, 0, "-"),
-                new Token(TokenType.NumberInteger, 1, "4")
+                new Token(TokenType.Minus, 0, "-"),
+                new Token(TokenType.Integer, 1, "4")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();
@@ -49,11 +49,11 @@ describe("DiceParser", () => {
         });
         it("can correctly parse multiple operators", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "4"),
-                new Token(TokenType.MathOpAdd, 1, "+"),
-                new Token(TokenType.NumberInteger, 2, "3"),
-                new Token(TokenType.MathOpSubtract, 3, "-"),
-                new Token(TokenType.NumberInteger, 4, "1")
+                new Token(TokenType.Integer, 0, "4"),
+                new Token(TokenType.Plus, 1, "+"),
+                new Token(TokenType.Integer, 2, "3"),
+                new Token(TokenType.Minus, 3, "-"),
+                new Token(TokenType.Integer, 4, "1")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();

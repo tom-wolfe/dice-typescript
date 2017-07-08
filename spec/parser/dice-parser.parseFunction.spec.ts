@@ -21,7 +21,7 @@ describe("DiceParser", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "floor"),
                 new Token(TokenType.ParenthesisOpen, 5, "("),
-                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.Integer, 6, "10"),
                 new Token(TokenType.ParenthesisClose, 8, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -37,9 +37,9 @@ describe("DiceParser", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "floor"),
                 new Token(TokenType.ParenthesisOpen, 5, "("),
-                new Token(TokenType.NumberInteger, 6, "10"),
-                new Token(TokenType.MathOpMultiply, 8, "*"),
-                new Token(TokenType.NumberInteger, 9, "2"),
+                new Token(TokenType.Integer, 6, "10"),
+                new Token(TokenType.Asterisk, 8, "*"),
+                new Token(TokenType.Integer, 9, "2"),
                 new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -59,9 +59,9 @@ describe("DiceParser", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "floor"),
                 new Token(TokenType.ParenthesisOpen, 5, "("),
-                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.Integer, 6, "10"),
                 new Token(TokenType.Comma, 8, ","),
-                new Token(TokenType.NumberInteger, 9, "5"),
+                new Token(TokenType.Integer, 9, "5"),
                 new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);

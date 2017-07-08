@@ -56,7 +56,7 @@ export class DiceLexer implements Lexer {
         while (this.numCharRegex.test(this.stream.peekNextCharacter())) {
             buffer += this.stream.getNextCharacter();
         }
-        return this.createToken(TokenType.NumberInteger, buffer);
+        return this.createToken(TokenType.Integer, buffer);
     }
 
     private constructNextToken() {
@@ -70,38 +70,38 @@ export class DiceLexer implements Lexer {
                 case curChar === ",": return this.createToken(TokenType.Comma, curChar);
                 case curChar === "(": return this.createToken(TokenType.ParenthesisOpen, curChar);
                 case curChar === ")": return this.createToken(TokenType.ParenthesisClose, curChar);
-                case curChar === "=": return this.createToken(TokenType.BoolOpEq, curChar);
-                case curChar === "+": return this.createToken(TokenType.MathOpAdd, curChar);
-                case curChar === "/": return this.createToken(TokenType.MathOpDivide, curChar);
-                case curChar === "-": return this.createToken(TokenType.MathOpSubtract, curChar);
-                case curChar === "%": return this.createToken(TokenType.MathOpModulo, curChar);
+                case curChar === "=": return this.createToken(TokenType.Equals, curChar);
+                case curChar === "+": return this.createToken(TokenType.Plus, curChar);
+                case curChar === "/": return this.createToken(TokenType.Slash, curChar);
+                case curChar === "-": return this.createToken(TokenType.Minus, curChar);
+                case curChar === "%": return this.createToken(TokenType.Percent, curChar);
                 case curChar === "*":
                     if (this.stream.peekNextCharacter() === "*") {
                         this.stream.getNextCharacter();
-                        return this.createToken(TokenType.MathOpExponent, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.DoubleAsterisk, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return this.createToken(TokenType.MathOpMultiply, curChar);
+                        return this.createToken(TokenType.Asterisk, curChar);
                     }
                 case curChar === ">":
                     if (this.stream.peekNextCharacter() === "=") {
                         this.stream.getNextCharacter();
-                        return this.createToken(TokenType.BoolOpGreaterOrEq, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.GreaterOrEqual, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return this.createToken(TokenType.BoolOpGreater, curChar);
+                        return this.createToken(TokenType.Greater, curChar);
                     }
                 case curChar === "<":
                     if (this.stream.peekNextCharacter() === "=") {
                         this.stream.getNextCharacter();
-                        return this.createToken(TokenType.BoolOpLessOrEq, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.LessOrEqual, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return this.createToken(TokenType.BoolOpLess, curChar);
+                        return this.createToken(TokenType.Less, curChar);
                     }
                 case curChar === "!":
                     if (this.stream.peekNextCharacter() === "!") {
                         this.stream.getNextCharacter();
-                        return this.createToken(TokenType.UnOpPenetrate, curChar + this.stream.getCurrentCharacter());
+                        return this.createToken(TokenType.DoubleExclamation, curChar + this.stream.getCurrentCharacter());
                     } else {
-                        return this.createToken(TokenType.UnOpExplode, curChar);
+                        return this.createToken(TokenType.Exclamation, curChar);
                     }
                 case /\W/.test(curChar):
                     // Ignore whitespace.

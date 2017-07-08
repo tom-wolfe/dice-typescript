@@ -18,7 +18,7 @@ describe("DiceParser", () => {
         it("can correctly parse a group with one simple argument", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.Integer, 6, "10"),
                 new Token(TokenType.BraceClose, 8, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -32,9 +32,9 @@ describe("DiceParser", () => {
         it("can correctly parse a group with one complex argument", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.NumberInteger, 6, "10"),
-                new Token(TokenType.MathOpMultiply, 8, "*"),
-                new Token(TokenType.NumberInteger, 9, "2"),
+                new Token(TokenType.Integer, 6, "10"),
+                new Token(TokenType.Asterisk, 8, "*"),
+                new Token(TokenType.Integer, 9, "2"),
                 new Token(TokenType.BraceClose, 10, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -52,9 +52,9 @@ describe("DiceParser", () => {
         it("can correctly parse a group with two arguments", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.NumberInteger, 6, "10"),
+                new Token(TokenType.Integer, 6, "10"),
                 new Token(TokenType.Comma, 8, ","),
-                new Token(TokenType.NumberInteger, 9, "5"),
+                new Token(TokenType.Integer, 9, "5"),
                 new Token(TokenType.BraceClose, 10, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);

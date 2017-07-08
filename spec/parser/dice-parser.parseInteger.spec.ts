@@ -14,7 +14,7 @@ describe("DiceParser", () => {
     describe("parseInteger", () => {
         it("can correctly parse an integer", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.NumberInteger, 0, "12")
+                new Token(TokenType.Integer, 0, "12")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const node = parser.parseInteger();
