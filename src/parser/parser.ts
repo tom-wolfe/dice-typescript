@@ -1,7 +1,5 @@
 import * as Ast from "../ast";
-import { Lexer } from "../lexer";
-import { DiceLexer } from "../lexer/dice-lexer";
-import { TokenType } from "../lexer/token-type";
+import { DiceLexer, Lexer, Token, TokenType } from "../lexer";
 
 const BooleanOperatorMap: { [token: string]: Ast.NodeType } = {};
 BooleanOperatorMap[TokenType.BoolOpEq] = Ast.NodeType.Equal;
@@ -106,8 +104,8 @@ export class Parser {
 
     parseFactor(): Ast.ExpressionNode {
         let root: Ast.ExpressionNode;
-        const tokenType = this.lexer.peekNextToken().type;
-        switch (tokenType) {
+        const token = this.lexer.peekNextToken();
+        switch (token.type) {
             case TokenType.Identifier:
                 root = this.parseFunctionCall();
                 break;
@@ -117,6 +115,9 @@ export class Parser {
                     root = this.parseDiceRoll(root);
                 }
                 break;
+            case TokenType.BraceOpen:
+                root = this.parseExpressionGroup();
+                break;
             case TokenType.NumberInteger:
                 const number = this.parseInteger();
                 if (this.lexer.peekNextToken().type !== TokenType.Identifier) {
@@ -125,29 +126,20 @@ export class Parser {
                     root = this.parseDiceRoll(number);
                 }
                 break;
-            default: throw new Error(`Unexpected token ${tokenType} of value ${this.lexer.peekNextToken().value}.`);
+            default: this.error(TokenType.NumberInteger, token);
         }
         return root;
     }
 
     parseFunctionCall(): Ast.ExpressionNode {
-        let root: Ast.ExpressionNode;
-        let token = this.lexer.getNextToken();
+        const functionName = this.expectAndConsume(TokenType.Identifier);
+        const root = Ast.Factory.create(Ast.NodeType.Function)
+            .setAttribute("name", functionName.value);
 
-        if (token.type !== TokenType.Identifier) {
-            throw new Error("Expected function name.");
-        }
-
-        root = Ast.Factory.create(Ast.NodeType.Function)
-            .setAttribute("name", token.value);
-
-        token = this.lexer.getNextToken();
-        if (token.type !== TokenType.ParenthesisOpen) {
-            throw new Error(`Expected "(", found "${token.type}".`);
-        }
+        this.expectAndConsume(TokenType.ParenthesisOpen)
 
         // Parse function arguments.
-        token = this.lexer.peekNextToken();
+        const token = this.lexer.peekNextToken();
         if (token.type !== TokenType.ParenthesisClose) {
             root.addChild(this.parseExpression());
             while (this.lexer.peekNextToken().type === TokenType.Comma) {
@@ -156,10 +148,7 @@ export class Parser {
             }
         }
 
-        token = this.lexer.getNextToken();
-        if (token.type !== TokenType.ParenthesisClose) {
-            throw new Error("Missing closing parenthesis.");
-        }
+        this.expectAndConsume(TokenType.ParenthesisClose);
 
         return root;
     }
@@ -173,52 +162,54 @@ export class Parser {
     parseBracketedExpression(): Ast.ExpressionNode {
         this.lexer.getNextToken(); // Consume the opening bracket.
         const root = this.parseExpression();
-        if (this.lexer.peekNextToken().type !== TokenType.ParenthesisClose) {
-            throw new Error("Missing closing brace.");
+        this.expectAndConsume(TokenType.ParenthesisClose);
+        return root;
+    }
+
+    parseExpressionGroup(): Ast.ExpressionNode {
+        this.lexer.getNextToken(); // Consume the opening brace.
+
+        const root = Ast.Factory.create(Ast.NodeType.Group);
+
+        // Parse group elements.
+        const token = this.lexer.peekNextToken();
+        if (token.type !== TokenType.BraceClose) {
+            root.addChild(this.parseExpression());
+            while (this.lexer.peekNextToken().type === TokenType.Comma) {
+                this.lexer.getNextToken(); // Consume the comma.
+                root.addChild(this.parseExpression());
+            }
         }
-        this.lexer.getNextToken(); // Consume the closing bracket.
+
+        this.expectAndConsume(TokenType.BraceClose);
+
         return root;
     }
 
     parseDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
-        let root: Ast.ExpressionNode;
-
-        root = this.parseSimpleDiceRoll(rollTimes);
-
+        const root = this.parseSimpleDiceRoll(rollTimes);
         // TODO: Parse modifiers.
-
         return root;
     }
 
     parseSimpleDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
-        let root: Ast.ExpressionNode;
-
         if (!rollTimes) {
-            switch (this.lexer.peekNextToken().type) {
-                case TokenType.NumberInteger:
-                    rollTimes = this.parseInteger();
-                    break;
-                case TokenType.ParenthesisOpen:
-                    rollTimes = this.parseBracketedExpression();
-                    break;
-                default: throw new Error("Expected integer");
+            const rollToken = this.lexer.peekNextToken();
+            switch (rollToken.type) {
+                case TokenType.NumberInteger: rollTimes = this.parseInteger(); break;
+                case TokenType.ParenthesisOpen: rollTimes = this.parseBracketedExpression(); break;
+                default: this.error(TokenType.NumberInteger, rollToken);
             }
         }
 
-        const token = this.lexer.peekNextToken();
-        if (token.type !== TokenType.Identifier) {
-            throw new Error(`Unexpected token "${token.type}".`)
-        }
-        this.lexer.getNextToken(); // Consume the d.
-        root = Ast.Factory.create(Ast.NodeType.Dice);
+        const token = this.expectAndConsume(TokenType.Identifier);
+
+        const root = Ast.Factory.create(Ast.NodeType.Dice);
         root.addChild(rollTimes);
 
         switch (token.value) {
             case "d":
-                const sidesToken = this.lexer.getNextToken();
-                if (sidesToken.type !== TokenType.NumberInteger) {
-                    throw new Error("Missing dice value");
-                }
+                const sidesToken = this.expectAndConsume(TokenType.NumberInteger);
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
                     .setAttribute("value", Number(sidesToken.value));
                 break;
@@ -229,5 +220,24 @@ export class Parser {
         }
 
         return root;
+    }
+
+    private expectAndConsume(expected: TokenType, actual?: Token): Token {
+        this.expect(expected, actual);
+        return this.lexer.getNextToken();
+    }
+
+    private expect(expected: TokenType, actual?: Token): Token {
+        actual = actual || this.lexer.peekNextToken();
+        if (actual.type !== expected) {
+            this.error(expected, actual);
+        }
+        return actual;
+    }
+
+    private error(expected: TokenType, actual: Token) {
+        let msg = `Error at position ${actual.position}.`;
+        msg += `Expected token of type ${expected}, found token of type ${actual.type} of value "${actual.value}".`;
+        throw new Error(msg);
     }
 }
