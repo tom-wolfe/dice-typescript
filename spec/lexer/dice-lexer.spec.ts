@@ -101,6 +101,15 @@ describe("DiceLexer", () => {
             lexer.getNextToken();
             expect(() => { lexer.getNextToken() }).toThrow();
         });
+        it("skips over whitespace.", () => {
+            const lexer = new Lexer.DiceLexer("2  d\t10 \t + \t\t 3");
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, 0, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, 3, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, 5, "10"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.MathOpAdd, 10, "+"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, 15, "3"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator, 16));
+        });
     });
     describe("peekNextToken", () => {
         it("gives next token without cycling through.", () => {
@@ -115,5 +124,4 @@ describe("DiceLexer", () => {
             expect(lexer.peekNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.NumberInteger, 8, "6"));
         });
     });
-    // TODO: Check it ignores whitespace.
 });
