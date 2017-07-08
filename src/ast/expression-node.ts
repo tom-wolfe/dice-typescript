@@ -37,6 +37,10 @@ export class ExpressionNode {
         return node;
     }
 
+    clearChildren(): void {
+        this.children = undefined;
+    }
+
     getChild(index: number): ExpressionNode {
         return this.children[index];
     }

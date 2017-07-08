@@ -8,10 +8,4 @@ describe("Interpreter", () => {
             }).not.toThrow();
         });
     });
-    describe("interpret", () => {
-        it("returns null.", () => {
-            const interpreter = new Interpreter.Interpreter();
-            expect(interpreter.interpret(null)).toBeNull();
-        });
-    });
 });
