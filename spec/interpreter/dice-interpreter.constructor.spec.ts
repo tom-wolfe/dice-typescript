@@ -1,10 +1,10 @@
 import * as Interpreter from "../../src/interpreter";
 
-describe("Interpreter", () => {
+describe("DiceInterpreter", () => {
     describe("constructor", () => {
         it("does not throw.", () => {
             expect(() => {
-                const interpreter = new Interpreter.Interpreter();
+                const interpreter = new Interpreter.DiceInterpreter();
             }).not.toThrow();
         });
     });

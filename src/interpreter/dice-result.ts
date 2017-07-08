@@ -1,15 +1,13 @@
 import { ExpressionNode } from "../ast";
+import { Result } from "./result";
 
-export class DiceResult {
-    readonly reducedExpression: ExpressionNode
-    readonly total: number;
+export class DiceResult extends Result {
     readonly successes: number;
-    readonly fails: number;
+    readonly failures: number;
 
-    constructor(reducedExpression: ExpressionNode, total: number, successes: number, fails: number) {
-        this.reducedExpression = reducedExpression;
-        this.total = total;
+    constructor(reducedExpression: ExpressionNode, total: number, successes: number, failures: number) {
+        super(reducedExpression, total);
         this.successes = successes;
-        this.fails = fails;
+        this.failures = failures;
     }
 }

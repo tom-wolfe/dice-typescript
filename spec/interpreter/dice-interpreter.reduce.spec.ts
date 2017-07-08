@@ -1,14 +1,14 @@
 import * as Interpreter from "../../src/interpreter";
 import * as Ast from "../../src/ast";
 
-describe("Interpreter", () => {
+describe("DiceInterpreter", () => {
     describe("reduce", () => {
         it("reduces a simple dice expression (2d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
-            const interpreter = new Interpreter.Interpreter();
+            const interpreter = new Interpreter.DiceInterpreter();
             interpreter.reduce(dice);
 
             expect(dice.getChildCount()).toBe(2);
@@ -25,7 +25,7 @@ describe("Interpreter", () => {
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", "fate"));
 
-            const interpreter = new Interpreter.Interpreter();
+            const interpreter = new Interpreter.DiceInterpreter();
             interpreter.reduce(dice);
 
             expect(dice.getChildCount()).toBe(2);
@@ -47,7 +47,7 @@ describe("Interpreter", () => {
             add.addChild(dice);
             add.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
 
-            const interpreter = new Interpreter.Interpreter();
+            const interpreter = new Interpreter.DiceInterpreter();
             interpreter.reduce(add);
 
             expect(add.getChildCount()).toBe(2);
@@ -73,7 +73,7 @@ describe("Interpreter", () => {
             dice.addChild(add);
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
-            const interpreter = new Interpreter.Interpreter();
+            const interpreter = new Interpreter.DiceInterpreter();
 
             interpreter.reduce(dice);
 

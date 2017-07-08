@@ -3,13 +3,13 @@ import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
-describe("Parser", () => {
+describe("DiceParser", () => {
     describe("parseFactor", () => {
         it("can correctly identify a number factor", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.NumberInteger, 0, "10")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFactor();
             expect(exp.type).toBe(NodeType.Integer);
             expect(exp.getChildCount()).toBe(0);
@@ -22,7 +22,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 6, "10"),
                 new Token(TokenType.ParenthesisClose, 8, ")")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFactor();
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
@@ -37,7 +37,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 3, "4"),
                 new Token(TokenType.ParenthesisClose, 4, ")"),
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFactor();
             expect(exp.type).toBe(NodeType.Add);
             expect(exp.getChildCount()).toBe(2);
@@ -52,7 +52,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 1, "d"),
                 new Token(TokenType.NumberInteger, 2, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseFactor();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
@@ -69,7 +69,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 4, "d"),
                 new Token(TokenType.NumberInteger, 5, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseFactor();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
@@ -88,7 +88,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 6, "d"),
                 new Token(TokenType.NumberInteger, 7, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseFactor();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
@@ -109,7 +109,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 9, "5"),
                 new Token(TokenType.BraceClose, 10, "}")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFactor();
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(2);

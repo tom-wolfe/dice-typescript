@@ -3,7 +3,7 @@ import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
-describe("Parser", () => {
+describe("DiceParser", () => {
     describe("parseSimpleExpression", () => {
         it("can correctly parse a simple addition", () => {
             const lexer = new MockLexer([
@@ -11,7 +11,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpAdd, 2, "+"),
                 new Token(TokenType.NumberInteger, 3, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();
             expect(exp.type).toBe(NodeType.Add);
             expect(exp.getChildCount()).toBe(2);
@@ -26,7 +26,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpSubtract, 2, "-"),
                 new Token(TokenType.NumberInteger, 3, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();
             expect(exp.type).toBe(NodeType.Subtract);
             expect(exp.getChildCount()).toBe(2);
@@ -40,7 +40,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpSubtract, 0, "-"),
                 new Token(TokenType.NumberInteger, 1, "4")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();
             expect(exp.type).toBe(NodeType.Negate);
             expect(exp.getChildCount()).toBe(1);
@@ -55,7 +55,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpSubtract, 3, "-"),
                 new Token(TokenType.NumberInteger, 4, "1")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseSimpleExpression();
             expect(exp.type).toBe(NodeType.Subtract);
             expect(exp.getChildCount()).toBe(2);

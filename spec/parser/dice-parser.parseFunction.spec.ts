@@ -3,7 +3,7 @@ import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
-describe("Parser", () => {
+describe("DiceParser", () => {
     describe("parseFunction", () => {
         it("can correctly parse a function with no arguments", () => {
             const lexer = new MockLexer([
@@ -11,7 +11,7 @@ describe("Parser", () => {
                 new Token(TokenType.ParenthesisOpen, 5, "("),
                 new Token(TokenType.ParenthesisClose, 6, ")")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFunctionCall();
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(0);
@@ -24,7 +24,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 6, "10"),
                 new Token(TokenType.ParenthesisClose, 8, ")")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFunctionCall();
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
@@ -42,7 +42,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 9, "2"),
                 new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFunctionCall();
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
@@ -64,7 +64,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 9, "5"),
                 new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseFunctionCall();
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(2);

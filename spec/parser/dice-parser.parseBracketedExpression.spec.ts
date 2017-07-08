@@ -3,7 +3,7 @@ import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
-describe("Parser", () => {
+describe("DiceParser", () => {
     describe("parseBracketedExpression", () => {
         it("can correctly parse a simple expression", () => {
             const lexer = new MockLexer([
@@ -11,7 +11,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 1, "10"),
                 new Token(TokenType.ParenthesisClose, 3, ")")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseBracketedExpression();
             expect(exp.type).toBe(NodeType.Integer);
             expect(exp.getChildCount()).toBe(0);
@@ -25,7 +25,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 4, "6"),
                 new Token(TokenType.ParenthesisClose, 5, ")"),
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseBracketedExpression();
             expect(exp.type).toBe(NodeType.Add);
             expect(exp.getChildCount()).toBe(2);
@@ -41,7 +41,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpAdd, 3, "+"),
                 new Token(TokenType.NumberInteger, 4, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             expect(() => parser.parseBracketedExpression()).toThrow();
         });
     });

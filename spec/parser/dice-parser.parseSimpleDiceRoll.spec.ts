@@ -3,7 +3,7 @@ import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
-describe("Parser", () => {
+describe("DiceParser", () => {
     describe("parseSimpleDiceRoll", () => {
         it("can correctly parse a simple dice roll with pre-parsed number.", () => {
             const lexer = new MockLexer([
@@ -11,7 +11,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 2, "d"),
                 new Token(TokenType.NumberInteger, 3, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const num = parser.parseInteger();
             const dice = parser.parseSimpleDiceRoll(num);
             expect(dice.type).toBe(NodeType.Dice);
@@ -27,7 +27,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 2, "d"),
                 new Token(TokenType.NumberInteger, 3, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseSimpleDiceRoll();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
@@ -41,7 +41,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 0, "10"),
                 new Token(TokenType.Identifier, 2, "dF")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseSimpleDiceRoll();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
@@ -58,7 +58,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 4, "d"),
                 new Token(TokenType.NumberInteger, 5, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseSimpleDiceRoll();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
@@ -77,7 +77,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 6, "d"),
                 new Token(TokenType.NumberInteger, 7, "6")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const dice = parser.parseSimpleDiceRoll();
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
@@ -95,7 +95,7 @@ describe("Parser", () => {
                 new Token(TokenType.Identifier, 0, "d"),
                 new Token(TokenType.NumberInteger, 1, "10")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             expect(() => parser.parseSimpleDiceRoll()).toThrow();
         });
         it("throws on missing dice value", () => {
@@ -103,7 +103,7 @@ describe("Parser", () => {
                 new Token(TokenType.NumberInteger, 0, "6"),
                 new Token(TokenType.Identifier, 1, "d")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             expect(() => parser.parseSimpleDiceRoll()).toThrow();
         });
     });

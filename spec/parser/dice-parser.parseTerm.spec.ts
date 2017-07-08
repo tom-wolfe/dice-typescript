@@ -3,7 +3,7 @@ import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
-describe("Parser", () => {
+describe("DiceParser", () => {
     describe("parseTerm", () => {
         it("can correctly identify a multiplication", () => {
             const lexer = new MockLexer([
@@ -11,7 +11,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpMultiply, 1, "*"),
                 new Token(TokenType.NumberInteger, 2, "4"),
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
             expect(exp.type).toBe(NodeType.Multiply);
             expect(exp.getChildCount()).toBe(2);
@@ -26,7 +26,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpDivide, 1, "/"),
                 new Token(TokenType.NumberInteger, 2, "4"),
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
             expect(exp.type).toBe(NodeType.Divide);
             expect(exp.getChildCount()).toBe(2);
@@ -41,7 +41,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpExponent, 1, "**"),
                 new Token(TokenType.NumberInteger, 3, "4"),
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
             expect(exp.type).toBe(NodeType.Exponent);
             expect(exp.getChildCount()).toBe(2);
@@ -56,7 +56,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpModulo, 1, "%"),
                 new Token(TokenType.NumberInteger, 2, "4"),
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
             expect(exp.type).toBe(NodeType.Modulo);
             expect(exp.getChildCount()).toBe(2);
@@ -73,7 +73,7 @@ describe("Parser", () => {
                 new Token(TokenType.MathOpDivide, 3, "/"),
                 new Token(TokenType.NumberInteger, 4, "1")
             ]);
-            const parser = new Parser.Parser(lexer);
+            const parser = new Parser.DiceParser(lexer);
             const exp = parser.parseTerm();
             expect(exp.type).toBe(NodeType.Divide);
             expect(exp.getChildCount()).toBe(2);
