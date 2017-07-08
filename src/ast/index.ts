@@ -1,5 +1,4 @@
 
-export * from "./expression";
 export * from "./expression-node";
 export * from "./factory";
 export * from "./node-attributes";

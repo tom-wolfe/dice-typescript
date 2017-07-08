@@ -35,9 +35,8 @@ export class Parser {
         return input.getNextToken;
     }
 
-    parse(): Ast.Expression {
-        const root: Ast.ExpressionNode = this.parseExpression();
-        return new Ast.Expression(root);
+    parse(): Ast.ExpressionNode {
+        return this.parseExpression();
     }
 
     parseExpression(): Ast.ExpressionNode {

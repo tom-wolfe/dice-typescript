@@ -9,9 +9,8 @@ describe("Expression", () => {
                 .setAttribute("dice", 20);
             root.addChild(Ast.Factory.create(Ast.NodeType.Integer))
                 .setAttribute("value", 10);
-            const exp = new Ast.Expression(root);
             expect(() => {
-                JSON.stringify(exp);
+                JSON.stringify(root);
             }).not.toThrow();
         });
     });
