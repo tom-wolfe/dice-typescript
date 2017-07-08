@@ -27,6 +27,6 @@ export class Dice {
     }
 
     protected createInterpreter(): DiceInterpreter {
-        return new DiceInterpreter(new DefaultRandomProvider())
+        return new DiceInterpreter(null, new DefaultRandomProvider())
     }
 };
