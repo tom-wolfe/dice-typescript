@@ -37,6 +37,7 @@ export class DiceInterpreter implements Interpreter {
                 case Ast.NodeType.DiceRoll: value = this.evaluateDiceRoll(expression); break;
                 case Ast.NodeType.Integer: value = expression.getAttribute("value"); break;
                 case Ast.NodeType.Function: value = this.evaluateFunction(expression); break;
+                case Ast.NodeType.Group: value = this.evaluateGroup(expression); break;
                 case Ast.NodeType.Exponent:
                     value = Math.pow(this.evaluate(expression.getChild(0)), this.evaluate(expression.getChild(1)));
                     break;
@@ -61,13 +62,17 @@ export class DiceInterpreter implements Interpreter {
         let total = 0;
         for (let x = 0; x < num; x++) {
             let minValue = 1, maxValue = 0;
-            if (sides.getAttribute("value") === "fate") {
+            const sidesValue = sides.getAttribute("value");
+            if (sidesValue === "fate") {
                 minValue = -1; maxValue = 1;
             } else {
-                maxValue = this.evaluate(sides)
+                maxValue = this.evaluate(sides);
             }
             const diceRoll = this.random.numberBetween(minValue, maxValue);
-            expression.addChild(Ast.Factory.create(Ast.NodeType.DiceRoll).setAttribute("value", diceRoll));
+            const rollNode = Ast.Factory.create(Ast.NodeType.DiceRoll)
+                .setAttribute("value", diceRoll)
+                .setAttribute("sides", sidesValue);
+            expression.addChild(rollNode);
             total += diceRoll;
         }
         return total;
@@ -82,13 +87,21 @@ export class DiceInterpreter implements Interpreter {
         return result;
     }
 
+    private evaluateGroup(expression: Ast.ExpressionNode): number {
+        let total = 0;
+        for (let x = 0; x < expression.getChildCount(); x++) {
+            total += this.evaluate(expression.getChild(x));
+        }
+        return total;
+    }
+
     countSuccesses(expression: Ast.ExpressionNode): number {
-        // TODO: Implement.
+        // TODO: Implement successes.
         return 0;
     }
 
     countFailures(expression: Ast.ExpressionNode): number {
-        // TODO: Implement.
+        // TODO: Implement failures.
         return 0;
     }
 }
