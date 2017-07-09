@@ -78,7 +78,8 @@ export class DiceInterpreter implements Interpreter {
         if (Object.keys(this.functions).indexOf(fName) === -1) {
             throw new Error(`Unknown function: ${fName}`);
         }
-        return this.functions[fName](this, expression);
+        const result = this.functions[fName](this, expression);
+        return result;
     }
 
     countSuccesses(expression: Ast.ExpressionNode): number {

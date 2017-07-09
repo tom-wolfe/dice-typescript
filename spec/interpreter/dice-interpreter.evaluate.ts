@@ -173,6 +173,20 @@ describe("DiceInterpreter", () => {
             expect(dice.getChild(2).getAttribute("value")).toBeGreaterThanOrEqual(1);
             expect(dice.getChild(2).getAttribute("value")).toBeLessThanOrEqual(6);
         });
-        // TODO: correctly evaluates functions and groups and modifiers.
+        it("correctly evaluates a function(floor(5 / 2)).", () => {
+            const func = Ast.Factory.create(Ast.NodeType.Function).setAttribute("name", "floor");
+
+            const exp = Ast.Factory.create(Ast.NodeType.Divide);
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+
+            func.addChild(exp);
+
+            const interpreter = new Interpreter.DiceInterpreter();
+
+            const res = interpreter.evaluate(func);
+            expect(res).toBe(2);
+        });
+        // TODO: correctly evaluates groups and modifiers.
     });
 });
