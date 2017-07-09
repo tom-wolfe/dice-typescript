@@ -2,6 +2,7 @@ dist/spec/
 dist/test/
 node_modules/
 spec/
+ebnf/
 coverage/
 src/
 .gitattributes
