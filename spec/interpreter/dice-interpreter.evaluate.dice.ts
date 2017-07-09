@@ -3,7 +3,7 @@ import * as Interpreter from "../../src/interpreter";
 import { MockRandomProvider } from "../helpers/mock-random-provider";
 
 describe("DiceInterpreter", () => {
-    describe("reduce", () => {
+    describe("evaluate", () => {
         it("evaluates a simple dice expression (2d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));

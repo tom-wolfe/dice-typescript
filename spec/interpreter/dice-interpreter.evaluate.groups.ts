@@ -3,7 +3,7 @@ import * as Interpreter from "../../src/interpreter";
 import { MockRandomProvider } from "../helpers/mock-random-provider";
 
 describe("DiceInterpreter", () => {
-    describe("reduce", () => {
+    describe("evaluate", () => {
         it("correctly evaluates a group {5, 2}.", () => {
             const group = Ast.Factory.create(Ast.NodeType.Group);
 

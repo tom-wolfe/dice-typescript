@@ -3,7 +3,7 @@ import * as Interpreter from "../../src/interpreter";
 import { MockRandomProvider } from "../helpers/mock-random-provider";
 
 describe("DiceInterpreter", () => {
-    describe("reduce", () => {
+    describe("evaluate", () => {
         it("correctly evaluates a function(floor(5 / 2)).", () => {
             const func = Ast.Factory.create(Ast.NodeType.Function).setAttribute("name", "floor");
 

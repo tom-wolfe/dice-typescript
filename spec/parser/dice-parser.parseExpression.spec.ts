@@ -20,5 +20,21 @@ describe("DiceParser", () => {
             expect(exp.getChild(1).type).toBe(NodeType.Integer);
             expect(exp.getChild(1).getAttribute("value")).toBe(5);
         });
+        it("correctly handles operator precedence (10 * 5 + 2)", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Integer, 0, "10"),
+                new Token(TokenType.Asterisk, 2, "*"),
+                new Token(TokenType.Integer, 3, "5"),
+                new Token(TokenType.Plus, 4, "+"),
+                new Token(TokenType.Integer, 5, "2"),
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const exp = parser.parseExpression();
+            expect(exp.type).toBe(NodeType.Add);
+            expect(exp.getChildCount()).toBe(2);
+            expect(exp.getChild(0).type).toBe(NodeType.Multiply);
+            expect(exp.getChild(1).type).toBe(NodeType.Integer);
+            expect(exp.getChild(1).getAttribute("value")).toBe(2);
+        });
     });
 });
