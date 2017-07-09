@@ -8,10 +8,12 @@ import { Interpreter } from "./interpreter";
 
 export class DiceInterpreter implements Interpreter {
     protected functions: FunctionDefinitionList;
+    protected random: RandomProvider;
 
-    constructor(functions?: FunctionDefinitionList, protected random: RandomProvider = new DefaultRandomProvider()) {
+    constructor(functions?: FunctionDefinitionList, random?: RandomProvider) {
         this.functions = DefaultFunctionDefinitions;
         (<any>Object).assign(this.functions, functions);
+        this.random = random || new DefaultRandomProvider()
     }
 
     interpret(expression: Ast.ExpressionNode): DiceResult {
