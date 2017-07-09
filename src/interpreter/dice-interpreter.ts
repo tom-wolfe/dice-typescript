@@ -57,7 +57,7 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateDice(expression: Ast.ExpressionNode): number {
-        const num = this.evaluate(expression.getChild(0));
+        const num = Math.round(this.evaluate(expression.getChild(0)));
         const sides = expression.getChild(1);
         expression.clearChildren();
 
@@ -68,7 +68,7 @@ export class DiceInterpreter implements Interpreter {
             if (sidesValue === "fate") {
                 minValue = -1; maxValue = 1;
             } else {
-                maxValue = this.evaluate(sides);
+                maxValue = Math.round(this.evaluate(sides));
             }
             const diceRoll = this.random.numberBetween(minValue, maxValue);
             const rollNode = Ast.Factory.create(Ast.NodeType.DiceRoll)

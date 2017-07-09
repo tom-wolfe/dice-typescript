@@ -84,6 +84,16 @@ In addition to the above syntax rules, some slightly more complicated variations
     (4d4)d20
 ```
 
+##### Fractional Dice Rolls
+
+Using the allowed syntax, it is possible to request a fractional number of dice to be rolled. Take the following example:
+
+```
+    (2 / 5)d6
+```
+
+In this instance, the number of dice to be rolled will be rounded to the nearest integer (2.5 gets rounded up to 3).
+
 This will first roll ```4d4``` dice, and use the outcome of that to determine how many ```d20``` dice will be rolled.
 
 ## Installing Dependencies

@@ -126,5 +126,49 @@ describe("DiceInterpreter", () => {
             expect(dice.getChild(2).getAttribute("value")).toBeGreaterThanOrEqual(1);
             expect(dice.getChild(2).getAttribute("value")).toBeLessThanOrEqual(6);
         });
+        it("evaluates fractional dice rolls >=.5 ((5 / 2)d6).", () => {
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+
+            const divide = Ast.Factory.create(Ast.NodeType.Divide);
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+
+            dice.addChild(divide);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
+
+            const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(2));
+
+            // 5 / 2 = 2.5, which is rounded to 3.
+            expect(interpreter.evaluate(dice)).toBe(6);
+        });
+        it("evaluates fractional dice rolls <.5 ((7 / 5)d6).", () => {
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+
+            const divide = Ast.Factory.create(Ast.NodeType.Divide);
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 7));
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+
+            dice.addChild(divide);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
+
+            const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(2));
+
+            // 7 / 5 = 1.4, which is rounded to 1.
+            expect(interpreter.evaluate(dice)).toBe(2);
+        });
+        it("evaluates negative dice rolls at 0. ((-5)d6).", () => {
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+
+            const negate = Ast.Factory.create(Ast.NodeType.Negate);
+            negate.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+
+            dice.addChild(negate);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
+
+            const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(2));
+
+            // -5d6 will be interpreted as 0.
+            expect(interpreter.evaluate(dice)).toBe(0);
+        });
     });
 });
