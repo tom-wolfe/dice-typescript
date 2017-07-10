@@ -19,5 +19,4 @@ export enum TokenType {
     ParenthesisOpen = <any>"(",
     Terminator = <any>"terminator",
     Exclamation = <any>"!",
-    DoubleExclamation = <any>"!!"
 }

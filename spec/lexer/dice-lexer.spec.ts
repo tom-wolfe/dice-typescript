@@ -34,7 +34,8 @@ describe("DiceLexer", () => {
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 6, "4"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, 7, "d"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 8, "6"));
-            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.DoubleExclamation, 9, "!!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Exclamation, 9, "!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Exclamation, 10, "!"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.ParenthesisClose, 11, ")"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator, 12));
         });
@@ -45,7 +46,8 @@ describe("DiceLexer", () => {
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 6, "4"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, 7, "d"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 8, "6"));
-            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.DoubleExclamation, 9, "!!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Exclamation, 9, "!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Exclamation, 10, "!"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Plus, 11, "+"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 12, "5"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, 13, "d"));
@@ -85,7 +87,8 @@ describe("DiceLexer", () => {
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 25, "2"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, 26, "d"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 27, "3"));
-            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.DoubleExclamation, 28, "!!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Exclamation, 28, "!"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Exclamation, 29, "!"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Equals, 30, "="));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 31, "3"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Plus, 32, "+"));

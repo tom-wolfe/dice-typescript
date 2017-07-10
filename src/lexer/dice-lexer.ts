@@ -75,6 +75,7 @@ export class DiceLexer implements Lexer {
                 case curChar === "/": return this.createToken(TokenType.Slash, curChar);
                 case curChar === "-": return this.createToken(TokenType.Minus, curChar);
                 case curChar === "%": return this.createToken(TokenType.Percent, curChar);
+                case curChar === "!": return this.createToken(TokenType.Exclamation, curChar);
                 case curChar === "*":
                     if (this.stream.peekNextCharacter() === "*") {
                         this.stream.getNextCharacter();
@@ -95,13 +96,6 @@ export class DiceLexer implements Lexer {
                         return this.createToken(TokenType.LessOrEqual, curChar + this.stream.getCurrentCharacter());
                     } else {
                         return this.createToken(TokenType.Less, curChar);
-                    }
-                case curChar === "!":
-                    if (this.stream.peekNextCharacter() === "!") {
-                        this.stream.getNextCharacter();
-                        return this.createToken(TokenType.DoubleExclamation, curChar + this.stream.getCurrentCharacter());
-                    } else {
-                        return this.createToken(TokenType.Exclamation, curChar);
                     }
                 case /\W/.test(curChar):
                     // Ignore whitespace.
