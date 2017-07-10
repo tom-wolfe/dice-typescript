@@ -37,5 +37,30 @@ describe("DiceParser", () => {
             expect(dice.getChild(0).type).toBe(NodeType.Dice);
             expect(dice.getChild(1).type).toBe(NodeType.Integer);
         });
+        it("can correctly parse a dice roll with a single complex modifier (4d6!p>3).", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Integer, 0, "4"),
+                new Token(TokenType.Identifier, 1, "d"),
+                new Token(TokenType.Integer, 2, "6"),
+                new Token(TokenType.Exclamation, 3, "!"),
+                new Token(TokenType.Identifier, 4, "p"),
+                new Token(TokenType.Greater, 5, ">"),
+                new Token(TokenType.Integer, 6, "3"),
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const exp = parser.parseDiceRoll();
+            expect(exp.type).toBe(NodeType.Explode);
+            expect(exp.getAttribute("compound")).toBe("no");
+            expect(exp.getAttribute("penetrate")).toBe("yes");
+            expect(exp.getChildCount()).toBe(2);
+
+            const dice = exp.getChild(0);
+            expect(dice.type).toBe(NodeType.Dice);
+            expect(dice.getChildCount()).toBe(2);
+
+            const greater = exp.getChild(1);
+            expect(greater.type).toBe(NodeType.Greater);
+            expect(greater.getChildCount()).toBe(1);
+        });
     });
 });
