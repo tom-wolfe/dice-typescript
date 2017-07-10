@@ -14,6 +14,10 @@ reroll_modifier =
     "r", ["o"], [compare_modifier]
 ;
 
+sort_modifier = 
+    "s", ["a" | "d"]
+;
+
 compare_modifier = 
     [boolean_operator], (integer | bracketed_expression)
 ;

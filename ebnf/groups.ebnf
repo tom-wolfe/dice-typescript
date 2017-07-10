@@ -1,8 +1,9 @@
 expression_group = 
-    "{", expression, { ",", expression }, "}", [ group_modifier ]
+    "{", expression, { ",", expression }, "}", [group_modifier]
 ;
 
 group_modifier = 
     keep_modifier |
-    success_modifier
+    success_modifier |
+    sort_modifier
 ;
