@@ -19,11 +19,11 @@ export enum NodeType {
     LessOrEqual = <any>"LessOrEqual",
 
     Explode = <any>"Explode",
-    Keep = <any>"Keep/Drop",
+    Keep = <any>"Keep",
+    Drop = <any>"Drop",
     Critical = <any>"Critical",
     Reroll = <any>"Reroll",
     Sort = <any>"Sort",
-    Compare = <any>"Compare",
 
     Dice = <any>"Dice",
     DiceSides = <any>"DiceSides",

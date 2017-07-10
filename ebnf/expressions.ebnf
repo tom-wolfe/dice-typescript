@@ -11,11 +11,15 @@ term =
 ;
 
 factor = 
-    integer |
+    simple_factor |
     dice_roll |
     function_call |
-    bracketed_expression |
     expression_group
+;
+
+simple_factor = 
+    integer |
+    bracketed_expression
 ;
 
 function_call = 

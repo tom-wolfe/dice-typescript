@@ -21,6 +21,7 @@ roll_modifiers =
 roll_modifier = 
     explode_modifier |
     keep_modifier |
+    drop_modifier |
     critical_modifier |
     reroll_modifier |
     sort_modifier |

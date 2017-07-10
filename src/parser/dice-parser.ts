@@ -112,9 +112,18 @@ export class DiceParser extends BasicParser {
                     root = this.parseDiceRoll(number);
                 }
                 break;
-            default: this.error(TokenType.Integer, token);
+            default: this.errorToken(TokenType.Integer, token);
         }
         return root;
+    }
+
+    parseSimpleFactor(): Ast.ExpressionNode {
+        const token = this.lexer.peekNextToken();
+        switch (token.type) {
+            case TokenType.Integer: return this.parseInteger();
+            case TokenType.ParenthesisOpen: return this.parseBracketedExpression();
+            default: this.errorToken(TokenType.Integer, token);
+        }
     }
 
     parseFunctionCall(): Ast.ExpressionNode {
@@ -173,21 +182,31 @@ export class DiceParser extends BasicParser {
     }
 
     parseDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
-        const root = this.parseSimpleDiceRoll(rollTimes);
-        // TODO: Parse modifiers.
+        let root = this.parseSimpleDiceRoll(rollTimes);
+        while (true) {
+            const token = this.lexer.peekNextToken();
+            if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
+                root = this.parseCompareModifier(root);
+            } else if (token.type === TokenType.Identifier) {
+                switch (token.value[0]) {
+                    case "c": root = this.parseCriticalModifier(root); break;
+                    case "d": root = this.parseDropModifier(root); break;
+                    case "k": root = this.parseKeepModifier(root); break;
+                    case "r": root = this.parseRerollModifier(root); break;
+                    case "s": root = this.parseSortModifier(root); break;
+                    default: this.errorToken(TokenType.Identifier, token);
+                }
+            } else if (token.type === TokenType.Exclamation) {
+                // TODO: Parse explode
+            } else {
+                break;
+            }
+        }
         return root;
     }
 
     parseSimpleDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
-        if (!rollTimes) {
-            const rollToken = this.lexer.peekNextToken();
-            switch (rollToken.type) {
-                case TokenType.Integer: rollTimes = this.parseInteger(); break;
-                case TokenType.ParenthesisOpen: rollTimes = this.parseBracketedExpression(); break;
-                default: this.error(TokenType.Integer, rollToken);
-            }
-        }
-
+        if (!rollTimes) { rollTimes = this.parseSimpleFactor(); }
         const token = this.expectAndConsume(TokenType.Identifier);
 
         const root = Ast.Factory.create(Ast.NodeType.Dice);
@@ -205,6 +224,135 @@ export class DiceParser extends BasicParser {
                 break;
         }
 
+        return root;
+    }
+
+    parseCriticalModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+        const root = Ast.Factory.create(Ast.NodeType.Critical);
+        root.setAttribute("type", "success");
+        if (lhs) { root.addChild(lhs); }
+
+        const token = this.lexer.peekNextToken();
+        if (token.type === TokenType.Identifier) {
+            switch (token.value) {
+                case "c": root.setAttribute("type", "success"); break;
+                case "cs": root.setAttribute("type", "success"); break;
+                case "cf": root.setAttribute("type", "failure"); break;
+                default: this.errorMessage(`Unknown critical type ${token.value}. Must be (c|cs|cf).`);
+            }
+        }
+
+        this.lexer.getNextToken();
+
+        const tokenType = this.lexer.peekNextToken().type;
+        if (Object.keys(BooleanOperatorMap).indexOf(tokenType.toString()) > -1) {
+            root.addChild(this.parseCompareModifier());
+        }
+        return root;
+    }
+
+    parseKeepModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+        const root = Ast.Factory.create(Ast.NodeType.Keep);
+        root.setAttribute("type", "highest");
+        if (lhs) { root.addChild(lhs); }
+
+        const token = this.lexer.peekNextToken();
+        if (token.type === TokenType.Identifier) {
+            switch (token.value) {
+                case "k": root.setAttribute("type", "highest"); break;
+                case "kh": root.setAttribute("type", "highest"); break;
+                case "kl": root.setAttribute("type", "lowest"); break;
+                default: this.errorMessage(`Unknown keep type ${token.value}. Must be (k|kh|kl).`);
+            }
+        }
+
+        this.lexer.getNextToken(); // Consume.
+
+        const tokenType = this.lexer.peekNextToken().type;
+        if (tokenType === TokenType.Integer || tokenType === TokenType.ParenthesisOpen) {
+            root.addChild(this.parseSimpleFactor());
+        }
+        return root;
+    }
+
+    parseDropModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+        const root = Ast.Factory.create(Ast.NodeType.Drop);
+        root.setAttribute("type", "lowest");
+        if (lhs) { root.addChild(lhs); }
+
+        const token = this.lexer.peekNextToken();
+        if (token.type === TokenType.Identifier) {
+            switch (token.value) {
+                case "d": root.setAttribute("type", "lowest"); break;
+                case "dh": root.setAttribute("type", "highest"); break;
+                case "dl": root.setAttribute("type", "lowest"); break;
+                default: this.errorMessage(`Unknown drop type ${token.value}. Must be (d|dh|dl).`);
+            }
+        }
+
+        this.lexer.getNextToken(); // Consume.
+
+        const tokenType = this.lexer.peekNextToken().type;
+        if (tokenType === TokenType.Integer || tokenType === TokenType.ParenthesisOpen) {
+            root.addChild(this.parseSimpleFactor());
+        }
+        return root;
+    }
+
+    parseRerollModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+        const root = Ast.Factory.create(Ast.NodeType.Reroll);
+        root.setAttribute("once", "no");
+        if (lhs) { root.addChild(lhs); }
+
+        const token = this.lexer.peekNextToken();
+        if (token.type === TokenType.Identifier) {
+            switch (token.value) {
+                case "r": root.setAttribute("once", "no"); break;
+                case "ro": root.setAttribute("once", "yes"); break;
+                default: this.errorMessage(`Unknown drop type ${token.value}. Must be (r|ro).`);
+            }
+        }
+        this.lexer.getNextToken(); // Consume.
+
+        const tokenType = this.lexer.peekNextToken().type;
+        if (Object.keys(BooleanOperatorMap).indexOf(tokenType.toString()) > -1) {
+            root.addChild(this.parseCompareModifier());
+        }
+        return root;
+    }
+
+    parseSortModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+        const root = Ast.Factory.create(Ast.NodeType.Sort);
+        root.setAttribute("direction", "ascending");
+        if (lhs) { root.addChild(lhs); }
+
+        const token = this.lexer.peekNextToken();
+        if (token.type === TokenType.Identifier) {
+            switch (token.value) {
+                case "s": root.setAttribute("direction", "ascending"); break;
+                case "sa": root.setAttribute("direction", "ascending"); break;
+                case "sd": root.setAttribute("direction", "descending"); break;
+                default: this.errorMessage(`Unknown sort type ${token.value}. Must be (s|sa|sd).`);
+            }
+        }
+        this.lexer.getNextToken(); // Consume.
+
+        return root;
+    }
+
+    parseCompareModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+        const token = this.lexer.peekNextToken();
+        let root: Ast.ExpressionNode;
+        if (token.type === TokenType.Integer) {
+            root = Ast.Factory.create(Ast.NodeType.Equal);
+        } else if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
+            root = Ast.Factory.create(BooleanOperatorMap[token.type]);
+            this.lexer.getNextToken();
+        } else {
+            this.errorToken(TokenType.Integer, token);
+        }
+        if (lhs) { root.addChild(lhs); }
+        root.addChild(this.parseSimpleFactor());
         return root;
     }
 }

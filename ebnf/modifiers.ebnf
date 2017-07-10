@@ -3,11 +3,15 @@ explode_modifier =
 ;
 
 keep_modifier = 
-    ("d" | "k"), ["h" | "l"], [integer | bracketed_expression]
+    "k", ["h" | "l"], [integer | bracketed_expression]
+;
+
+drop_modifier =
+    "d", ["h" | "l"], [integer | bracketed_expression]
 ;
 
 critical_modifier = 
-    "c", ("s" | "f"), [compare_modifier]
+    "c", ["s" | "f"], [compare_modifier]
 ;
 
 reroll_modifier =

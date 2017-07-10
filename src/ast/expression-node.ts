@@ -29,9 +29,13 @@ export class ExpressionNode {
     }
 
     addChild(node: ExpressionNode): ExpressionNode {
+        return this.insertChild(node);
+    }
+
+    insertChild(node: ExpressionNode, index?: number, ): ExpressionNode {
         if (node) {
             if (!this.children) { this.children = []; }
-            this.children.push(node);
+            this.children.splice(index || this.children.length, 0, node);
             node.parent = this;
         }
         return node;

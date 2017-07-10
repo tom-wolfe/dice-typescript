@@ -29,14 +29,18 @@ export abstract class BasicParser implements Parser {
     protected expect(expected: TokenType, actual?: Token): Token {
         actual = actual || this.lexer.peekNextToken();
         if (actual.type !== expected) {
-            this.error(expected, actual);
+            this.errorToken(expected, actual);
         }
         return actual;
     }
 
-    protected error(expected: TokenType, actual: Token) {
+    protected errorToken(expected: TokenType, actual: Token) {
         let msg = `Error at position ${actual.position}.`;
         msg += `Expected token of type ${expected}, found token of type ${actual.type} of value "${actual.value}".`;
-        throw new Error(msg);
+        this.errorMessage(msg);
+    }
+
+    protected errorMessage(message: string) {
+        throw new Error(message);
     }
 }
