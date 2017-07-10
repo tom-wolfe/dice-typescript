@@ -197,7 +197,7 @@ export class DiceParser extends BasicParser {
                     default: this.errorToken(TokenType.Identifier, token);
                 }
             } else if (token.type === TokenType.Exclamation) {
-                // TODO: Parse explode
+                root = this.parseExplodeModifier(root);
             } else {
                 break;
             }
@@ -224,6 +224,36 @@ export class DiceParser extends BasicParser {
                 break;
         }
 
+        return root;
+    }
+
+    parseExplodeModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+        const root = Ast.Factory.create(Ast.NodeType.Explode);
+        root.setAttribute("compound", "no");
+        root.setAttribute("penetrate", "no");
+
+        if (lhs) { root.addChild(lhs); }
+
+        this.lexer.getNextToken();
+
+        let token = this.lexer.peekNextToken();
+        if (token.type === TokenType.Exclamation) {
+            root.setAttribute("compound", "yes");
+            this.lexer.getNextToken(); // Consume second !.
+        }
+
+        token = this.lexer.peekNextToken();
+        if (token.type === TokenType.Identifier) {
+            if (token.value === "p") {
+                root.setAttribute("penetrate", "yes");
+            }
+            this.lexer.getNextToken(); // Consume p.
+        }
+
+        const tokenType = this.lexer.peekNextToken().type;
+        if (Object.keys(BooleanOperatorMap).indexOf(tokenType.toString()) > -1) {
+            root.addChild(this.parseCompareModifier());
+        }
         return root;
     }
 
