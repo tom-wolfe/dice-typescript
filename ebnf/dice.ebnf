@@ -15,17 +15,14 @@ fate_roll =
 ;
 
 roll_modifiers = 
-    roll_modifier, { ",", roll_modifier }
+    roll_modifier, { roll_modifier }
 ;
 
 roll_modifier = 
-    success_modifier |
     explode_modifier |
-    compound_modifier |
-    penetrate_modifier |
     keep_modifier |
-    drop_modifier |
+    critical_modifier |
     reroll_modifier |
-    reroll_once_modifier |
-    sort_modifier
-; ? (* TODO: Implement. *)
+    sort_modifier |
+    compare_modifier |
+;

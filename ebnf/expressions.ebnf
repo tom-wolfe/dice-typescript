@@ -1,5 +1,5 @@
 expression = 
-    simple_expression, [ ( "=" | "<" | ">" | "<=" | ">=" ), simple_expression ]
+    simple_expression, [ boolean_operator, simple_expression ]
 ;
 
 simple_expression = 
@@ -24,4 +24,8 @@ function_call =
 
 bracketed_expression = 
     "(", expression, ")"
+;
+
+boolean_operator = 
+    "=" | "<" | ">" | "<=" | ">="
 ;

@@ -4,6 +4,5 @@ expression_group =
 
 group_modifier = 
     keep_modifier |
-    drop_modifier |
     success_modifier
-; (* TODO: Implement *)
+;
