@@ -120,7 +120,7 @@ export class DiceInterpreter implements Interpreter {
             let die = dice.getChild(rollIndex);
             let dieValue = this.evaluate(die);
             total += dieValue;
-            while (this.evaluateComparison(this.evaluate(die), greater)) {
+            while (greater && this.evaluateComparison(dieValue, greater) || dieValue === die.getAttribute("sides")) {
                 die = this.createDiceRoll(die.getAttribute("sides"));
                 dieValue = this.evaluate(die);
                 total += dieValue;
@@ -128,10 +128,7 @@ export class DiceInterpreter implements Interpreter {
             }
         }
 
-        newRolls.forEach(newRoll => {
-            dice.addChild(newRoll);
-        })
-
+        newRolls.forEach(newRoll => dice.addChild(newRoll));
         return total;
     }
 
