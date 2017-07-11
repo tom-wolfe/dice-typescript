@@ -25,15 +25,35 @@ export class DiceInterpreter implements Interpreter {
     }
 
     evaluate(expression: Ast.ExpressionNode): number {
+        if (!expression) { throw new Error("Null node reference found."); }
+
         if (!expression.getAttribute("value")) {
             let value = 0;
             switch (expression.type) {
-                case Ast.NodeType.Add: value = this.evaluate(expression.getChild(0)) + this.evaluate(expression.getChild(1)); break;
-                case Ast.NodeType.Subtract: value = this.evaluate(expression.getChild(0)) - this.evaluate(expression.getChild(1)); break;
-                case Ast.NodeType.Multiply: value = this.evaluate(expression.getChild(0)) * this.evaluate(expression.getChild(1)); break;
-                case Ast.NodeType.Divide: value = this.evaluate(expression.getChild(0)) / this.evaluate(expression.getChild(1)); break;
-                case Ast.NodeType.Modulo: value = this.evaluate(expression.getChild(0)) % this.evaluate(expression.getChild(1)); break;
-                case Ast.NodeType.Negate: value = -this.evaluate(expression.getChild(0)); break;
+                case Ast.NodeType.Add:
+                    this.expectChildCount(expression, 2);
+                    value = this.evaluate(expression.getChild(0)) + this.evaluate(expression.getChild(1));
+                    break;
+                case Ast.NodeType.Subtract:
+                    this.expectChildCount(expression, 2);
+                    value = this.evaluate(expression.getChild(0)) - this.evaluate(expression.getChild(1));
+                    break;
+                case Ast.NodeType.Multiply:
+                    this.expectChildCount(expression, 2);
+                    value = this.evaluate(expression.getChild(0)) * this.evaluate(expression.getChild(1));
+                    break;
+                case Ast.NodeType.Divide:
+                    this.expectChildCount(expression, 2);
+                    value = this.evaluate(expression.getChild(0)) / this.evaluate(expression.getChild(1));
+                    break;
+                case Ast.NodeType.Modulo:
+                    this.expectChildCount(expression, 2);
+                    value = this.evaluate(expression.getChild(0)) % this.evaluate(expression.getChild(1));
+                    break;
+                case Ast.NodeType.Negate:
+                    this.expectChildCount(expression, 1);
+                    value = -this.evaluate(expression.getChild(0));
+                    break;
                 case Ast.NodeType.DiceSides: value = expression.getAttribute("value"); break;
                 case Ast.NodeType.Dice: value = this.evaluateDice(expression); break;
                 case Ast.NodeType.DiceRoll: value = this.evaluateDiceRoll(expression); break;
@@ -47,6 +67,7 @@ export class DiceInterpreter implements Interpreter {
                 case Ast.NodeType.Reroll: value = this.evaluateReroll(expression); break;
                 case Ast.NodeType.Sort: value = this.evaluateSort(expression); break;
                 case Ast.NodeType.Exponent:
+                    this.expectChildCount(expression, 2);
                     value = Math.pow(this.evaluate(expression.getChild(0)), this.evaluate(expression.getChild(1)));
                     break;
                 case Ast.NodeType.Equal:
@@ -66,6 +87,7 @@ export class DiceInterpreter implements Interpreter {
     }
 
     evaluateComparison(lhs: number, expression: Ast.ExpressionNode): boolean {
+        this.expectChildCount(expression, 1);
         switch (expression.type) {
             case Ast.NodeType.Equal: return lhs === this.evaluate(expression.getChild(0));
             case Ast.NodeType.Greater: return lhs > this.evaluate(expression.getChild(0));
@@ -84,6 +106,7 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateDice(expression: Ast.ExpressionNode): number {
+        this.expectChildCount(expression, 2);
         const num = Math.round(this.evaluate(expression.getChild(0)));
         const sides = expression.getChild(1);
         expression.clearChildren();
@@ -115,15 +138,16 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateExplode(expression: Ast.ExpressionNode): number {
+        this.expectChildCount(expression, 1);
         const dice = expression.getChild(0);
-        let greater: Ast.ExpressionNode;
+        let condition: Ast.ExpressionNode;
         const penetrate = expression.getAttribute("penetrate") === "yes";
         if (expression.getChildCount() > 1) {
-            greater = expression.getChild(1);
+            condition = expression.getChild(1);
+            this.evaluate(condition);
         }
 
         this.evaluate(dice);
-        this.evaluate(greater);
 
         const newRolls: Ast.ExpressionNode[] = [];
 
@@ -132,7 +156,7 @@ export class DiceInterpreter implements Interpreter {
             let die = dice.getChild(rollIndex);
             let dieValue = this.evaluate(die);
             total += dieValue;
-            while (greater && this.evaluateComparison(dieValue, greater) || dieValue === die.getAttribute("sides")) {
+            while (condition && this.evaluateComparison(dieValue, condition) || dieValue === die.getAttribute("sides")) {
                 die = this.createDiceRoll(die.getAttribute("sides"));
                 dieValue = this.evaluate(die);
                 if (penetrate) { dieValue -= 1; }
@@ -151,7 +175,7 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateDrop(expression: Ast.ExpressionNode): number {
-        // TODO: Implement Drop.
+        // TODO: Implement evaluateDrop.
         return 0;
     }
 
@@ -161,8 +185,30 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateReroll(expression: Ast.ExpressionNode): number {
-        // TODO: Implement evaluateReroll.
-        return 0;
+        this.expectChildCount(expression, 1);
+        const dice = expression.getChild(0);
+        let condition: Ast.ExpressionNode;
+        const once = expression.getAttribute("once") === "yes";
+        if (expression.getChildCount() > 1) {
+            condition = expression.getChild(1);
+            this.evaluate(condition);
+        }
+
+        this.evaluate(dice);
+
+        let total = 0;
+        for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
+            const die = dice.getChild(rollIndex);
+            let dieValue = this.evaluate(die);
+            while (condition && this.evaluateComparison(dieValue, condition) || dieValue === 1) {
+                dieValue = this.createDiceRollValue(die.getAttribute("sides"));
+                if (once) { break; }
+            }
+            die.setAttribute("value", dieValue);
+            total += dieValue;
+        }
+
+        return total;
     }
 
     private evaluateSort(expression: Ast.ExpressionNode): number {
@@ -171,6 +217,16 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private createDiceRoll(sides: Ast.ExpressionNode | number): Ast.ExpressionNode {
+        const sidesValue = sides instanceof Ast.ExpressionNode
+            ? sides.getAttribute("value")
+            : sides;
+        const diceRoll = this.createDiceRollValue(sides);
+        return Ast.Factory.create(Ast.NodeType.DiceRoll)
+            .setAttribute("value", diceRoll)
+            .setAttribute("sides", sidesValue);
+    }
+
+    private createDiceRollValue(sides: Ast.ExpressionNode | number): number {
         let minValue = 1, maxValue = 0;
 
         const sidesValue = sides instanceof Ast.ExpressionNode
@@ -182,10 +238,7 @@ export class DiceInterpreter implements Interpreter {
         } else {
             maxValue = Math.round(sides instanceof Ast.ExpressionNode ? this.evaluate(sides) : sides);
         }
-        const diceRoll = this.random.numberBetween(minValue, maxValue);
-        return Ast.Factory.create(Ast.NodeType.DiceRoll)
-            .setAttribute("value", diceRoll)
-            .setAttribute("sides", sidesValue);
+        return this.random.numberBetween(minValue, maxValue);
     }
 
     countSuccesses(expression: Ast.ExpressionNode): number {
@@ -196,5 +249,12 @@ export class DiceInterpreter implements Interpreter {
     countFailures(expression: Ast.ExpressionNode): number {
         // TODO: Implement failures.
         return 0;
+    }
+
+    private expectChildCount(expression: Ast.ExpressionNode, count: number) {
+        const findCount = expression.getChildCount();
+        if (findCount < count) {
+            throw new Error(`Expected ${expression.type} node to have ${count} children, but found ${findCount}.`)
+        }
     }
 }
