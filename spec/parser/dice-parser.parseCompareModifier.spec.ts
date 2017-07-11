@@ -25,5 +25,12 @@ describe("DiceParser", () => {
             expect(mod.type).toBe(NodeType.Equal);
             expect(mod.getChildCount()).toBe(1);
         });
+        it("throws an error on unexpected token (sx).", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Identifier, 0, "sx")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            expect(() => parser.parseCompareModifier()).toThrow();
+        });
     });
 });

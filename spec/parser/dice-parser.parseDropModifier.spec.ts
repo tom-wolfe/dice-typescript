@@ -61,5 +61,13 @@ describe("DiceParser", () => {
             expect(mod.getChildCount()).toBe(1);
             expect(mod.getChild(0).type).toBe(NodeType.Add);
         });
+        it("throws an error on unknown keep type (dg3).", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Identifier, 0, "dg"),
+                new Token(TokenType.Integer, 2, "3")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            expect(() => parser.parseDropModifier()).toThrow();
+        });
     });
 });

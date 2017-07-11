@@ -103,6 +103,7 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateExplode(expression: Ast.ExpressionNode): number {
+        // TODO: Support penetrate.
         const dice = expression.getChild(0);
         let greater: Ast.ExpressionNode;
 

@@ -36,5 +36,14 @@ describe("DiceParser", () => {
             expect(mod.getChildCount()).toBe(1);
             expect(mod.getChild(0).type).toBe(NodeType.Less);
         });
+        it("throws an error on unknown drop type (dx<3).", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Identifier, 0, "dx"),
+                new Token(TokenType.Less, 2, "<"),
+                new Token(TokenType.Integer, 3, "3")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            expect(() => parser.parseRerollModifier()).toThrow();
+        });
     });
 });

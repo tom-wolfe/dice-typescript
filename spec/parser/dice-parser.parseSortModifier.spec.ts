@@ -32,5 +32,12 @@ describe("DiceParser", () => {
             expect(mod.type).toBe(NodeType.Sort);
             expect(mod.getAttribute("direction")).toBe("descending");
         });
+        it("throws an error on unknown sort type (sx).", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Identifier, 0, "sx")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            expect(() => parser.parseSortModifier()).toThrow();
+        });
     });
 });

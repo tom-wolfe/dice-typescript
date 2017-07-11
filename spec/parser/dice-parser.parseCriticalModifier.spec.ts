@@ -32,7 +32,7 @@ describe("DiceParser", () => {
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("failure");
         });
-        it("can correctly parse a critical modifier with a compare point(cf<3).", () => {
+        it("can correctly parse a critical modifier with a compare point (cf<3).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "cf"),
                 new Token(TokenType.Less, 2, "<"),
@@ -44,6 +44,15 @@ describe("DiceParser", () => {
             expect(mod.getAttribute("type")).toBe("failure");
             expect(mod.getChildCount()).toBe(1);
             expect(mod.getChild(0).type).toBe(NodeType.Less);
+        });
+        it("throws an error on an unrecognized critical type (cz<3).", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Identifier, 0, "cz"),
+                new Token(TokenType.Less, 2, "<"),
+                new Token(TokenType.Integer, 3, "3")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            expect(() => parser.parseCriticalModifier()).toThrow();
         });
     });
 });
