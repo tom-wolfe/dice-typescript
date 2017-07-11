@@ -99,7 +99,7 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateDiceRoll(expression: Ast.ExpressionNode): number {
-        if (expression.getAttribute("success") !== 0) {
+        if (expression.getAttribute("drop") !== "yes") {
             return expression.getAttribute("value");
         }
         return 0;
@@ -170,13 +170,47 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateKeep(expression: Ast.ExpressionNode): number {
-        // TODO: Implement evaluateKeep.
-        return 0;
+        this.expectChildCount(expression, 1);
+        const dice = expression.getChild(0);
+        const countTotal = (expression.getChildCount() > 1) ? this.evaluate(expression.getChild(1)) : 1;
+        const type = expression.getAttribute("type");
+        this.evaluate(dice);
+
+        const rolls = this.getSortedDiceRolls(dice, (type === "lowest") ? "ascending" : "descending").rolls;
+        let count = 0;
+        let total = 0;
+        rolls.forEach(roll => {
+            if (count < countTotal) {
+                roll.setAttribute("drop", "no");
+                total += roll.getAttribute("value");
+            } else {
+                roll.setAttribute("drop", "yes");
+            }
+            count++;
+        });
+        return total;
     }
 
     private evaluateDrop(expression: Ast.ExpressionNode): number {
-        // TODO: Implement evaluateDrop.
-        return 0;
+        this.expectChildCount(expression, 1);
+        const dice = expression.getChild(0);
+        const countTotal = (expression.getChildCount() > 1) ? this.evaluate(expression.getChild(1)) : 1;
+        const type = expression.getAttribute("type");
+        this.evaluate(dice);
+
+        const rolls = this.getSortedDiceRolls(dice, (type === "lowest") ? "ascending" : "descending").rolls;
+        let count = 0;
+        let total = 0;
+        rolls.forEach(roll => {
+            if (count < countTotal) {
+                roll.setAttribute("drop", "yes");
+            } else {
+                roll.setAttribute("drop", "no");
+                total += roll.getAttribute("value");
+            }
+            count++;
+        });
+        return total;
     }
 
     private evaluateCritical(expression: Ast.ExpressionNode): number {
@@ -243,30 +277,31 @@ export class DiceInterpreter implements Interpreter {
     private evaluateSort(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
         const dice = expression.getChild(0);
-
         this.evaluate(dice);
+        const rolls = this.getSortedDiceRolls(dice, expression.getAttribute("direction"));
+        dice.clearChildren();
+        rolls.rolls.forEach(roll => dice.addChild(roll));
+        return rolls.total;
+    }
 
-        let total = dice.getAttribute("value");
-
-        const rolls: Ast.ExpressionNode[] = [];
+    private getSortedDiceRolls(dice: Ast.ExpressionNode, direction: string): { rolls: Ast.ExpressionNode[], total: number } {
+        const output = { rolls: [], total: 0 };
 
         for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
             const die = dice.getChild(rollIndex);
-            rolls.push(die);
-            total += this.evaluate(die);
+            output.rolls.push(die);
+            output.total += this.evaluate(die);
         }
-        dice.clearChildren();
 
         let sortOrder;
-
-        if (expression.getAttribute("direction") === "descending") {
+        if (direction === "descending") {
             sortOrder = (a, b) => b.getAttribute("value") - a.getAttribute("value");
         } else {
             sortOrder = (a, b) => a.getAttribute("value") - b.getAttribute("value");
         }
-        rolls.sort(sortOrder).forEach(roll => dice.addChild(roll));
 
-        return total;
+        output.rolls = output.rolls.sort(sortOrder);
+        return output;
     }
 
     private createDiceRoll(sides: Ast.ExpressionNode | number): Ast.ExpressionNode {
