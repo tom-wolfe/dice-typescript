@@ -141,5 +141,36 @@ describe("DiceParser", () => {
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
         });
+        it("can correctly parse a compare modifier (4d6>3.", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Integer, 0, "4"),
+                new Token(TokenType.Identifier, 1, "d"),
+                new Token(TokenType.Integer, 2, "6"),
+                new Token(TokenType.Greater, 3, ">"),
+                new Token(TokenType.Integer, 4, "3"),
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const exp = parser.parseDiceRoll();
+            expect(exp.type).toBe(NodeType.Greater);
+            expect(exp.getChildCount()).toBe(2);
+
+            const dice = exp.getChild(0);
+            expect(dice.type).toBe(NodeType.Dice);
+            expect(dice.getChildCount()).toBe(2);
+
+            const num = exp.getChild(1);
+            expect(num.type).toBe(NodeType.Integer);
+            expect(num.getAttribute("value")).toBe(3);
+        });
+        it("throws exception on unrecognized modifier (4d6x).", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Integer, 0, "4"),
+                new Token(TokenType.Identifier, 1, "d"),
+                new Token(TokenType.Integer, 2, "6"),
+                new Token(TokenType.Identifier, 3, "x"),
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            expect(() => parser.parseDiceRoll()).toThrow();
+        });
     });
 });
