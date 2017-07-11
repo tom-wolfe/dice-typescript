@@ -26,7 +26,7 @@ export class DiceInterpreter implements Interpreter {
 
     evaluate(expression: Ast.ExpressionNode): number {
         if (!expression.getAttribute("value")) {
-            let value: number;
+            let value = 0;
             switch (expression.type) {
                 case Ast.NodeType.Add: value = this.evaluate(expression.getChild(0)) + this.evaluate(expression.getChild(1)); break;
                 case Ast.NodeType.Subtract: value = this.evaluate(expression.getChild(0)) - this.evaluate(expression.getChild(1)); break;
@@ -40,28 +40,40 @@ export class DiceInterpreter implements Interpreter {
                 case Ast.NodeType.Integer: value = expression.getAttribute("value"); break;
                 case Ast.NodeType.Function: value = this.evaluateFunction(expression); break;
                 case Ast.NodeType.Group: value = this.evaluateGroup(expression); break;
-
-                case Ast.NodeType.Equal: break;
-                case Ast.NodeType.Greater: break;
-                case Ast.NodeType.GreaterOrEqual: break;
-                case Ast.NodeType.Less: break;
-                case Ast.NodeType.LessOrEqual: break;
-
                 case Ast.NodeType.Explode: value = this.evaluateExplode(expression); break;
-                case Ast.NodeType.Keep: break;
-                case Ast.NodeType.Drop: break;
-                case Ast.NodeType.Critical: break;
-                case Ast.NodeType.Reroll: break;
-                case Ast.NodeType.Sort: break;
-
+                case Ast.NodeType.Keep: value = this.evaluateKeep(expression); break;
+                case Ast.NodeType.Drop: value = this.evaluateDrop(expression); break;
+                case Ast.NodeType.Critical: value = this.evaluateCritical(expression); break;
+                case Ast.NodeType.Reroll: value = this.evaluateReroll(expression); break;
+                case Ast.NodeType.Sort: value = this.evaluateSort(expression); break;
                 case Ast.NodeType.Exponent:
                     value = Math.pow(this.evaluate(expression.getChild(0)), this.evaluate(expression.getChild(1)));
+                    break;
+                case Ast.NodeType.Equal:
+                case Ast.NodeType.Greater:
+                case Ast.NodeType.GreaterOrEqual:
+                case Ast.NodeType.Less:
+                case Ast.NodeType.LessOrEqual:
+                    for (let x = 0; x < expression.getChildCount(); x++) {
+                        this.evaluate(expression.getChild(x));
+                    }
                     break;
                 default: throw new Error("Unrecognized node.");
             }
             expression.setAttribute("value", value);
         }
         return expression.getAttribute("value");
+    }
+
+    evaluateComparison(lhs: number, expression: Ast.ExpressionNode): boolean {
+        switch (expression.type) {
+            case Ast.NodeType.Equal: return lhs === this.evaluate(expression.getChild(0));
+            case Ast.NodeType.Greater: return lhs > this.evaluate(expression.getChild(0));
+            case Ast.NodeType.GreaterOrEqual: return lhs >= this.evaluate(expression.getChild(0));
+            case Ast.NodeType.Less: return lhs < this.evaluate(expression.getChild(0));
+            case Ast.NodeType.LessOrEqual: return lhs <= this.evaluate(expression.getChild(0));
+            default: throw new Error("Unrecognized comparison operator.");
+        }
     }
 
     private evaluateDiceRoll(expression: Ast.ExpressionNode): number {
@@ -103,10 +115,9 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateExplode(expression: Ast.ExpressionNode): number {
-        // TODO: Support penetrate.
         const dice = expression.getChild(0);
         let greater: Ast.ExpressionNode;
-
+        const penetrate = expression.getAttribute("penetrate") === "yes";
         if (expression.getChildCount() > 1) {
             greater = expression.getChild(1);
         }
@@ -124,6 +135,7 @@ export class DiceInterpreter implements Interpreter {
             while (greater && this.evaluateComparison(dieValue, greater) || dieValue === die.getAttribute("sides")) {
                 die = this.createDiceRoll(die.getAttribute("sides"));
                 dieValue = this.evaluate(die);
+                if (penetrate) { dieValue -= 1; }
                 total += dieValue;
                 newRolls.push(die);
             }
@@ -133,15 +145,29 @@ export class DiceInterpreter implements Interpreter {
         return total;
     }
 
-    private evaluateComparison(lhs: number, expression: Ast.ExpressionNode): boolean {
-        switch (expression.type) {
-            case Ast.NodeType.Equal: return lhs === this.evaluate(expression.getChild(0));
-            case Ast.NodeType.Greater: return lhs > this.evaluate(expression.getChild(0));
-            case Ast.NodeType.GreaterOrEqual: return lhs >= this.evaluate(expression.getChild(0));
-            case Ast.NodeType.Less: return lhs < this.evaluate(expression.getChild(0));
-            case Ast.NodeType.LessOrEqual: return lhs <= this.evaluate(expression.getChild(0));
-            default: throw new Error("Unrecognized comparison operator.");
-        }
+    private evaluateKeep(expression: Ast.ExpressionNode): number {
+        // TODO: Implement evaluateKeep.
+        return 0;
+    }
+
+    private evaluateDrop(expression: Ast.ExpressionNode): number {
+        // TODO: Implement Drop.
+        return 0;
+    }
+
+    private evaluateCritical(expression: Ast.ExpressionNode): number {
+        // TODO: Implement evaluateCritical.
+        return 0;
+    }
+
+    private evaluateReroll(expression: Ast.ExpressionNode): number {
+        // TODO: Implement evaluateReroll.
+        return 0;
+    }
+
+    private evaluateSort(expression: Ast.ExpressionNode): number {
+        // TODO: Implement evaluateSort.
+        return 0;
     }
 
     private createDiceRoll(sides: Ast.ExpressionNode | number): Ast.ExpressionNode {
