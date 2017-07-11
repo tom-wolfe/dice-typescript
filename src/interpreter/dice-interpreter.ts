@@ -212,8 +212,32 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateSort(expression: Ast.ExpressionNode): number {
-        // TODO: Implement evaluateSort.
-        return 0;
+        this.expectChildCount(expression, 1);
+        const dice = expression.getChild(0);
+
+        this.evaluate(dice);
+
+        let total = dice.getAttribute("value");
+
+        const rolls: Ast.ExpressionNode[] = [];
+
+        for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
+            const die = dice.getChild(rollIndex);
+            rolls.push(die);
+            total += this.evaluate(die);
+        }
+        dice.clearChildren();
+
+        let sortOrder;
+
+        if (expression.getAttribute("direction") === "descending") {
+            sortOrder = (a, b) => b.getAttribute("value") - a.getAttribute("value");
+        } else {
+            sortOrder = (a, b) => a.getAttribute("value") - b.getAttribute("value");
+        }
+        rolls.sort(sortOrder).forEach(roll => dice.addChild(roll));
+
+        return total;
     }
 
     private createDiceRoll(sides: Ast.ExpressionNode | number): Ast.ExpressionNode {
