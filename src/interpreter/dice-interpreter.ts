@@ -180,8 +180,37 @@ export class DiceInterpreter implements Interpreter {
     }
 
     private evaluateCritical(expression: Ast.ExpressionNode): number {
-        // TODO: Implement evaluateCritical.
-        return 0;
+        this.expectChildCount(expression, 1);
+        const dice = expression.getChild(0);
+        const type = expression.getAttribute("type");
+
+        let condition: Ast.ExpressionNode;
+        if (expression.getChildCount() > 1) {
+            condition = expression.getChild(1);
+            this.evaluate(condition);
+        } else {
+            condition = Ast.Factory.create(Ast.NodeType.Equal);
+            if (type === "success") {
+                this.expectChildCount(dice, 2);
+                condition.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", this.evaluate(dice.getChild(1))));
+            } else {
+                condition.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            }
+        }
+
+        this.evaluate(dice);
+
+        let total = 0;
+        for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
+            const die = dice.getChild(rollIndex);
+            const dieValue = this.evaluate(die);
+            if (this.evaluateComparison(dieValue, condition)) {
+                die.setAttribute("critical", type);
+            }
+            total += dieValue;
+        }
+
+        return total;
     }
 
     private evaluateReroll(expression: Ast.ExpressionNode): number {
