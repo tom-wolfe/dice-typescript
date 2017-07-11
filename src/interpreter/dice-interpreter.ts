@@ -24,11 +24,12 @@ export class DiceInterpreter implements Interpreter {
         return new DiceResult(exp, total, successes, fails);
     }
 
-    evaluate(expression: Ast.ExpressionNode): number {
+    evaluate(expression: Ast.ExpressionNode): any {
         if (!expression) { throw new Error("Null node reference found."); }
-
-        if (!expression.getAttribute("value")) {
-            let value = 0;
+        if (expression.type === Ast.NodeType.DiceRoll) {
+            return this.evaluateDiceRoll(expression);
+        } else if (!expression.getAttribute("value")) {
+            let value: any = 0;
             switch (expression.type) {
                 case Ast.NodeType.Add:
                     this.expectChildCount(expression, 2);
@@ -56,7 +57,6 @@ export class DiceInterpreter implements Interpreter {
                     break;
                 case Ast.NodeType.DiceSides: value = expression.getAttribute("value"); break;
                 case Ast.NodeType.Dice: value = this.evaluateDice(expression); break;
-                case Ast.NodeType.DiceRoll: value = this.evaluateDiceRoll(expression); break;
                 case Ast.NodeType.Integer: value = expression.getAttribute("value"); break;
                 case Ast.NodeType.Function: value = this.evaluateFunction(expression); break;
                 case Ast.NodeType.Group: value = this.evaluateGroup(expression); break;
