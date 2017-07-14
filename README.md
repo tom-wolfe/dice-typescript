@@ -84,6 +84,10 @@ In addition to the above syntax rules, some slightly more complicated variations
     (4d4)d20
 ```
 
+##### Conditional Operators
+
+As per the Roll20 syntax, you can use conditional operators, such as in ```4d20>10```, but in this library, the semantics of those operators is slightly different. In the Roll20 engine, ```>10``` actually means ```>=10```, but in this library, you would need to actually use the ```>=``` operator. I feel needing to use the correct mathematical operators makes for a more intuitive library.
+
 ##### Fractional Dice Rolls
 
 Using the allowed syntax, it is possible to request a fractional number of dice to be rolled. Take the following example:
