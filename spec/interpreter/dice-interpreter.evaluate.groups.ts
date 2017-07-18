@@ -15,5 +15,8 @@ describe("DiceInterpreter", () => {
             const res = interpreter.evaluate(group);
             expect(7).toBe(7);
         });
+        it("correctly evaluates a group with modifiers {5, 2}kh2.", () => {
+            // TODO: Implement this test.
+        });
     });
 });

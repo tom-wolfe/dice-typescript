@@ -52,6 +52,7 @@ export class DiceLexer implements Lexer {
     }
 
     protected parseNumber(): Token {
+        // TODO: Support parsing of real numbers.
         let buffer = this.stream.getCurrentCharacter();
         while (this.numCharRegex.test(this.stream.peekNextCharacter())) {
             buffer += this.stream.getNextCharacter();

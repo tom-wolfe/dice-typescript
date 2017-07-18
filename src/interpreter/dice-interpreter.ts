@@ -6,7 +6,7 @@ import { DiceResult } from "./dice-result";
 import { FunctionDefinitionList } from "./function-definition-list";
 import { Interpreter } from "./interpreter";
 
-export class DiceInterpreter implements Interpreter {
+export class DiceInterpreter implements Interpreter<DiceResult> {
     protected functions: FunctionDefinitionList;
     protected random: RandomProvider;
 
