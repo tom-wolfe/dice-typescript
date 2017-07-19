@@ -21,8 +21,6 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
             interpreter.evaluate(exp);
 
-            console.log(JSON.stringify(exp));
-
             expect(dice.getChildCount()).toBe(4);
             expect(dice.getChild(0).getAttribute("critical")).toBeUndefined();
             expect(dice.getChild(1).getAttribute("critical")).toBeUndefined();

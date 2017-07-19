@@ -283,8 +283,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     private evaluateSort(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
-        const dice = this.findLeftmostDiceNode(expression.getChild(0));
-        this.evaluate(dice);
+        const dice = this.findLeftmostDiceNode(expression);
         const rolls = this.getSortedDiceRolls(dice, expression.getAttribute("direction"));
         dice.clearChildren();
         rolls.rolls.forEach(roll => dice.addChild(roll));

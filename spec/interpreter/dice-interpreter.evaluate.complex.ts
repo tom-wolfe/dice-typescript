@@ -28,7 +28,7 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(1, 6, 4, 2, 5);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(keep);
+            interpreter.evaluate(sort);
 
             // TODO: Fix.
 
