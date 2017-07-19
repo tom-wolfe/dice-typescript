@@ -109,6 +109,8 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         this.expectChildCount(expression, 2);
         const num = Math.round(this.evaluate(expression.getChild(0)));
         const sides = expression.getChild(1);
+        expression.setAttribute("sides", this.evaluate(sides));
+
         expression.clearChildren();
 
         let total = 0;
@@ -139,7 +141,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     private evaluateExplode(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
-        const dice = expression.getChild(0);
+        const dice = this.findLeftmostDiceNode(expression);
         let condition: Ast.ExpressionNode;
         const penetrate = expression.getAttribute("penetrate") === "yes";
         if (expression.getChildCount() > 1) {
@@ -152,12 +154,14 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         const newRolls: Ast.ExpressionNode[] = [];
 
         let total = 0;
+        const sides = dice.getAttribute("sides");
         for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
             let die = dice.getChild(rollIndex);
+            if (die.getAttribute("drop") === "yes") { continue; }
             let dieValue = this.evaluate(die);
             total += dieValue;
-            while (condition && this.evaluateComparison(dieValue, condition) || dieValue === die.getAttribute("sides")) {
-                die = this.createDiceRoll(die.getAttribute("sides"));
+            while (condition && this.evaluateComparison(dieValue, condition) || dieValue === sides) {
+                die = this.createDiceRoll(sides);
                 dieValue = this.evaluate(die);
                 if (penetrate) { dieValue -= 1; }
                 total += dieValue;
@@ -171,12 +175,13 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     private evaluateKeep(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
-        const dice = expression.getChild(0);
+        const dice = this.findLeftmostDiceNode(expression);
         const countTotal = (expression.getChildCount() > 1) ? this.evaluate(expression.getChild(1)) : 1;
         const type = expression.getAttribute("type");
         this.evaluate(dice);
 
         const rolls = this.getSortedDiceRolls(dice, (type === "lowest") ? "ascending" : "descending").rolls;
+
         let count = 0;
         let total = 0;
         rolls.forEach(roll => {
@@ -193,7 +198,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     private evaluateDrop(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
-        const dice = expression.getChild(0);
+        const dice = this.findLeftmostDiceNode(expression);
         const countTotal = (expression.getChildCount() > 1) ? this.evaluate(expression.getChild(1)) : 1;
         const type = expression.getAttribute("type");
         this.evaluate(dice);
@@ -215,7 +220,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     private evaluateCritical(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
-        const dice = expression.getChild(0);
+        const dice = this.findLeftmostDiceNode(expression);
         const type = expression.getAttribute("type");
 
         let condition: Ast.ExpressionNode;
@@ -226,7 +231,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
             condition = Ast.Factory.create(Ast.NodeType.Equal);
             if (type === "success") {
                 this.expectChildCount(dice, 2);
-                condition.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", this.evaluate(dice.getChild(1))));
+                condition.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", dice.getAttribute("sides")));
             } else {
                 condition.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
             }
@@ -249,7 +254,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     private evaluateReroll(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
-        const dice = expression.getChild(0);
+        const dice = this.findLeftmostDiceNode(expression);
         let condition: Ast.ExpressionNode;
         const once = expression.getAttribute("once") === "yes";
         if (expression.getChildCount() > 1) {
@@ -260,11 +265,13 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         this.evaluate(dice);
 
         let total = 0;
+        const sides = dice.getAttribute("sides");
         for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
             const die = dice.getChild(rollIndex);
+            if (die.getAttribute("drop") === "yes") { continue; }
             let dieValue = this.evaluate(die);
             while (condition && this.evaluateComparison(dieValue, condition) || dieValue === 1) {
-                dieValue = this.createDiceRollValue(die.getAttribute("sides"));
+                dieValue = this.createDiceRollValue(sides);
                 if (once) { break; }
             }
             die.setAttribute("value", dieValue);
@@ -276,12 +283,24 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     private evaluateSort(expression: Ast.ExpressionNode): number {
         this.expectChildCount(expression, 1);
-        const dice = expression.getChild(0);
+        const dice = this.findLeftmostDiceNode(expression.getChild(0));
         this.evaluate(dice);
         const rolls = this.getSortedDiceRolls(dice, expression.getAttribute("direction"));
         dice.clearChildren();
         rolls.rolls.forEach(roll => dice.addChild(roll));
         return rolls.total;
+    }
+
+    private findLeftmostDiceNode(expression: Ast.ExpressionNode): Ast.ExpressionNode {
+        if (expression.type === Ast.NodeType.Dice) {
+            return expression;
+        }
+        if (expression.getChildCount() < 1) {
+            throw new Error("Missing dice node.");
+        }
+        const child = expression.getChild(0);
+        this.evaluate(child);
+        return this.findLeftmostDiceNode(child);
     }
 
     private getSortedDiceRolls(dice: Ast.ExpressionNode, direction: string): { rolls: Ast.ExpressionNode[], total: number } {
@@ -311,7 +330,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         const diceRoll = this.createDiceRollValue(sides);
         return Ast.Factory.create(Ast.NodeType.DiceRoll)
             .setAttribute("value", diceRoll)
-            .setAttribute("sides", sidesValue);
+            .setAttribute("drop", "no");
     }
 
     private createDiceRollValue(sides: Ast.ExpressionNode | number): number {
