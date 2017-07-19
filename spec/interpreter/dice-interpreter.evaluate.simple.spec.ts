@@ -1,6 +1,5 @@
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
-import { MockRandomProvider } from "../helpers/mock-random-provider";
 
 describe("DiceInterpreter", () => {
     describe("evaluate", () => {
