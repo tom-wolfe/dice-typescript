@@ -4,14 +4,14 @@ import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
-    describe("parseCriticalModifier", () => {
+    describe("parseCritical", () => {
         it("can correctly parse a critical modifier (c).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "c")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new Parser.ParseResult();
-            const mod = parser.parseCriticalModifier(result);
+            const mod = parser.parseCritical(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("success");
@@ -22,7 +22,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new Parser.ParseResult();
-            const mod = parser.parseCriticalModifier(result);
+            const mod = parser.parseCritical(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("success");
@@ -33,7 +33,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new Parser.ParseResult();
-            const mod = parser.parseCriticalModifier(result);
+            const mod = parser.parseCritical(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("failure");
@@ -46,7 +46,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new Parser.ParseResult();
-            const mod = parser.parseCriticalModifier(result);
+            const mod = parser.parseCritical(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("failure");
@@ -62,7 +62,7 @@ describe("DiceParser", () => {
             const parser = new Parser.DiceParser(lexer);
 
             const result = new Parser.ParseResult();
-            const mod = parser.parseCriticalModifier(result);
+            const mod = parser.parseCritical(result);
             expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });

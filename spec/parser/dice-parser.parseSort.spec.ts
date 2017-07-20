@@ -5,14 +5,14 @@ import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
-    describe("parseSortModifier", () => {
+    describe("parseSort", () => {
         it("can correctly parse a sort modifier (s).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "s")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseSortModifier(result);
+            const mod = parser.parseSort(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Sort);
             expect(mod.getAttribute("direction")).toBe("ascending");
@@ -23,7 +23,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseSortModifier(result);
+            const mod = parser.parseSort(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Sort);
             expect(mod.getAttribute("direction")).toBe("ascending");
@@ -34,7 +34,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseSortModifier(result);
+            const mod = parser.parseSort(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Sort);
             expect(mod.getAttribute("direction")).toBe("descending");
@@ -46,7 +46,7 @@ describe("DiceParser", () => {
             const parser = new Parser.DiceParser(lexer);
 
             const result = new ParseResult();
-            const mod = parser.parseSortModifier(result);
+            const mod = parser.parseSort(result);
             expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });

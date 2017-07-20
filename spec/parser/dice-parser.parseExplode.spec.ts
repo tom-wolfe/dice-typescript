@@ -5,14 +5,14 @@ import * as Parser from "../../src/parser";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
-    describe("parseExplodeModifier", () => {
+    describe("parseExplode", () => {
         it("can correctly parse an explode modifier (!).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Exclamation, 0, "!")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseExplodeModifier(result);
+            const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("no");
@@ -25,7 +25,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseExplodeModifier(result);
+            const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("yes");
@@ -38,7 +38,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseExplodeModifier(result);
+            const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("no");
@@ -52,7 +52,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseExplodeModifier(result);
+            const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("yes");
@@ -67,7 +67,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseExplodeModifier(result);
+            const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("no");

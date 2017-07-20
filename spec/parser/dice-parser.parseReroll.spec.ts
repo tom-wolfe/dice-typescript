@@ -5,14 +5,14 @@ import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
-    describe("parseRerollModifier", () => {
+    describe("parseReroll", () => {
         it("can correctly parse a reroll modifier (r).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "r")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseRerollModifier(result);
+            const mod = parser.parseReroll(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Reroll);
             expect(mod.getAttribute("once")).toBe("no");
@@ -23,7 +23,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseRerollModifier(result);
+            const mod = parser.parseReroll(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Reroll);
             expect(mod.getAttribute("once")).toBe("yes");
@@ -36,7 +36,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const mod = parser.parseRerollModifier(result);
+            const mod = parser.parseReroll(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Reroll);
             expect(mod.getAttribute("once")).toBe("yes");
@@ -52,7 +52,7 @@ describe("DiceParser", () => {
             const parser = new Parser.DiceParser(lexer);
 
             const result = new ParseResult();
-            const mod = parser.parseRerollModifier(result);
+            const mod = parser.parseReroll(result);
             expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });

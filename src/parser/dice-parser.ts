@@ -184,31 +184,31 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseDiceRoll(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
-        let root = this.parseSimpleDiceRoll(result, rollTimes);
+    parseDice(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
+        let root = this.parseDiceRoll(result, rollTimes);
         while (true) {
             const token = this.lexer.peekNextToken();
             if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
                 root = this.parseCompareModifier(result, root);
             } else if (token.type === TokenType.Identifier) {
                 switch (token.value[0]) {
-                    case "c": root = this.parseCriticalModifier(result, root); break;
-                    case "d": root = this.parseDropModifier(result, root); break;
-                    case "k": root = this.parseKeepModifier(result, root); break;
-                    case "r": root = this.parseRerollModifier(result, root); break;
-                    case "s": root = this.parseSortModifier(result, root); break;
+                    case "c": root = this.parseCritical(result, root); break;
+                    case "d": root = this.parseDrop(result, root); break;
+                    case "k": root = this.parseKeep(result, root); break;
+                    case "r": root = this.parseReroll(result, root); break;
+                    case "s": root = this.parseSort(result, root); break;
                     default:
                         this.errorToken(result, TokenType.Identifier, token);
                         return root;
                 }
             } else if (token.type === TokenType.Exclamation) {
-                root = this.parseExplodeModifier(result, root);
+                root = this.parseExplode(result, root);
             } else { break; }
         }
         return root;
     }
 
-    parseSimpleDiceRoll(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseDiceRoll(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
         if (!rollTimes) { rollTimes = this.parseSimpleFactor(result); }
         const token = this.expectAndConsume(result, TokenType.Identifier);
 
@@ -230,7 +230,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseExplodeModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseExplode(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Explode);
         root.setAttribute("compound", "no");
         root.setAttribute("penetrate", "no");
@@ -260,7 +260,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseCriticalModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseCritical(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Critical);
         root.setAttribute("type", "success");
         if (lhs) { root.addChild(lhs); }
@@ -284,7 +284,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseKeepModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseKeep(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Keep);
         root.setAttribute("type", "highest");
         if (lhs) { root.addChild(lhs); }
@@ -308,7 +308,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseDropModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseDrop(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Drop);
         root.setAttribute("type", "lowest");
         if (lhs) { root.addChild(lhs); }
@@ -332,7 +332,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseRerollModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseReroll(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Reroll);
         root.setAttribute("once", "no");
         if (lhs) { root.addChild(lhs); }
@@ -354,7 +354,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseSortModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseSort(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Sort);
         root.setAttribute("direction", "ascending");
         if (lhs) { root.addChild(lhs); }
