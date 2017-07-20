@@ -1,6 +1,7 @@
-import * as Ast from "../ast";
 import { DiceLexer, Lexer, Token, TokenType } from "../lexer";
-import { Parser } from "./";
+import { ErrorMessage } from "./error-message";
+import { ParseResult } from "./parse-result";
+import { Parser } from "./parser";
 
 export abstract class BasicParser implements Parser {
     protected readonly lexer: Lexer;
@@ -19,28 +20,28 @@ export abstract class BasicParser implements Parser {
         return input.getNextToken;
     }
 
-    abstract parse(): Ast.ExpressionNode;
+    abstract parse(): ParseResult;
 
-    protected expectAndConsume(expected: TokenType, actual?: Token): Token {
-        this.expect(expected, actual);
+    protected expectAndConsume(result: ParseResult, expected: TokenType, actual?: Token): Token {
+        this.expect(result, expected, actual);
         return this.lexer.getNextToken();
     }
 
-    protected expect(expected: TokenType, actual?: Token): Token {
+    protected expect(result: ParseResult, expected: TokenType, actual?: Token): Token {
         actual = actual || this.lexer.peekNextToken();
         if (actual.type !== expected) {
-            this.errorToken(expected, actual);
+            this.errorToken(result, expected, actual);
         }
         return actual;
     }
 
-    protected errorToken(expected: TokenType, actual: Token) {
-        let msg = `Error at position ${actual.position}.`;
-        msg += `Expected token of type ${expected}, found token of type ${actual.type} of value "${actual.value}".`;
-        this.errorMessage(msg);
+    protected errorToken(result: ParseResult, expected: TokenType, actual: Token) {
+        let message = `Error at position ${actual.position}.`;
+        message += `Expected token of type ${expected}, found token of type ${actual.type} of value "${actual.value}".`;
+        this.errorMessage(result, message, actual);
     }
 
-    protected errorMessage(message: string) {
-        throw new Error(message);
+    protected errorMessage(result: ParseResult, message: string, token: Token) {
+        result.errors.push(new ErrorMessage(message, token));
     }
 }

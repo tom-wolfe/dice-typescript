@@ -1,3 +1,4 @@
+import { ErrorMessage } from "../../src/interpreter/error-message";
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
 import { MockListRandomProvider } from "../helpers/mock-list-random-provider";
@@ -19,7 +20,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(6, 5, 4, 3);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
             expect(dice.getChildCount()).toBe(4);
 
             expect(dice.getChild(0).getAttribute("value")).toBe(3);
@@ -41,7 +43,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(3, 5, 4, 6);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
             expect(dice.getChildCount()).toBe(4);
 
             expect(dice.getChild(0).getAttribute("value")).toBe(6);

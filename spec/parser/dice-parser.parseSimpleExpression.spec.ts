@@ -1,3 +1,4 @@
+import { ParseResult } from "../../src/parser/parse-result";
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
@@ -12,7 +13,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseSimpleExpression();
+            const result = new ParseResult();
+            const exp = parser.parseSimpleExpression(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Add);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -27,7 +30,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 3, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseSimpleExpression();
+            const result = new ParseResult();
+            const exp = parser.parseSimpleExpression(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Subtract);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -41,7 +46,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 1, "4")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseSimpleExpression();
+            const result = new ParseResult();
+            const exp = parser.parseSimpleExpression(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Negate);
             expect(exp.getChildCount()).toBe(1);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -56,7 +63,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 4, "1")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseSimpleExpression();
+            const result = new ParseResult();
+            const exp = parser.parseSimpleExpression(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Subtract);
             expect(exp.getChildCount()).toBe(2);
 

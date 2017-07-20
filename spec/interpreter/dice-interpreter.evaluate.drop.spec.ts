@@ -1,7 +1,7 @@
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
+import { ErrorMessage } from "../../src/interpreter/error-message";
 import { MockListRandomProvider } from "../helpers/mock-list-random-provider";
-import { MockRandomProvider } from "../helpers/mock-random-provider";
 
 describe("DiceInterpreter", () => {
     describe("evaluate", () => {
@@ -20,7 +20,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 12, 18, 20, 14);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe("no");
@@ -43,7 +44,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 12, 18, 20, 14);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe("no");
@@ -67,7 +69,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 12, 18, 20, 14);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe("yes");
@@ -90,7 +93,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 12, 18, 20, 14);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe("yes");

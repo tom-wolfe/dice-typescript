@@ -1,5 +1,5 @@
-import * as Ast from "../ast";
+import { ParseResult } from "./parse-result";
 
 export interface Parser {
-    parse(): Ast.ExpressionNode;
+    parse(): ParseResult;
 }

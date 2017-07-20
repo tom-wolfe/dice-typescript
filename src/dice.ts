@@ -15,8 +15,8 @@ export class Dice {
         const lexer = this.createLexer(input);
         const parser = this.createParser(lexer);
         const interpreter = this.createInterpreter();
-        const exp = parser.parse();
-        return interpreter.interpret(exp);
+        const res = parser.parse();
+        return interpreter.interpret(res.root);
     }
 
     protected createLexer(input: string | CharacterStream): Lexer {

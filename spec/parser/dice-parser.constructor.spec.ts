@@ -1,7 +1,4 @@
-import { NodeType } from "../../src/ast/node-type";
-import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
-import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
     describe("constructor", () => {

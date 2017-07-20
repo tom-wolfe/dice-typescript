@@ -10,7 +10,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "c")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseCriticalModifier();
+            const result = new Parser.ParseResult();
+            const mod = parser.parseCriticalModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("success");
         });
@@ -19,7 +21,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "cs")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseCriticalModifier();
+            const result = new Parser.ParseResult();
+            const mod = parser.parseCriticalModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("success");
         });
@@ -28,7 +32,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "cf")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseCriticalModifier();
+            const result = new Parser.ParseResult();
+            const mod = parser.parseCriticalModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("failure");
         });
@@ -39,7 +45,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 3, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseCriticalModifier();
+            const result = new Parser.ParseResult();
+            const mod = parser.parseCriticalModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Critical);
             expect(mod.getAttribute("type")).toBe("failure");
             expect(mod.getChildCount()).toBe(1);
@@ -52,7 +60,10 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 3, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            expect(() => parser.parseCriticalModifier()).toThrow();
+
+            const result = new Parser.ParseResult();
+            const mod = parser.parseCriticalModifier(result);
+            expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

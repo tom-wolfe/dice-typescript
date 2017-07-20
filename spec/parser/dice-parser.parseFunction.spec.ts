@@ -1,6 +1,7 @@
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
+import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
@@ -12,7 +13,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 6, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFunctionCall();
+            const result = new ParseResult();
+            const exp = parser.parseFunctionCall(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(0);
             expect(exp.getAttribute("name")).toBe("floor");
@@ -25,7 +28,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 8, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFunctionCall();
+            const result = new ParseResult();
+            const exp = parser.parseFunctionCall(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
             expect(exp.getAttribute("name")).toBe("floor");
@@ -43,7 +48,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFunctionCall();
+            const result = new ParseResult();
+            const exp = parser.parseFunctionCall(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
             expect(exp.getAttribute("name")).toBe("floor");
@@ -65,7 +72,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 10, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFunctionCall();
+            const result = new ParseResult();
+            const exp = parser.parseFunctionCall(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getAttribute("name")).toBe("floor");

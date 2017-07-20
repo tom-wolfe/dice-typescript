@@ -1,6 +1,7 @@
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
+import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
@@ -11,7 +12,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.BraceClose, 1, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseExpressionGroup();
+            const result = new ParseResult();
+            const exp = parser.parseExpressionGroup(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(0);
         });
@@ -22,7 +25,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.BraceClose, 8, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseExpressionGroup();
+            const result = new ParseResult();
+            const exp = parser.parseExpressionGroup(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(1);
 
@@ -38,7 +43,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.BraceClose, 10, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseExpressionGroup();
+            const result = new ParseResult();
+            const exp = parser.parseExpressionGroup(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(1);
 
@@ -58,7 +65,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.BraceClose, 10, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseExpressionGroup();
+            const result = new ParseResult();
+            const exp = parser.parseExpressionGroup(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(2);
 

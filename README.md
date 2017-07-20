@@ -48,8 +48,8 @@ In addition to the ```abs```, ```ceil```, ```floor```, ```round``` and ```sqrt``
 
 ```typescript
 const customFunctions = new FunctionDefinitionList();
-customFunctions["floor"] = (interpreter: DiceInterpreter, functionNode: ExpressionNode): number => {
-    return Math.floor(interpreter.evaluate(functionNode.getChild(0)));
+customFunctions["floor"] = (interpreter: DiceInterpreter, functionNode: ExpressionNode, errors: ErrorMessage[]): number => {
+    return Math.floor(interpreter.evaluate(functionNode.getChild(0), errors));
 }
 
 const dice = new Dice(customFunctions);

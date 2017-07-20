@@ -1,6 +1,7 @@
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
+import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
@@ -12,7 +13,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseTerm();
+            const result = new ParseResult();
+            const exp = parser.parseTerm(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Multiply);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -27,7 +30,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseTerm();
+            const result = new ParseResult();
+            const exp = parser.parseTerm(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Divide);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -42,7 +47,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 3, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseTerm();
+            const result = new ParseResult();
+            const exp = parser.parseTerm(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Exponent);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -57,7 +64,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "4"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseTerm();
+            const result = new ParseResult();
+            const exp = parser.parseTerm(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Modulo);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -74,7 +83,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 4, "1")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseTerm();
+            const result = new ParseResult();
+            const exp = parser.parseTerm(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Divide);
             expect(exp.getChildCount()).toBe(2);
 

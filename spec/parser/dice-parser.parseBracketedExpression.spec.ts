@@ -12,7 +12,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 3, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseBracketedExpression();
+            const result = new Parser.ParseResult();
+            const exp = parser.parseBracketedExpression(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Integer);
             expect(exp.getChildCount()).toBe(0);
             expect(exp.getAttribute("value")).toBe(10);
@@ -26,7 +28,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 5, ")"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseBracketedExpression();
+            const result = new Parser.ParseResult();
+            const exp = parser.parseBracketedExpression(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Add);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -42,7 +46,10 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 4, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            expect(() => parser.parseBracketedExpression()).toThrow();
+
+            const result = new Parser.ParseResult();
+            const exp = parser.parseBracketedExpression(result);
+            expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

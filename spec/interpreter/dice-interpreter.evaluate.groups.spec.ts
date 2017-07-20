@@ -1,6 +1,6 @@
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
-import { MockRandomProvider } from "../helpers/mock-random-provider";
+import { ErrorMessage } from "../../src/interpreter/error-message";
 
 describe("DiceInterpreter", () => {
     describe("evaluate", () => {
@@ -11,8 +11,8 @@ describe("DiceInterpreter", () => {
             group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
 
             const interpreter = new Interpreter.DiceInterpreter();
-
-            interpreter.evaluate(group);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(group, errors);
             expect(group.getChildCount()).toBe(2);
         });
         it("correctly evaluates a group with modifiers {5, 2}kh2.", () => {

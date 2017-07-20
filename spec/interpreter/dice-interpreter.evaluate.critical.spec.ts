@@ -1,3 +1,4 @@
+import { ErrorMessage } from "../../src/interpreter/error-message";
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
 import { MockListRandomProvider } from "../helpers/mock-list-random-provider";
@@ -19,7 +20,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 12, 18, 20);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
             expect(dice.getChild(0).getAttribute("critical")).toBeUndefined();
@@ -45,7 +47,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 12, 18, 19);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
             expect(dice.getChild(0).getAttribute("critical")).toBeUndefined();
@@ -67,7 +70,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 1, 18, 20);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
             expect(dice.getChild(0).getAttribute("critical")).toBeUndefined();
@@ -93,7 +97,8 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(8, 2, 3, 19);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            interpreter.evaluate(exp);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
             expect(dice.getChild(0).getAttribute("critical")).toBeUndefined();

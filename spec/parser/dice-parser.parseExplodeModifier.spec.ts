@@ -1,3 +1,4 @@
+import { ParseResult } from "../../src/parser/parse-result";
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
@@ -10,7 +11,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Exclamation, 0, "!")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseExplodeModifier();
+            const result = new ParseResult();
+            const mod = parser.parseExplodeModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("no");
             expect(mod.getAttribute("penetrate")).toBe("no");
@@ -21,7 +24,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Exclamation, 1, "!"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseExplodeModifier();
+            const result = new ParseResult();
+            const mod = parser.parseExplodeModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("yes");
             expect(mod.getAttribute("penetrate")).toBe("no");
@@ -32,7 +37,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 1, "p"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseExplodeModifier();
+            const result = new ParseResult();
+            const mod = parser.parseExplodeModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("no");
             expect(mod.getAttribute("penetrate")).toBe("yes");
@@ -44,7 +51,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 2, "p"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseExplodeModifier();
+            const result = new ParseResult();
+            const mod = parser.parseExplodeModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("yes");
             expect(mod.getAttribute("penetrate")).toBe("yes");
@@ -57,7 +66,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 3, "3"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseExplodeModifier();
+            const result = new ParseResult();
+            const mod = parser.parseExplodeModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
             expect(mod.getAttribute("compound")).toBe("no");
             expect(mod.getAttribute("penetrate")).toBe("yes");

@@ -1,3 +1,4 @@
+import { ErrorMessage } from "../../src/interpreter/error-message";
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
 import { MockListRandomProvider } from "../helpers/mock-list-random-provider";
@@ -26,7 +27,8 @@ describe("DiceInterpreter", () => {
             );
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            expect(interpreter.evaluate(exp)).toBe(21);
+            const errors: ErrorMessage[] = [];
+            expect(interpreter.evaluate(exp, errors)).toBe(21);
             expect(dice.getChildCount()).toBe(4);
         });
         it("evaluates a rerolling dice (4d6ro<3).", () => {
@@ -50,7 +52,8 @@ describe("DiceInterpreter", () => {
             );
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            expect(interpreter.evaluate(exp)).toBe(18);
+            const errors: ErrorMessage[] = [];
+            expect(interpreter.evaluate(exp, errors)).toBe(18);
             expect(dice.getChildCount()).toBe(4);
         });
         it("evaluates rerolling dice (4d6r).", () => {
@@ -69,7 +72,8 @@ describe("DiceInterpreter", () => {
             );
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            expect(interpreter.evaluate(exp)).toBe(21);
+            const errors: ErrorMessage[] = [];
+            expect(interpreter.evaluate(exp, errors)).toBe(21);
             expect(dice.getChildCount()).toBe(4);
         });
         it("evaluates a rerolling dice no condition (4d6ro).", () => {
@@ -88,7 +92,8 @@ describe("DiceInterpreter", () => {
             );
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            expect(interpreter.evaluate(exp)).toBe(15);
+            const errors: ErrorMessage[] = [];
+            expect(interpreter.evaluate(exp, errors)).toBe(15);
             expect(dice.getChildCount()).toBe(4);
         });
     });

@@ -1,3 +1,4 @@
+import { ErrorMessage } from "../../src/interpreter/error-message";
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
 import { MockRandomProvider } from "../helpers/mock-random-provider";
@@ -10,7 +11,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("value", 4);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            expect(interpreter.evaluate(dice)).toBe(0);
+            const errors: ErrorMessage[] = [];
+            expect(interpreter.evaluate(dice, errors)).toBe(0);
         });
         it("evaluates a simple dice roll expression (not dropped).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.DiceRoll)
@@ -18,7 +20,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("value", 4);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            expect(interpreter.evaluate(dice)).toBe(4);
+            const errors: ErrorMessage[] = [];
+            expect(interpreter.evaluate(dice, errors)).toBe(4);
         });
     });
 });

@@ -1,6 +1,7 @@
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
+import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
@@ -10,7 +11,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "k")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseKeepModifier();
+            const result = new ParseResult();
+            const mod = parser.parseKeepModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Keep);
             expect(mod.getAttribute("type")).toBe("highest");
         });
@@ -19,7 +22,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "kh")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseKeepModifier();
+            const result = new ParseResult();
+            const mod = parser.parseKeepModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Keep);
             expect(mod.getAttribute("type")).toBe("highest");
         });
@@ -28,7 +33,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "kl")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseKeepModifier();
+            const result = new ParseResult();
+            const mod = parser.parseKeepModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Keep);
             expect(mod.getAttribute("type")).toBe("lowest");
         });
@@ -38,7 +45,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseKeepModifier();
+            const result = new ParseResult();
+            const mod = parser.parseKeepModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Keep);
             expect(mod.getAttribute("type")).toBe("lowest");
             expect(mod.getChildCount()).toBe(1);
@@ -55,7 +64,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 6, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseKeepModifier();
+            const result = new ParseResult();
+            const mod = parser.parseKeepModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Keep);
             expect(mod.getAttribute("type")).toBe("lowest");
             expect(mod.getChildCount()).toBe(1);
@@ -67,7 +78,10 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            expect(() => parser.parseKeepModifier()).toThrow();
+
+            const result = new ParseResult();
+            const mod = parser.parseKeepModifier(result);
+            expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

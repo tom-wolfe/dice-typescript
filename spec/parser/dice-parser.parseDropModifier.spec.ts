@@ -1,3 +1,4 @@
+import { ParseResult } from "../../src/parser/parse-result";
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
@@ -10,7 +11,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "d")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseDropModifier();
+            const result = new ParseResult();
+            const mod = parser.parseDropModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Drop);
             expect(mod.getAttribute("type")).toBe("lowest");
         });
@@ -19,7 +22,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "dh")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseDropModifier();
+            const result = new ParseResult();
+            const mod = parser.parseDropModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Drop);
             expect(mod.getAttribute("type")).toBe("highest");
         });
@@ -28,7 +33,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "dl")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseDropModifier();
+            const result = new ParseResult();
+            const mod = parser.parseDropModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Drop);
             expect(mod.getAttribute("type")).toBe("lowest");
         });
@@ -38,7 +45,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseDropModifier();
+            const result = new ParseResult();
+            const mod = parser.parseDropModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Drop);
             expect(mod.getAttribute("type")).toBe("lowest");
             expect(mod.getChildCount()).toBe(1);
@@ -55,7 +64,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 6, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseDropModifier();
+            const result = new ParseResult();
+            const mod = parser.parseDropModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Drop);
             expect(mod.getAttribute("type")).toBe("lowest");
             expect(mod.getChildCount()).toBe(1);
@@ -67,7 +78,10 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            expect(() => parser.parseDropModifier()).toThrow();
+
+            const result = new ParseResult();
+            const mod = parser.parseDropModifier(result);
+            expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

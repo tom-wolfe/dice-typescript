@@ -1,6 +1,7 @@
 import * as Ast from "../ast";
 import { Lexer, TokenType } from "../lexer";
 import { BasicParser } from "./basic-parser";
+import { ParseResult } from "./parse-result";
 
 const BooleanOperatorMap: { [token: string]: Ast.NodeType } = {};
 BooleanOperatorMap[TokenType.Equals] = Ast.NodeType.Equal;
@@ -22,30 +23,32 @@ MultiOperatorMap[TokenType.Percent] = Ast.NodeType.Modulo;
 export class DiceParser extends BasicParser {
     constructor(input: Lexer | string) { super(input); }
 
-    parse(): Ast.ExpressionNode {
-        return this.parseExpression();
+    parse(): ParseResult {
+        const result = new ParseResult();
+        result.root = this.parseExpression(result);
+        return result;
     }
 
-    parseExpression(): Ast.ExpressionNode {
-        let root = this.parseSimpleExpression();
+    parseExpression(result: ParseResult): Ast.ExpressionNode {
+        let root = this.parseSimpleExpression(result);
         const tokenType = this.lexer.peekNextToken().type;
         if (Object.keys(BooleanOperatorMap).indexOf(tokenType.toString()) > -1) {
             const newRoot = Ast.Factory.create(BooleanOperatorMap[tokenType]);
             this.lexer.getNextToken();
             newRoot.addChild(root);
-            newRoot.addChild(this.parseSimpleExpression());
+            newRoot.addChild(this.parseSimpleExpression(result));
             root = newRoot;
         }
         return root;
     }
 
-    parseSimpleExpression(): Ast.ExpressionNode {
+    parseSimpleExpression(result: ParseResult): Ast.ExpressionNode {
         let tokenType = this.lexer.peekNextToken().type;
         if (Object.keys(AddOperatorMap).indexOf(tokenType.toString()) > -1) {
             this.lexer.getNextToken();
         }
 
-        let root = this.parseTerm();
+        let root = this.parseTerm(result);
 
         if (tokenType === TokenType.Minus) {
             const negateNode = Ast.Factory.create(Ast.NodeType.Negate);
@@ -61,7 +64,7 @@ export class DiceParser extends BasicParser {
             // Consume the operator.
             this.lexer.getNextToken();
 
-            newRoot.addChild(this.parseTerm());
+            newRoot.addChild(this.parseTerm(result));
 
             root = newRoot;
             tokenType = this.lexer.peekNextToken().type;
@@ -69,8 +72,8 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseTerm(): Ast.ExpressionNode {
-        let root: Ast.ExpressionNode = this.parseFactor();
+    parseTerm(result: ParseResult): Ast.ExpressionNode {
+        let root: Ast.ExpressionNode = this.parseFactor(result);
 
         let tokenType = this.lexer.peekNextToken().type;
         while (Object.keys(MultiOperatorMap).indexOf(tokenType.toString()) > -1) {
@@ -79,7 +82,7 @@ export class DiceParser extends BasicParser {
 
             // Consume the operator.
             this.lexer.getNextToken();
-            newRoot.addChild(this.parseFactor());
+            newRoot.addChild(this.parseFactor(result));
 
             root = newRoot;
             tokenType = this.lexer.peekNextToken().type;
@@ -88,80 +91,80 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseFactor(): Ast.ExpressionNode {
+    parseFactor(result: ParseResult): Ast.ExpressionNode {
         let root: Ast.ExpressionNode;
         const token = this.lexer.peekNextToken();
         switch (token.type) {
             case TokenType.Identifier:
-                root = this.parseFunctionCall();
+                root = this.parseFunctionCall(result);
                 break;
             case TokenType.ParenthesisOpen:
-                root = this.parseBracketedExpression();
+                root = this.parseBracketedExpression(result);
                 if (this.lexer.peekNextToken().type === TokenType.Identifier) {
-                    root = this.parseDiceRoll(root);
+                    root = this.parseDiceRoll(result, root);
                 }
                 break;
             case TokenType.BraceOpen:
-                root = this.parseExpressionGroup();
+                root = this.parseExpressionGroup(result);
                 break;
             case TokenType.Integer:
-                const number = this.parseInteger();
+                const number = this.parseInteger(result);
                 if (this.lexer.peekNextToken().type !== TokenType.Identifier) {
                     root = number;
                 } else {
-                    root = this.parseDiceRoll(number);
+                    root = this.parseDiceRoll(result, number);
                 }
                 break;
-            default: this.errorToken(TokenType.Integer, token);
+            default: this.errorToken(result, TokenType.Integer, token);
         }
         return root;
     }
 
-    parseSimpleFactor(): Ast.ExpressionNode {
+    parseSimpleFactor(result: ParseResult): Ast.ExpressionNode {
         const token = this.lexer.peekNextToken();
         switch (token.type) {
-            case TokenType.Integer: return this.parseInteger();
-            case TokenType.ParenthesisOpen: return this.parseBracketedExpression();
-            default: this.errorToken(TokenType.Integer, token);
+            case TokenType.Integer: return this.parseInteger(result);
+            case TokenType.ParenthesisOpen: return this.parseBracketedExpression(result);
+            default: this.errorToken(result, TokenType.Integer, token);
         }
     }
 
-    parseFunctionCall(): Ast.ExpressionNode {
-        const functionName = this.expectAndConsume(TokenType.Identifier);
+    parseFunctionCall(result: ParseResult): Ast.ExpressionNode {
+        const functionName = this.expectAndConsume(result, TokenType.Identifier);
         const root = Ast.Factory.create(Ast.NodeType.Function)
             .setAttribute("name", functionName.value);
 
-        this.expectAndConsume(TokenType.ParenthesisOpen)
+        this.expectAndConsume(result, TokenType.ParenthesisOpen)
 
         // Parse function arguments.
         const token = this.lexer.peekNextToken();
         if (token.type !== TokenType.ParenthesisClose) {
-            root.addChild(this.parseExpression());
+            root.addChild(this.parseExpression(result));
             while (this.lexer.peekNextToken().type === TokenType.Comma) {
                 this.lexer.getNextToken(); // Consume the comma.
-                root.addChild(this.parseExpression());
+                root.addChild(this.parseExpression(result));
             }
         }
 
-        this.expectAndConsume(TokenType.ParenthesisClose);
+        this.expectAndConsume(result, TokenType.ParenthesisClose);
 
         return root;
     }
 
-    parseInteger(): Ast.ExpressionNode {
+    parseInteger(result: ParseResult): Ast.ExpressionNode {
         const numberToken = this.lexer.getNextToken();
         return Ast.Factory.create(Ast.NodeType.Integer)
             .setAttribute("value", Number(numberToken.value));
     }
 
-    parseBracketedExpression(): Ast.ExpressionNode {
+    parseBracketedExpression(result: ParseResult): Ast.ExpressionNode {
         this.lexer.getNextToken(); // Consume the opening bracket.
-        const root = this.parseExpression();
-        this.expectAndConsume(TokenType.ParenthesisClose);
+        const root = this.parseExpression(result);
+        this.expectAndConsume(result, TokenType.ParenthesisClose);
         return root;
     }
 
-    parseExpressionGroup(): Ast.ExpressionNode {
+    parseExpressionGroup(result: ParseResult): Ast.ExpressionNode {
         this.lexer.getNextToken(); // Consume the opening brace.
 
         const root = Ast.Factory.create(Ast.NodeType.Group);
@@ -169,35 +172,35 @@ export class DiceParser extends BasicParser {
         // Parse group elements.
         const token = this.lexer.peekNextToken();
         if (token.type !== TokenType.BraceClose) {
-            root.addChild(this.parseExpression());
+            root.addChild(this.parseExpression(result));
             while (this.lexer.peekNextToken().type === TokenType.Comma) {
                 this.lexer.getNextToken(); // Consume the comma.
-                root.addChild(this.parseExpression());
+                root.addChild(this.parseExpression(result));
             }
         }
 
-        this.expectAndConsume(TokenType.BraceClose);
+        this.expectAndConsume(result, TokenType.BraceClose);
 
         return root;
     }
 
-    parseDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
-        let root = this.parseSimpleDiceRoll(rollTimes);
+    parseDiceRoll(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
+        let root = this.parseSimpleDiceRoll(result, rollTimes);
         while (true) {
             const token = this.lexer.peekNextToken();
             if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
-                root = this.parseCompareModifier(root);
+                root = this.parseCompareModifier(result, root);
             } else if (token.type === TokenType.Identifier) {
                 switch (token.value[0]) {
-                    case "c": root = this.parseCriticalModifier(root); break;
-                    case "d": root = this.parseDropModifier(root); break;
-                    case "k": root = this.parseKeepModifier(root); break;
-                    case "r": root = this.parseRerollModifier(root); break;
-                    case "s": root = this.parseSortModifier(root); break;
-                    default: this.errorToken(TokenType.Identifier, token);
+                    case "c": root = this.parseCriticalModifier(result, root); break;
+                    case "d": root = this.parseDropModifier(result, root); break;
+                    case "k": root = this.parseKeepModifier(result, root); break;
+                    case "r": root = this.parseRerollModifier(result, root); break;
+                    case "s": root = this.parseSortModifier(result, root); break;
+                    default: this.errorToken(result, TokenType.Identifier, token);
                 }
             } else if (token.type === TokenType.Exclamation) {
-                root = this.parseExplodeModifier(root);
+                root = this.parseExplodeModifier(result, root);
             } else {
                 break;
             }
@@ -205,16 +208,16 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseSimpleDiceRoll(rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
-        if (!rollTimes) { rollTimes = this.parseSimpleFactor(); }
-        const token = this.expectAndConsume(TokenType.Identifier);
+    parseSimpleDiceRoll(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
+        if (!rollTimes) { rollTimes = this.parseSimpleFactor(result); }
+        const token = this.expectAndConsume(result, TokenType.Identifier);
 
         const root = Ast.Factory.create(Ast.NodeType.Dice);
         root.addChild(rollTimes);
 
         switch (token.value) {
             case "d":
-                const sidesToken = this.expectAndConsume(TokenType.Integer);
+                const sidesToken = this.expectAndConsume(result, TokenType.Integer);
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
                     .setAttribute("value", Number(sidesToken.value));
                 break;
@@ -227,7 +230,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseExplodeModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseExplodeModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Explode);
         root.setAttribute("compound", "no");
         root.setAttribute("penetrate", "no");
@@ -252,12 +255,12 @@ export class DiceParser extends BasicParser {
 
         const tokenType = this.lexer.peekNextToken().type;
         if (Object.keys(BooleanOperatorMap).indexOf(tokenType.toString()) > -1) {
-            root.addChild(this.parseCompareModifier());
+            root.addChild(this.parseCompareModifier(result));
         }
         return root;
     }
 
-    parseCriticalModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseCriticalModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Critical);
         root.setAttribute("type", "success");
         if (lhs) { root.addChild(lhs); }
@@ -268,7 +271,7 @@ export class DiceParser extends BasicParser {
                 case "c": root.setAttribute("type", "success"); break;
                 case "cs": root.setAttribute("type", "success"); break;
                 case "cf": root.setAttribute("type", "failure"); break;
-                default: this.errorMessage(`Unknown critical type ${token.value}. Must be (c|cs|cf).`);
+                default: this.errorMessage(result, `Unknown critical type ${token.value}. Must be (c|cs|cf).`, token);
             }
         }
 
@@ -276,12 +279,12 @@ export class DiceParser extends BasicParser {
 
         const tokenType = this.lexer.peekNextToken().type;
         if (Object.keys(BooleanOperatorMap).indexOf(tokenType.toString()) > -1) {
-            root.addChild(this.parseCompareModifier());
+            root.addChild(this.parseCompareModifier(result));
         }
         return root;
     }
 
-    parseKeepModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseKeepModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Keep);
         root.setAttribute("type", "highest");
         if (lhs) { root.addChild(lhs); }
@@ -292,7 +295,7 @@ export class DiceParser extends BasicParser {
                 case "k": root.setAttribute("type", "highest"); break;
                 case "kh": root.setAttribute("type", "highest"); break;
                 case "kl": root.setAttribute("type", "lowest"); break;
-                default: this.errorMessage(`Unknown keep type ${token.value}. Must be (k|kh|kl).`);
+                default: this.errorMessage(result, `Unknown keep type ${token.value}. Must be (k|kh|kl).`, token);
             }
         }
 
@@ -300,12 +303,12 @@ export class DiceParser extends BasicParser {
 
         const tokenType = this.lexer.peekNextToken().type;
         if (tokenType === TokenType.Integer || tokenType === TokenType.ParenthesisOpen) {
-            root.addChild(this.parseSimpleFactor());
+            root.addChild(this.parseSimpleFactor(result));
         }
         return root;
     }
 
-    parseDropModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseDropModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Drop);
         root.setAttribute("type", "lowest");
         if (lhs) { root.addChild(lhs); }
@@ -316,7 +319,7 @@ export class DiceParser extends BasicParser {
                 case "d": root.setAttribute("type", "lowest"); break;
                 case "dh": root.setAttribute("type", "highest"); break;
                 case "dl": root.setAttribute("type", "lowest"); break;
-                default: this.errorMessage(`Unknown drop type ${token.value}. Must be (d|dh|dl).`);
+                default: this.errorMessage(result, `Unknown drop type ${token.value}. Must be (d|dh|dl).`, token);
             }
         }
 
@@ -324,12 +327,12 @@ export class DiceParser extends BasicParser {
 
         const tokenType = this.lexer.peekNextToken().type;
         if (tokenType === TokenType.Integer || tokenType === TokenType.ParenthesisOpen) {
-            root.addChild(this.parseSimpleFactor());
+            root.addChild(this.parseSimpleFactor(result));
         }
         return root;
     }
 
-    parseRerollModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseRerollModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Reroll);
         root.setAttribute("once", "no");
         if (lhs) { root.addChild(lhs); }
@@ -339,19 +342,19 @@ export class DiceParser extends BasicParser {
             switch (token.value) {
                 case "r": root.setAttribute("once", "no"); break;
                 case "ro": root.setAttribute("once", "yes"); break;
-                default: this.errorMessage(`Unknown drop type ${token.value}. Must be (r|ro).`);
+                default: this.errorMessage(result, `Unknown drop type ${token.value}. Must be (r|ro).`, token);
             }
         }
         this.lexer.getNextToken(); // Consume.
 
         const tokenType = this.lexer.peekNextToken().type;
         if (Object.keys(BooleanOperatorMap).indexOf(tokenType.toString()) > -1) {
-            root.addChild(this.parseCompareModifier());
+            root.addChild(this.parseCompareModifier(result));
         }
         return root;
     }
 
-    parseSortModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseSortModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Sort);
         root.setAttribute("direction", "ascending");
         if (lhs) { root.addChild(lhs); }
@@ -362,7 +365,7 @@ export class DiceParser extends BasicParser {
                 case "s": root.setAttribute("direction", "ascending"); break;
                 case "sa": root.setAttribute("direction", "ascending"); break;
                 case "sd": root.setAttribute("direction", "descending"); break;
-                default: this.errorMessage(`Unknown sort type ${token.value}. Must be (s|sa|sd).`);
+                default: this.errorMessage(result, `Unknown sort type ${token.value}. Must be (s|sa|sd).`, token);
             }
         }
         this.lexer.getNextToken(); // Consume.
@@ -370,7 +373,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseCompareModifier(lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
+    parseCompareModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const token = this.lexer.peekNextToken();
         let root: Ast.ExpressionNode;
         if (token.type === TokenType.Integer) {
@@ -379,10 +382,10 @@ export class DiceParser extends BasicParser {
             root = Ast.Factory.create(BooleanOperatorMap[token.type]);
             this.lexer.getNextToken();
         } else {
-            this.errorToken(TokenType.Integer, token);
+            this.errorToken(result, TokenType.Integer, token);
         }
         if (lhs) { root.addChild(lhs); }
-        root.addChild(this.parseSimpleFactor());
+        root.addChild(this.parseSimpleFactor(result));
         return root;
     }
 }

@@ -1,6 +1,7 @@
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
+import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
@@ -10,7 +11,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "s")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseSortModifier();
+            const result = new ParseResult();
+            const mod = parser.parseSortModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Sort);
             expect(mod.getAttribute("direction")).toBe("ascending");
         });
@@ -19,7 +22,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "sa")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseSortModifier();
+            const result = new ParseResult();
+            const mod = parser.parseSortModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Sort);
             expect(mod.getAttribute("direction")).toBe("ascending");
         });
@@ -28,7 +33,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "sd")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const mod = parser.parseSortModifier();
+            const result = new ParseResult();
+            const mod = parser.parseSortModifier(result);
+            expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Sort);
             expect(mod.getAttribute("direction")).toBe("descending");
         });
@@ -37,7 +44,10 @@ describe("DiceParser", () => {
                 new Token(TokenType.Identifier, 0, "sx")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            expect(() => parser.parseSortModifier()).toThrow();
+
+            const result = new ParseResult();
+            const mod = parser.parseSortModifier(result);
+            expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

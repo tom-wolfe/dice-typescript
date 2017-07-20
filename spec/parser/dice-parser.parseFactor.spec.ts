@@ -1,3 +1,4 @@
+import { ParseResult } from "../../src/parser/parse-result";
 import { NodeType } from "../../src/ast/node-type";
 import { Token, TokenType } from "../../src/lexer";
 import * as Parser from "../../src/parser";
@@ -10,7 +11,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 0, "10")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFactor();
+            const result = new ParseResult();
+            const exp = parser.parseFactor(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Integer);
             expect(exp.getChildCount()).toBe(0);
             expect(exp.getAttribute("value")).toBe(10);
@@ -23,7 +26,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 8, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFactor();
+            const result = new ParseResult();
+            const exp = parser.parseFactor(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -38,7 +43,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.ParenthesisClose, 4, ")"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFactor();
+            const result = new ParseResult();
+            const exp = parser.parseFactor(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Add);
             expect(exp.getChildCount()).toBe(2);
             expect(exp.getChild(0).type).toBe(NodeType.Integer);
@@ -53,7 +60,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 2, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const dice = parser.parseFactor();
+            const result = new ParseResult();
+            const dice = parser.parseFactor(result);
+            expect(result.errors.length).toBe(0);
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Integer);
@@ -70,7 +79,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 5, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const dice = parser.parseFactor();
+            const result = new ParseResult();
+            const dice = parser.parseFactor(result);
+            expect(result.errors.length).toBe(0);
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Integer);
@@ -89,7 +100,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 7, "6")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const dice = parser.parseFactor();
+            const result = new ParseResult();
+            const dice = parser.parseFactor(result);
+            expect(result.errors.length).toBe(0);
             expect(dice.type).toBe(NodeType.Dice);
             expect(dice.getChildCount()).toBe(2);
             expect(dice.getChild(0).type).toBe(NodeType.Add);
@@ -110,7 +123,9 @@ describe("DiceParser", () => {
                 new Token(TokenType.BraceClose, 10, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
-            const exp = parser.parseFactor();
+            const result = new ParseResult();
+            const exp = parser.parseFactor(result);
+            expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(2);
 
@@ -126,7 +141,10 @@ describe("DiceParser", () => {
                 new Token(TokenType.Integer, 6, "10"),
             ]);
             const parser = new Parser.DiceParser(lexer);
-            expect(() => parser.parseFactor()).toThrow();
+
+            const result = new ParseResult();
+            const exp = parser.parseFactor(result);
+            expect(result.errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });
