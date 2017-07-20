@@ -72,8 +72,12 @@ export class DiceGenerator implements Generator<string> {
     }
 
     generateDice(expression: Ast.ExpressionNode): string {
-        this.expectChildCount(expression, 2);
-        return this.generateWithParens(expression.getChild(0)) + "d" + this.generateWithParens(expression.getChild(1));
+        if (expression.getChildCount() === 0 || expression.getChild(0).type === Ast.NodeType.DiceRoll) {
+            return "(" + this.generateCommaList(expression) + ")";
+        } else {
+            this.expectChildCount(expression, 2);
+            return this.generateWithParens(expression.getChild(0)) + "d" + this.generateWithParens(expression.getChild(1));
+        }
     }
 
     generateDiceSides(expression: Ast.ExpressionNode): string {

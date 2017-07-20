@@ -127,5 +127,16 @@ describe("DiceGenerator", () => {
             // -5d6 will be interpreted as 0.
             expect(generator.generate(dice)).toBe("(-5)d6");
         });
+        it("generates dice roll values ((4, 5, 6)).", () => {
+            const dice = Ast.Factory.create(Ast.NodeType.Dice).setAttribute("sides", 6);
+
+            dice.addChild(Ast.Factory.create(Ast.NodeType.DiceRoll).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.DiceRoll).setAttribute("value", 5));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.DiceRoll).setAttribute("value", 6));
+
+            const generator = new Generator.DiceGenerator();
+
+            expect(generator.generate(dice)).toBe("(4, 5, 6)");
+        });
     });
 });
