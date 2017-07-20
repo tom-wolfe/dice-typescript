@@ -197,13 +197,13 @@ export class DiceParser extends BasicParser {
                     case "k": root = this.parseKeepModifier(result, root); break;
                     case "r": root = this.parseRerollModifier(result, root); break;
                     case "s": root = this.parseSortModifier(result, root); break;
-                    default: this.errorToken(result, TokenType.Identifier, token);
+                    default:
+                        this.errorToken(result, TokenType.Identifier, token);
+                        return root;
                 }
             } else if (token.type === TokenType.Exclamation) {
                 root = this.parseExplodeModifier(result, root);
-            } else {
-                break;
-            }
+            } else { break; }
         }
         return root;
     }

@@ -180,18 +180,18 @@ describe("DiceParser", () => {
             expect(num.type).toBe(NodeType.Integer);
             expect(num.getAttribute("value")).toBe(3);
         });
-        // it("throws exception on unrecognized modifier (4d6x).", () => {
-        //     TODO: This is an infinite loop.
-        //     const lexer = new MockLexer([
-        //         new Token(TokenType.Integer, 0, "4"),
-        //         new Token(TokenType.Identifier, 1, "d"),
-        //         new Token(TokenType.Integer, 2, "6"),
-        //         new Token(TokenType.Identifier, 3, "x"),
-        //     ]);
-        //     const parser = new Parser.DiceParser(lexer);
-        //         const result = new ParseResult();
-        //         const mod = parser.parseDiceRoll(result);
-        //         expect(result.errors.length).toBeGreaterThanOrEqual(1);
-        // });
+        it("throws exception on unrecognized modifier (4d6x).", () => {
+            // TODO: This is an infinite loop.
+            const lexer = new MockLexer([
+                new Token(TokenType.Integer, 0, "4"),
+                new Token(TokenType.Identifier, 1, "d"),
+                new Token(TokenType.Integer, 2, "6"),
+                new Token(TokenType.Identifier, 3, "x"),
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const mod = parser.parseDiceRoll(result);
+            expect(result.errors.length).toBeGreaterThanOrEqual(1);
+        });
     });
 });

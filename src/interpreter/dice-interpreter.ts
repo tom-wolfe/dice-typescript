@@ -320,7 +320,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         } else if (direction === "ascending") {
             sortOrder = (a, b) => a.getAttribute("value") - b.getAttribute("value");
         } else {
-            // TODO: Add error.
+            errors.push(new ErrorMessage(`Unknown sort direction: ${direction}. Expected 'ascending' or 'descending'.`, dice));
         }
 
         output.rolls = output.rolls.sort(sortOrder);
