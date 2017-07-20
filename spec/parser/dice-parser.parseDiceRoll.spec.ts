@@ -181,7 +181,6 @@ describe("DiceParser", () => {
             expect(num.getAttribute("value")).toBe(3);
         });
         it("throws exception on unrecognized modifier (4d6x).", () => {
-            // TODO: This is an infinite loop.
             const lexer = new MockLexer([
                 new Token(TokenType.Integer, 0, "4"),
                 new Token(TokenType.Identifier, 1, "d"),
