@@ -14,7 +14,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseFunctionCall(result);
+            const exp = parser.parseFunction(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(0);
@@ -29,7 +29,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseFunctionCall(result);
+            const exp = parser.parseFunction(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
@@ -49,7 +49,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseFunctionCall(result);
+            const exp = parser.parseFunction(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(1);
@@ -73,7 +73,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseFunctionCall(result);
+            const exp = parser.parseFunction(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Function);
             expect(exp.getChildCount()).toBe(2);

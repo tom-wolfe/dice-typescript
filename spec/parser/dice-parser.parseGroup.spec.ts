@@ -5,7 +5,7 @@ import { ParseResult } from "../../src/parser/parse-result";
 import { MockLexer } from "../helpers/mock-lexer";
 
 describe("DiceParser", () => {
-    describe("parseExpressionGroup", () => {
+    describe("parseGroup", () => {
         it("can correctly parse a group with no elements.", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.BraceOpen, 0, "{"),
@@ -13,7 +13,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseExpressionGroup(result);
+            const exp = parser.parseGroup(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(0);
@@ -26,7 +26,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseExpressionGroup(result);
+            const exp = parser.parseGroup(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(1);
@@ -44,7 +44,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseExpressionGroup(result);
+            const exp = parser.parseGroup(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(1);
@@ -66,7 +66,7 @@ describe("DiceParser", () => {
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const exp = parser.parseExpressionGroup(result);
+            const exp = parser.parseGroup(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Group);
             expect(exp.getChildCount()).toBe(2);

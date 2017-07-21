@@ -96,7 +96,7 @@ export class DiceParser extends BasicParser {
         const token = this.lexer.peekNextToken();
         switch (token.type) {
             case TokenType.Identifier:
-                root = this.parseFunctionCall(result);
+                root = this.parseFunction(result);
                 break;
             case TokenType.ParenthesisOpen:
                 root = this.parseBracketedExpression(result);
@@ -105,7 +105,7 @@ export class DiceParser extends BasicParser {
                 }
                 break;
             case TokenType.BraceOpen:
-                root = this.parseExpressionGroup(result);
+                root = this.parseGroup(result);
                 break;
             case TokenType.Integer:
                 const number = this.parseInteger(result);
@@ -129,7 +129,7 @@ export class DiceParser extends BasicParser {
         }
     }
 
-    parseFunctionCall(result: ParseResult): Ast.ExpressionNode {
+    parseFunction(result: ParseResult): Ast.ExpressionNode {
         const functionName = this.expectAndConsume(result, TokenType.Identifier);
         const root = Ast.Factory.create(Ast.NodeType.Function)
             .setAttribute("name", functionName.value);
@@ -164,7 +164,7 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseExpressionGroup(result: ParseResult): Ast.ExpressionNode {
+    parseGroup(result: ParseResult): Ast.ExpressionNode {
         this.lexer.getNextToken(); // Consume the opening brace.
 
         const root = Ast.Factory.create(Ast.NodeType.Group);
