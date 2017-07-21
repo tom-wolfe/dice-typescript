@@ -118,47 +118,53 @@ export class DiceGenerator implements Generator<string> {
     }
 
     generateExplode(expression: Ast.ExpressionNode): string {
+        this.expectChildCount(expression, 1);
         let exp = "!";
         if (expression.getAttribute("compound") === "yes") { exp += "!"; }
         if (expression.getAttribute("penetrate") === "yes") { exp += "p"; }
-        if (expression.getChildCount() > 0) { exp += this.generate(expression.getChild(0)); }
-        return this.generate(expression) + exp;
+        if (expression.getChildCount() > 1) { exp += this.generate(expression.getChild(1)); }
+        return this.generate(expression.getChild(0)) + exp;
     }
 
     generateKeep(expression: Ast.ExpressionNode): string {
+        this.expectChildCount(expression, 1);
         let keep = "k";
         if (expression.getAttribute("type") === "highest") { keep += "h"; }
         if (expression.getAttribute("type") === "lowest") { keep += "l"; }
-        return this.generate(expression) + keep;
+        return this.generate(expression.getChild(0)) + keep;
     }
 
     generateDrop(expression: Ast.ExpressionNode): string {
+        this.expectChildCount(expression, 1);
         let drop = "d";
         if (expression.getAttribute("type") === "highest") { drop += "h"; }
         if (expression.getAttribute("type") === "lowest") { drop += "l"; }
-        return this.generate(expression) + drop;
+        return this.generate(expression.getChild(0)) + drop;
     }
 
     generateCritical(expression: Ast.ExpressionNode): string {
+        this.expectChildCount(expression, 1);
         let critical = "c";
         if (expression.getAttribute("type") === "success") { critical += "s"; }
         if (expression.getAttribute("type") === "failure") { critical += "f"; }
-        if (expression.getChildCount() > 0) { critical += this.generate(expression.getChild(0)); }
-        return this.generate(expression) + critical;
+        if (expression.getChildCount() > 1) { critical += this.generate(expression.getChild(1)); }
+        return this.generate(expression.getChild(0)) + critical;
     }
 
     generateReroll(expression: Ast.ExpressionNode): string {
+        this.expectChildCount(expression, 1);
         let reroll = "r";
         if (expression.getAttribute("times") === "once") { reroll += "o"; }
-        if (expression.getChildCount() > 0) { reroll += this.generate(expression.getChild(0)); }
-        return this.generate(expression) + reroll;
+        if (expression.getChildCount() > 1) { reroll += this.generate(expression.getChild(1)); }
+        return this.generate(expression.getChild(0)) + reroll;
     }
 
     generateSort(expression: Ast.ExpressionNode): string {
+        this.expectChildCount(expression, 1);
         let sort = "s";
         if (expression.getAttribute("direction") === "ascending") { sort += "a"; }
         if (expression.getAttribute("direction") === "descending") { sort += "d"; }
-        return this.generate(expression) + sort;
+        return this.generate(expression.getChild(0)) + sort;
     }
 
     private generateEqualityExpression(expression: Ast.ExpressionNode, operator: string): string {

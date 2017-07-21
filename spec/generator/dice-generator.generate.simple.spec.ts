@@ -49,5 +49,40 @@ describe("DiceGenerator", () => {
             const generator = new Generator.DiceGenerator();
             expect(generator.generate(exp)).toBe("-10");
         });
+        it("correctly generates a boolean condition (1 = 2).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Equal);
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            const generator = new Generator.DiceGenerator();
+            expect(generator.generate(exp)).toBe("1 = 2");
+        });
+        it("correctly generates a boolean condition (1 > 2).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Greater);
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            const generator = new Generator.DiceGenerator();
+            expect(generator.generate(exp)).toBe("1 > 2");
+        });
+        it("correctly generates a boolean condition (1 >= 2).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.GreaterOrEqual);
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            const generator = new Generator.DiceGenerator();
+            expect(generator.generate(exp)).toBe("1 >= 2");
+        });
+        it("correctly generates a boolean condition (1 < 2).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Less);
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            const generator = new Generator.DiceGenerator();
+            expect(generator.generate(exp)).toBe("1 < 2");
+        });
+        it("correctly generates a boolean condition (1 <= 2).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.LessOrEqual);
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            const generator = new Generator.DiceGenerator();
+            expect(generator.generate(exp)).toBe("1 <= 2");
+        });
     });
 });
