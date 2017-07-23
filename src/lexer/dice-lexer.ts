@@ -62,6 +62,7 @@ export class DiceLexer implements Lexer {
 
     private constructNextToken() {
         let curChar: string;
+        // TODO: Support ellipses for group repetition.
         while (curChar = this.stream.getNextCharacter()) {
             switch (true) {
                 case this.idCharRegex.test(curChar): return this.parseIdentifier();

@@ -298,42 +298,46 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     }
 
     evaluateEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        return this.evaluateSuccess(expression, errors, (l, r) => (l === r));
+        return this.evaluateSuccess(expression, (l, r) => (l === r), errors);
     }
 
     evaluateGreater(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        return this.evaluateSuccess(expression, errors, (l, r) => (l > r));
+        return this.evaluateSuccess(expression, (l, r) => (l > r), errors);
     }
 
     evaluateGreaterOrEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        return this.evaluateSuccess(expression, errors, (l, r) => (l >= r));
+        return this.evaluateSuccess(expression, (l, r) => (l >= r), errors);
     }
 
     evaluateLess(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        return this.evaluateSuccess(expression, errors, (l, r) => (l < r));
+        return this.evaluateSuccess(expression, (l, r) => (l < r), errors);
     }
 
     evaluateLessOrEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        return this.evaluateSuccess(expression, errors, (l, r) => (l <= r));
+        return this.evaluateSuccess(expression, (l, r) => (l <= r), errors);
     }
 
     countSuccesses(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        let total = 0;
-        if (expression.type === Ast.NodeType.Dice) {
-            expression.forEachChild(die => {
-                if (die.getAttribute("success")) { total++; }
-            });
-        } else {
-            expression.forEachChild(die => {
-                total += this.countSuccesses(die, errors);
-            });
-        }
-        return total;
+        return this.countSuccessOrFailure(expression, die => die.getAttribute("success"), errors);
     }
 
     countFailures(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        // TODO: Implement failures.
-        return 0;
+        return this.countSuccessOrFailure(expression, die => !die.getAttribute("success"), errors);
+    }
+
+    private countSuccessOrFailure(expression: Ast.ExpressionNode,
+        condition: (die: Ast.ExpressionNode) => boolean, errors: ErrorMessage[]): number {
+        let total = 0;
+        if (expression.type === Ast.NodeType.Dice) {
+            expression.forEachChild(die => {
+                if (condition(die)) { total++; }
+            });
+        } else {
+            expression.forEachChild(die => {
+                total += this.countSuccessOrFailure(die, condition, errors);
+            });
+        }
+        return total;
     }
 
     private expectChildCount(expression: Ast.ExpressionNode, count: number, errors: ErrorMessage[]) {
@@ -358,7 +362,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         }
     }
 
-    evaluateSuccess(expression: Ast.ExpressionNode, errors: ErrorMessage[], compare: (lhs: number, rhs: number) => boolean): number {
+    evaluateSuccess(expression: Ast.ExpressionNode, compare: (lhs: number, rhs: number) => boolean, errors: ErrorMessage[]): number {
         this.expectChildCount(expression, 2, errors);
         const rhv = this.evaluate(expression.getChild(1), errors);
 

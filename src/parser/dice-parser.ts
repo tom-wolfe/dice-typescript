@@ -172,7 +172,9 @@ export class DiceParser extends BasicParser {
         // Parse group elements.
         const token = this.lexer.peekNextToken();
         if (token.type !== TokenType.BraceClose) {
-            root.addChild(this.parseExpression(result));
+            const firstElement = this.parseExpression(result);
+            root.addChild(firstElement);
+            // TODO: Support ellipses for group repetition.
             while (this.lexer.peekNextToken().type === TokenType.Comma) {
                 this.lexer.getNextToken(); // Consume the comma.
                 root.addChild(this.parseExpression(result));
