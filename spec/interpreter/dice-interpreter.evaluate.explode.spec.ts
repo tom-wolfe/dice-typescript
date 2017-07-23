@@ -7,8 +7,8 @@ describe("DiceInterpreter", () => {
     describe("evaluate", () => {
         it("evaluates an exploding dice (4d6!>3).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Explode)
-                .setAttribute("compound", "no")
-                .setAttribute("penetrate", "no");
+                .setAttribute("compound", false)
+                .setAttribute("penetrate", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
@@ -34,8 +34,8 @@ describe("DiceInterpreter", () => {
         });
         it("evaluates a penetrating dice (4d6!p>3).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Explode)
-                .setAttribute("compound", "no")
-                .setAttribute("penetrate", "yes");
+                .setAttribute("compound", false)
+                .setAttribute("penetrate", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));

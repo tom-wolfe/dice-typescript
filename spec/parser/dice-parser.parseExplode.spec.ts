@@ -15,8 +15,8 @@ describe("DiceParser", () => {
             const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
-            expect(mod.getAttribute("compound")).toBe("no");
-            expect(mod.getAttribute("penetrate")).toBe("no");
+            expect(mod.getAttribute("compound")).toBe(false);
+            expect(mod.getAttribute("penetrate")).toBe(false);
         });
         it("can correctly parse an explode modifier (!!).", () => {
             const lexer = new MockLexer([
@@ -28,8 +28,8 @@ describe("DiceParser", () => {
             const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
-            expect(mod.getAttribute("compound")).toBe("yes");
-            expect(mod.getAttribute("penetrate")).toBe("no");
+            expect(mod.getAttribute("compound")).toBe(true);
+            expect(mod.getAttribute("penetrate")).toBe(false);
         });
         it("can correctly parse an explode modifier (!p).", () => {
             const lexer = new MockLexer([
@@ -41,8 +41,8 @@ describe("DiceParser", () => {
             const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
-            expect(mod.getAttribute("compound")).toBe("no");
-            expect(mod.getAttribute("penetrate")).toBe("yes");
+            expect(mod.getAttribute("compound")).toBe(false);
+            expect(mod.getAttribute("penetrate")).toBe(true);
         });
         it("can correctly parse an explode modifier (!p).", () => {
             const lexer = new MockLexer([
@@ -55,8 +55,8 @@ describe("DiceParser", () => {
             const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
-            expect(mod.getAttribute("compound")).toBe("yes");
-            expect(mod.getAttribute("penetrate")).toBe("yes");
+            expect(mod.getAttribute("compound")).toBe(true);
+            expect(mod.getAttribute("penetrate")).toBe(true);
         });
         it("can correctly parse an explode modifier with a compare point(!p<3).", () => {
             const lexer = new MockLexer([
@@ -70,8 +70,8 @@ describe("DiceParser", () => {
             const mod = parser.parseExplode(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Explode);
-            expect(mod.getAttribute("compound")).toBe("no");
-            expect(mod.getAttribute("penetrate")).toBe("yes");
+            expect(mod.getAttribute("compound")).toBe(false);
+            expect(mod.getAttribute("penetrate")).toBe(true);
             expect(mod.getChildCount()).toBe(1);
             expect(mod.getChild(0).type).toBe(NodeType.Less);
         });

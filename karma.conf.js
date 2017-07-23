@@ -1,6 +1,7 @@
 /* cSpell:disable */
 module.exports = function (config) {
     config.set({
+        browserNoActivityTimeout: 20000,
         frameworks: ["jasmine", "karma-typescript"],
         files: [
             { pattern: "spec/**/*.ts" },

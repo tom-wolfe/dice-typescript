@@ -109,7 +109,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     }
 
     evaluateDiceRoll(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        if (expression.getAttribute("drop") !== "yes") {
+        if (expression.getAttribute("drop") !== true) {
             return expression.getAttribute("value");
         }
         return 0;
@@ -151,12 +151,11 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     evaluateExplode(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         this.expectChildCount(expression, 1, errors);
-        const dice = this.findLeftmostDiceNode(expression, errors);
+        const dice = this.findDiceOrGroupNode(expression, errors);
         let condition: Ast.ExpressionNode;
-        const penetrate = expression.getAttribute("penetrate") === "yes";
+        const penetrate = expression.getAttribute("penetrate");
         if (expression.getChildCount() > 1) {
             condition = expression.getChild(1);
-            this.evaluate(condition, errors);
         }
 
         this.evaluate(dice, errors);
@@ -165,19 +164,19 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
         let total = 0;
         const sides = dice.getAttribute("sides");
-        for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
-            let die = dice.getChild(rollIndex);
-            if (die.getAttribute("drop") === "yes") { continue; }
-            let dieValue = this.evaluate(die, errors);
-            total += dieValue;
-            while (condition && this.evaluateComparison(dieValue, condition, errors) || dieValue === sides) {
-                die = this.createDiceRoll(sides, errors);
-                dieValue = this.evaluate(die, errors);
-                if (penetrate) { dieValue -= 1; }
+        dice.forEachChild(die => {
+            if (!die.getAttribute("drop")) {
+                let dieValue = this.evaluate(die, errors);
                 total += dieValue;
-                newRolls.push(die);
+                while (condition && this.evaluateComparison(dieValue, condition, errors) || dieValue === sides) {
+                    die = this.createDiceRoll(sides, errors);
+                    dieValue = this.evaluate(die, errors);
+                    if (penetrate) { dieValue -= 1; }
+                    total += dieValue;
+                    newRolls.push(die);
+                }
             }
-        }
+        });
 
         newRolls.forEach(newRoll => dice.addChild(newRoll));
         return total;
@@ -185,7 +184,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     evaluateKeep(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         this.expectChildCount(expression, 1, errors);
-        const dice = this.findLeftmostDiceNode(expression, errors);
+        const dice = this.findDiceOrGroupNode(expression, errors);
         const countTotal = (expression.getChildCount() > 1) ? this.evaluate(expression.getChild(1), errors) : 1;
         const type = expression.getAttribute("type");
         this.evaluate(dice, errors);
@@ -196,10 +195,10 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         let total = 0;
         rolls.forEach(roll => {
             if (count < countTotal) {
-                roll.setAttribute("drop", "no");
+                roll.setAttribute("drop", false);
                 total += roll.getAttribute("value");
             } else {
-                roll.setAttribute("drop", "yes");
+                roll.setAttribute("drop", true);
             }
             count++;
         });
@@ -208,7 +207,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     evaluateDrop(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         this.expectChildCount(expression, 1, errors);
-        const dice = this.findLeftmostDiceNode(expression, errors);
+        const dice = this.findDiceOrGroupNode(expression, errors);
         const countTotal = (expression.getChildCount() > 1) ? this.evaluate(expression.getChild(1), errors) : 1;
         const type = expression.getAttribute("type");
         this.evaluate(dice, errors);
@@ -218,9 +217,9 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         let total = 0;
         rolls.forEach(roll => {
             if (count < countTotal) {
-                roll.setAttribute("drop", "yes");
+                roll.setAttribute("drop", true);
             } else {
-                roll.setAttribute("drop", "no");
+                roll.setAttribute("drop", false);
                 total += roll.getAttribute("value");
             }
             count++;
@@ -230,13 +229,12 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     evaluateCritical(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         this.expectChildCount(expression, 1, errors);
-        const dice = this.findLeftmostDiceNode(expression, errors);
+        const dice = this.findDiceOrGroupNode(expression, errors);
         const type = expression.getAttribute("type");
 
         let condition: Ast.ExpressionNode;
         if (expression.getChildCount() > 1) {
             condition = expression.getChild(1);
-            this.evaluate(condition, errors);
         } else {
             condition = Ast.Factory.create(Ast.NodeType.Equal);
             if (type === "success") {
@@ -250,84 +248,87 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         this.evaluate(dice, errors);
 
         let total = 0;
-        for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
-            const die = dice.getChild(rollIndex);
+        dice.forEachChild((die) => {
             const dieValue = this.evaluate(die, errors);
             if (this.evaluateComparison(dieValue, condition, errors)) {
                 die.setAttribute("critical", type);
             }
             total += dieValue;
-        }
+        });
 
         return total;
     }
 
     evaluateReroll(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         this.expectChildCount(expression, 1, errors);
-        const dice = this.findLeftmostDiceNode(expression, errors);
+        const dice = this.findDiceOrGroupNode(expression, errors);
         let condition: Ast.ExpressionNode;
-        const once = expression.getAttribute("once") === "yes";
+        const once = expression.getAttribute("once");
+
         if (expression.getChildCount() > 1) {
             condition = expression.getChild(1);
-            this.evaluate(condition, errors);
         }
 
         this.evaluate(dice, errors);
 
         let total = 0;
         const sides = dice.getAttribute("sides");
-        for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
-            const die = dice.getChild(rollIndex);
-            if (die.getAttribute("drop") === "yes") { continue; }
-            let dieValue = this.evaluate(die, errors);
-            while (condition && this.evaluateComparison(dieValue, condition, errors) || dieValue === 1) {
-                dieValue = this.createDiceRollValue(sides, errors);
-                if (once) { break; }
+        dice.forEachChild(die => {
+            if (!die.getAttribute("drop")) {
+                let dieValue = this.evaluate(die, errors);
+                while (condition && this.evaluateComparison(dieValue, condition, errors) || dieValue === 1) {
+                    dieValue = this.createDiceRollValue(sides, errors);
+                    if (once) { break; }
+                }
+                die.setAttribute("value", dieValue);
+                total += dieValue;
             }
-            die.setAttribute("value", dieValue);
-            total += dieValue;
-        }
+        });
 
         return total;
     }
 
     evaluateSort(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         this.expectChildCount(expression, 1, errors);
-        const dice = this.findLeftmostDiceNode(expression, errors);
+        const dice = this.findDiceOrGroupNode(expression, errors);
         const rolls = this.getSortedDiceRolls(dice, expression.getAttribute("direction"), errors);
         dice.clearChildren();
         rolls.rolls.forEach(roll => dice.addChild(roll));
         return rolls.total;
     }
 
-    evaluateEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): boolean {
-        this.expectChildCount(expression, 2, errors);
-        return this.evaluate(expression.getChild(0), errors) === this.evaluate(expression.getChild(1), errors);
+    evaluateEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+        return this.evaluateSuccess(expression, errors, (l, r) => (l === r));
     }
 
-    evaluateGreater(expression: Ast.ExpressionNode, errors: ErrorMessage[]): boolean {
-        this.expectChildCount(expression, 2, errors);
-        return this.evaluate(expression.getChild(0), errors) < this.evaluate(expression.getChild(1), errors);
+    evaluateGreater(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+        return this.evaluateSuccess(expression, errors, (l, r) => (l > r));
     }
 
-    evaluateGreaterOrEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): boolean {
-        this.expectChildCount(expression, 2, errors);
-        return this.evaluate(expression.getChild(0), errors) >= this.evaluate(expression.getChild(1), errors);
+    evaluateGreaterOrEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+        return this.evaluateSuccess(expression, errors, (l, r) => (l >= r));
     }
 
-    evaluateLess(expression: Ast.ExpressionNode, errors: ErrorMessage[]): boolean {
-        this.expectChildCount(expression, 2, errors);
-        return this.evaluate(expression.getChild(0), errors) < this.evaluate(expression.getChild(1), errors);
+    evaluateLess(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+        return this.evaluateSuccess(expression, errors, (l, r) => (l < r));
     }
 
-    evaluateLessOrEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): boolean {
-        this.expectChildCount(expression, 2, errors);
-        return this.evaluate(expression.getChild(0), errors) <= this.evaluate(expression.getChild(1), errors);
+    evaluateLessOrEqual(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+        return this.evaluateSuccess(expression, errors, (l, r) => (l <= r));
     }
 
     countSuccesses(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
-        // TODO: Implement successes.
-        return 0;
+        let total = 0;
+        if (expression.type === Ast.NodeType.Dice) {
+            expression.forEachChild(die => {
+                if (die.getAttribute("success")) { total++; }
+            });
+        } else {
+            expression.forEachChild(die => {
+                total += this.countSuccesses(die, errors);
+            });
+        }
+        return total;
     }
 
     countFailures(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
@@ -357,7 +358,25 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         }
     }
 
-    private findLeftmostDiceNode(expression: Ast.ExpressionNode, errors: ErrorMessage[]): Ast.ExpressionNode {
+    evaluateSuccess(expression: Ast.ExpressionNode, errors: ErrorMessage[], compare: (lhs: number, rhs: number) => boolean): number {
+        this.expectChildCount(expression, 2, errors);
+        const rhv = this.evaluate(expression.getChild(1), errors);
+
+        let total = 0;
+        // TODO: What happens if this is a group?
+        this.findDiceOrGroupNode(expression, errors).forEachChild(die => {
+            if (!die.getAttribute("drop")) {
+                const val = this.evaluate(die, errors);
+                const res = compare(this.evaluate(die, errors), rhv)
+                die.setAttribute("success", res);
+                if (res) { total += val; }
+            }
+        });
+
+        return total;
+    }
+
+    private findDiceOrGroupNode(expression: Ast.ExpressionNode, errors: ErrorMessage[]): Ast.ExpressionNode {
         if (expression.type === Ast.NodeType.Dice || expression.type === Ast.NodeType.Group) {
             return expression;
         }
@@ -366,18 +385,17 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         }
         const child = expression.getChild(0);
         this.evaluate(child, errors);
-        return this.findLeftmostDiceNode(child, errors);
+        return this.findDiceOrGroupNode(child, errors);
     }
 
     private getSortedDiceRolls(dice: Ast.ExpressionNode, direction: string, errors: ErrorMessage[]):
         { rolls: Ast.ExpressionNode[], total: number } {
         const output = { rolls: [], total: 0 };
 
-        for (let rollIndex = 0; rollIndex < dice.getChildCount(); rollIndex++) {
-            const die = dice.getChild(rollIndex);
+        dice.forEachChild(die => {
             output.rolls.push(die);
             output.total += this.evaluate(die, errors);
-        }
+        })
 
         let sortOrder;
         if (direction === "descending") {
@@ -399,7 +417,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         const diceRoll = this.createDiceRollValue(sides, errors);
         return Ast.Factory.create(Ast.NodeType.DiceRoll)
             .setAttribute("value", diceRoll)
-            .setAttribute("drop", "no");
+            .setAttribute("drop", false);
     }
 
     private createDiceRollValue(sides: Ast.ExpressionNode | number, errors: ErrorMessage[]): number {

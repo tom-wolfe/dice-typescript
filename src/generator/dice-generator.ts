@@ -120,8 +120,8 @@ export class DiceGenerator implements Generator<string> {
     generateExplode(expression: Ast.ExpressionNode): string {
         this.expectChildCount(expression, 1);
         let exp = "!";
-        if (expression.getAttribute("compound") === "yes") { exp += "!"; }
-        if (expression.getAttribute("penetrate") === "yes") { exp += "p"; }
+        if (expression.getAttribute("compound")) { exp += "!"; }
+        if (expression.getAttribute("penetrate")) { exp += "p"; }
         if (expression.getChildCount() > 1) { exp += this.generate(expression.getChild(1)); }
         return this.generate(expression.getChild(0)) + exp;
     }

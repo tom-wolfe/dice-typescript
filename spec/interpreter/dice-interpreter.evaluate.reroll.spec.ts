@@ -8,7 +8,7 @@ describe("DiceInterpreter", () => {
     describe("evaluate", () => {
         it("evaluates rerolling dice (4d6r<3).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", "no");
+                .setAttribute("once", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
@@ -33,7 +33,7 @@ describe("DiceInterpreter", () => {
         });
         it("evaluates a rerolling dice (4d6ro<3).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", "yes");
+                .setAttribute("once", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
@@ -58,7 +58,7 @@ describe("DiceInterpreter", () => {
         });
         it("evaluates rerolling dice (4d6r).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", "no");
+                .setAttribute("once", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
@@ -78,7 +78,7 @@ describe("DiceInterpreter", () => {
         });
         it("evaluates a rerolling dice no condition (4d6ro).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", "yes");
+                .setAttribute("once", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));

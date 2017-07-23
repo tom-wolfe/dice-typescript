@@ -5,8 +5,8 @@ describe("DiceGenerator", () => {
     describe("generate", () => {
         it("generates a simple explosion (2d6!).", () => {
             const explode = Ast.Factory.create(Ast.NodeType.Explode)
-                .setAttribute("compound", "no")
-                .setAttribute("penetrate", "no");
+                .setAttribute("compound", false)
+                .setAttribute("penetrate", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
@@ -19,8 +19,8 @@ describe("DiceGenerator", () => {
         });
         it("generates a simple explosion (2d6!!).", () => {
             const explode = Ast.Factory.create(Ast.NodeType.Explode)
-                .setAttribute("compound", "yes")
-                .setAttribute("penetrate", "no");
+                .setAttribute("compound", true)
+                .setAttribute("penetrate", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
@@ -33,8 +33,8 @@ describe("DiceGenerator", () => {
         });
         it("generates a simple explosion (2d6!p).", () => {
             const explode = Ast.Factory.create(Ast.NodeType.Explode)
-                .setAttribute("compound", "no")
-                .setAttribute("penetrate", "yes");
+                .setAttribute("compound", false)
+                .setAttribute("penetrate", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
@@ -47,8 +47,8 @@ describe("DiceGenerator", () => {
         });
         it("generates a simple explosion (2d6!!p).", () => {
             const explode = Ast.Factory.create(Ast.NodeType.Explode)
-                .setAttribute("compound", "yes")
-                .setAttribute("penetrate", "yes");
+                .setAttribute("compound", true)
+                .setAttribute("penetrate", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));

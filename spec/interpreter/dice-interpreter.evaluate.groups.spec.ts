@@ -32,9 +32,9 @@ describe("DiceInterpreter", () => {
             const errors: ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
             expect(group.getChildCount()).toBe(3);
-            expect(group.getChild(0).getAttribute("drop")).toBe("no");
-            expect(group.getChild(1).getAttribute("drop")).toBe("yes");
-            expect(group.getChild(2).getAttribute("drop")).toBe("no");
+            expect(group.getChild(0).getAttribute("drop")).toBe(false);
+            expect(group.getChild(1).getAttribute("drop")).toBe(true);
+            expect(group.getChild(2).getAttribute("drop")).toBe(false);
         });
     });
 });

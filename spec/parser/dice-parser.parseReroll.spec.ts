@@ -15,7 +15,7 @@ describe("DiceParser", () => {
             const mod = parser.parseReroll(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Reroll);
-            expect(mod.getAttribute("once")).toBe("no");
+            expect(mod.getAttribute("once")).toBe(false);
         });
         it("can correctly parse a drop modifier (ro).", () => {
             const lexer = new MockLexer([
@@ -26,7 +26,7 @@ describe("DiceParser", () => {
             const mod = parser.parseReroll(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Reroll);
-            expect(mod.getAttribute("once")).toBe("yes");
+            expect(mod.getAttribute("once")).toBe(true);
         });
         it("can correctly parse a drop modifier (ro<3).", () => {
             const lexer = new MockLexer([
@@ -39,7 +39,7 @@ describe("DiceParser", () => {
             const mod = parser.parseReroll(result);
             expect(result.errors.length).toBe(0);
             expect(mod.type).toBe(NodeType.Reroll);
-            expect(mod.getAttribute("once")).toBe("yes");
+            expect(mod.getAttribute("once")).toBe(true);
             expect(mod.getChildCount()).toBe(1);
             expect(mod.getChild(0).type).toBe(NodeType.Less);
         });

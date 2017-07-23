@@ -24,11 +24,11 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
-            expect(dice.getChild(0).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(1).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(2).getAttribute("drop")).toBe("no");
-            expect(dice.getChild(3).getAttribute("drop")).toBe("no");
-            expect(dice.getChild(4).getAttribute("drop")).toBe("yes");
+            expect(dice.getChild(0).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(1).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(2).getAttribute("drop")).toBe(false);
+            expect(dice.getChild(3).getAttribute("drop")).toBe(false);
+            expect(dice.getChild(4).getAttribute("drop")).toBe(true);
         });
         it("evaluates keep modifier (5d20kh).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Keep)
@@ -48,11 +48,11 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
-            expect(dice.getChild(0).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(1).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(2).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(3).getAttribute("drop")).toBe("no");
-            expect(dice.getChild(4).getAttribute("drop")).toBe("yes");
+            expect(dice.getChild(0).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(1).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(2).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(3).getAttribute("drop")).toBe(false);
+            expect(dice.getChild(4).getAttribute("drop")).toBe(true);
         });
         it("evaluates keep modifier (5d20kl2).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Keep)
@@ -73,11 +73,11 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
-            expect(dice.getChild(0).getAttribute("drop")).toBe("no");
-            expect(dice.getChild(1).getAttribute("drop")).toBe("no");
-            expect(dice.getChild(2).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(3).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(4).getAttribute("drop")).toBe("yes");
+            expect(dice.getChild(0).getAttribute("drop")).toBe(false);
+            expect(dice.getChild(1).getAttribute("drop")).toBe(false);
+            expect(dice.getChild(2).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(3).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(4).getAttribute("drop")).toBe(true);
         });
         it("evaluates keep modifier (5d20kl).", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Keep)
@@ -97,11 +97,11 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(5);
-            expect(dice.getChild(0).getAttribute("drop")).toBe("no");
-            expect(dice.getChild(1).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(2).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(3).getAttribute("drop")).toBe("yes");
-            expect(dice.getChild(4).getAttribute("drop")).toBe("yes");
+            expect(dice.getChild(0).getAttribute("drop")).toBe(false);
+            expect(dice.getChild(1).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(2).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(3).getAttribute("drop")).toBe(true);
+            expect(dice.getChild(4).getAttribute("drop")).toBe(true);
         });
     });
 });

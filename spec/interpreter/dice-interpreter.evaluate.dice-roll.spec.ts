@@ -7,7 +7,7 @@ describe("DiceInterpreter", () => {
     describe("evaluate", () => {
         it("evaluates a simple dice roll expression (dropped).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.DiceRoll)
-                .setAttribute("drop", "yes")
+                .setAttribute("drop", true)
                 .setAttribute("value", 4);
 
             const interpreter = new Interpreter.DiceInterpreter();
@@ -16,7 +16,7 @@ describe("DiceInterpreter", () => {
         });
         it("evaluates a simple dice roll expression (not dropped).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.DiceRoll)
-                .setAttribute("drop", "no")
+                .setAttribute("drop", false)
                 .setAttribute("value", 4);
 
             const interpreter = new Interpreter.DiceInterpreter();

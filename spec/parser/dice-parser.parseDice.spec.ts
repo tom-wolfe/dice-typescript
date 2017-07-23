@@ -58,8 +58,8 @@ describe("DiceParser", () => {
             const exp = parser.parseDice(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Explode);
-            expect(exp.getAttribute("compound")).toBe("no");
-            expect(exp.getAttribute("penetrate")).toBe("yes");
+            expect(exp.getAttribute("compound")).toBe(false);
+            expect(exp.getAttribute("penetrate")).toBe(true);
             expect(exp.getChildCount()).toBe(2);
 
             const dice = exp.getChild(0);
@@ -127,7 +127,7 @@ describe("DiceParser", () => {
             const exp = parser.parseDice(result);
             expect(result.errors.length).toBe(0);
             expect(exp.type).toBe(NodeType.Reroll);
-            expect(exp.getAttribute("once")).toBe("yes");
+            expect(exp.getAttribute("once")).toBe(true);
             expect(exp.getChildCount()).toBe(2);
 
             const dice = exp.getChild(0);
