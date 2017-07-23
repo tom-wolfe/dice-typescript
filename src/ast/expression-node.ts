@@ -34,6 +34,7 @@ export class ExpressionNode {
 
     insertChild(node: ExpressionNode, index?: number, ): ExpressionNode {
         if (node) {
+            if (node === this) { throw new Error("Cannot add a node as a child of itself."); }
             if (!this.children) { this.children = []; }
             this.children.splice(index || this.children.length, 0, node);
             node.parent = this;

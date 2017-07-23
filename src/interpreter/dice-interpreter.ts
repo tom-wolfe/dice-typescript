@@ -358,11 +358,11 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     }
 
     private findLeftmostDiceNode(expression: Ast.ExpressionNode, errors: ErrorMessage[]): Ast.ExpressionNode {
-        if (expression.type === Ast.NodeType.Dice) {
+        if (expression.type === Ast.NodeType.Dice || expression.type === Ast.NodeType.Group) {
             return expression;
         }
         if (expression.getChildCount() < 1) {
-            errors.push(new ErrorMessage("Missing dice node.", expression));
+            errors.push(new ErrorMessage("Missing dice/group node.", expression));
         }
         const child = expression.getChild(0);
         this.evaluate(child, errors);

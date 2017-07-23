@@ -14,8 +14,20 @@ describe("DiceGenerator", () => {
 
             expect(generator.generate(group)).toBe("{5, 2}");
         });
-        it("correctly evaluates a group with modifiers {5, 2}kh2.", () => {
-            // TODO: Implement this test.
+        it("correctly evaluates a group with modifiers {5, 2}kh.", () => {
+            const keep = Ast.Factory.create(Ast.NodeType.Keep);
+            keep.setAttribute("type", "highest");
+
+            const group = Ast.Factory.create(Ast.NodeType.Group);
+
+            group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+
+            keep.addChild(group);
+
+            const generator = new Generator.DiceGenerator();
+
+            expect(generator.generate(keep)).toBe("{5, 2}kh");
         });
     });
 });
