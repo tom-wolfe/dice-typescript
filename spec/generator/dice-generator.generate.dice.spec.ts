@@ -138,5 +138,12 @@ describe("DiceGenerator", () => {
 
             expect(generator.generate(dice)).toBe("(4, 5, 6)");
         });
+        it("throws on malformed dice expression (2d).", () => {
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+
+            const generator = new Generator.DiceGenerator();
+            expect(() => generator.generate(dice)).toThrow();
+        });
     });
 });
