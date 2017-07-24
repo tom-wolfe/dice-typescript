@@ -7,6 +7,7 @@ export enum TokenType {
     BraceClose = <any>"}",
     BraceOpen = <any>"{",
     Comma = <any>",",
+    Ellipsis = <any>"...",
     Identifier = <any>"identifier",
     Plus = <any>"+",
     Slash = <any>"/",

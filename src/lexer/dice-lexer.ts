@@ -60,9 +60,18 @@ export class DiceLexer implements Lexer {
         return this.createToken(TokenType.Integer, buffer);
     }
 
+    protected parseEllipsis(): Token {
+        for (let x = 0; x < 2; x++) {
+            if (this.stream.peekNextCharacter() !== ".") {
+                throw new Error("Missing period in ellipsis.");
+            }
+            this.stream.getNextCharacter();
+        }
+        return this.createToken(TokenType.Ellipsis, "...");
+    }
+
     private constructNextToken() {
         let curChar: string;
-        // TODO: Support ellipses for group repetition.
         while (curChar = this.stream.getNextCharacter()) {
             switch (true) {
                 case this.idCharRegex.test(curChar): return this.parseIdentifier();
@@ -78,6 +87,7 @@ export class DiceLexer implements Lexer {
                 case curChar === "-": return this.createToken(TokenType.Minus, curChar);
                 case curChar === "%": return this.createToken(TokenType.Percent, curChar);
                 case curChar === "!": return this.createToken(TokenType.Exclamation, curChar);
+                case curChar === ".": return this.parseEllipsis();
                 case curChar === "*":
                     if (this.stream.peekNextCharacter() === "*") {
                         this.stream.getNextCharacter();
