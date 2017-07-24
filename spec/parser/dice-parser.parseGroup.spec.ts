@@ -77,5 +77,23 @@ describe("DiceParser", () => {
             expect(exp.getChild(1).type).toBe(NodeType.Integer);
             expect(exp.getChild(1).getAttribute("value")).toBe(5);
         });
+        it("can correctly parse a group with a keep modifier", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.BraceOpen, 5, "{"),
+                new Token(TokenType.Integer, 6, "10"),
+                new Token(TokenType.Comma, 8, ","),
+                new Token(TokenType.Integer, 9, "5"),
+                new Token(TokenType.BraceClose, 10, "}"),
+                new Token(TokenType.Identifier, 11, "kh")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const exp = parser.parseGroup(result);
+            expect(result.errors.length).toBe(0);
+            expect(exp.type).toBe(NodeType.Keep);
+            expect(exp.getChildCount()).toBe(1);
+
+            expect(exp.getChild(0).type).toBe(NodeType.Group);
+        });
     });
 });

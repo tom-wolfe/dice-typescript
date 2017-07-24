@@ -167,7 +167,7 @@ export class DiceParser extends BasicParser {
     parseGroup(result: ParseResult): Ast.ExpressionNode {
         this.lexer.getNextToken(); // Consume the opening brace.
 
-        const root = Ast.Factory.create(Ast.NodeType.Group);
+        let root = Ast.Factory.create(Ast.NodeType.Group);
 
         // Parse group elements.
         const token = this.lexer.peekNextToken();
@@ -182,12 +182,18 @@ export class DiceParser extends BasicParser {
         }
 
         this.expectAndConsume(result, TokenType.BraceClose);
+        root = this.parseGroupModifiers(result, root);
 
         return root;
     }
 
     parseDice(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
         let root = this.parseDiceRoll(result, rollTimes);
+        root = this.parseDiceModifiers(result, root);
+        return root;
+    }
+
+    private parseDiceModifiers(result: ParseResult, root: Ast.ExpressionNode) {
         while (true) {
             const token = this.lexer.peekNextToken();
             if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
@@ -205,6 +211,25 @@ export class DiceParser extends BasicParser {
                 }
             } else if (token.type === TokenType.Exclamation) {
                 root = this.parseExplode(result, root);
+            } else { break; }
+        }
+        return root;
+    }
+
+    private parseGroupModifiers(result: ParseResult, root: Ast.ExpressionNode) {
+        while (true) {
+            const token = this.lexer.peekNextToken();
+            if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
+                root = this.parseCompareModifier(result, root);
+            } else if (token.type === TokenType.Identifier) {
+                switch (token.value[0]) {
+                    case "d": root = this.parseDrop(result, root); break;
+                    case "k": root = this.parseKeep(result, root); break;
+                    case "s": root = this.parseSort(result, root); break;
+                    default:
+                        this.errorToken(result, TokenType.Identifier, token);
+                        return root;
+                }
             } else { break; }
         }
         return root;
