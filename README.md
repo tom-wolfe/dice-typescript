@@ -88,6 +88,16 @@ In addition to the above syntax rules, some slightly more complicated variations
 
 As per the Roll20 syntax, you can use conditional operators, such as in ```4d20>10```, but in this library, the semantics of those operators is slightly different. In the Roll20 engine, ```>10``` actually means ```>=10```, but in this library, you would need to actually use the ```>=``` operator. I feel needing to use the correct mathematical operators makes for a more intuitive library.
 
+##### Group Repeaters
+
+Sometimes it is necessary to roll complex groups of dice that aren't supported by the basic syntax. For example, rolling a saving throw at disadvantage for 10 creatures. For this, you can use the group repeater modifier, which works like this:
+
+```
+    {2d20kl...10}>=14
+```
+
+The above will roll 10 disadvantaged saving throws, reporting successes for those that break DC14.
+
 ##### Fractional Dice Rolls
 
 Using the allowed syntax, it is possible to request a fractional number of dice to be rolled. Take the following example:
