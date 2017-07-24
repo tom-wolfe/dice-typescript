@@ -49,8 +49,5 @@ describe("DiceInterpreter", () => {
             expect(dice.getChild(3).getAttribute("drop")).toBe(false);
             expect(dice.getChild(4).getAttribute("drop")).toBe(false);
         });
-        it("evaluates a complex dice roll with modifiers (4d6!sakh2).", () => {
-            // TODO: Implement this test. This can't work because "sakh" will be lexed into one identifier, but it represents two modifiers.
-        });
     });
 });
