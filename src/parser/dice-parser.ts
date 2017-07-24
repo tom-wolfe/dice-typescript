@@ -166,72 +166,38 @@ export class DiceParser extends BasicParser {
 
     parseGroup(result: ParseResult): Ast.ExpressionNode {
         this.lexer.getNextToken(); // Consume the opening brace.
-
-        let root = Ast.Factory.create(Ast.NodeType.Group);
+        const root = Ast.Factory.create(Ast.NodeType.Group);
 
         // Parse group elements.
         const token = this.lexer.peekNextToken();
         if (token.type !== TokenType.BraceClose) {
-            const firstElement = this.parseExpression(result);
-            root.addChild(firstElement);
-            // TODO: Support ellipses for group repetition.
-            while (this.lexer.peekNextToken().type === TokenType.Comma) {
-                this.lexer.getNextToken(); // Consume the comma.
-                root.addChild(this.parseExpression(result));
-            }
+            do {
+                if (this.lexer.peekNextToken().type === TokenType.Comma) {
+                    this.lexer.getNextToken(); // Consume the comma.
+                }
+                let exp = this.parseExpression(result);
+                if (this.lexer.peekNextToken().type === TokenType.Ellipsis) {
+                    exp = this.parseRepeat(result, exp);
+                }
+                root.addChild(exp);
+            } while (this.lexer.peekNextToken().type === TokenType.Comma)
         }
 
         this.expectAndConsume(result, TokenType.BraceClose);
-        root = this.parseGroupModifiers(result, root);
+        return this.parseGroupModifiers(result, root);
+    }
 
+    parseRepeat(result: ParseResult, lhs: Ast.ExpressionNode): Ast.ExpressionNode {
+        this.lexer.getNextToken(); // Consume the ellipsis.
+        const root = Ast.Factory.create(Ast.NodeType.Repeat)
+        root.addChild(lhs);
+        root.addChild(this.parseExpression(result));
         return root;
     }
 
     parseDice(result: ParseResult, rollTimes?: Ast.ExpressionNode): Ast.ExpressionNode {
         let root = this.parseDiceRoll(result, rollTimes);
         root = this.parseDiceModifiers(result, root);
-        return root;
-    }
-
-    private parseDiceModifiers(result: ParseResult, root: Ast.ExpressionNode) {
-        while (true) {
-            const token = this.lexer.peekNextToken();
-            if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
-                root = this.parseCompareModifier(result, root);
-            } else if (token.type === TokenType.Identifier) {
-                switch (token.value[0]) {
-                    case "c": root = this.parseCritical(result, root); break;
-                    case "d": root = this.parseDrop(result, root); break;
-                    case "k": root = this.parseKeep(result, root); break;
-                    case "r": root = this.parseReroll(result, root); break;
-                    case "s": root = this.parseSort(result, root); break;
-                    default:
-                        this.errorToken(result, TokenType.Identifier, token);
-                        return root;
-                }
-            } else if (token.type === TokenType.Exclamation) {
-                root = this.parseExplode(result, root);
-            } else { break; }
-        }
-        return root;
-    }
-
-    private parseGroupModifiers(result: ParseResult, root: Ast.ExpressionNode) {
-        while (true) {
-            const token = this.lexer.peekNextToken();
-            if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
-                root = this.parseCompareModifier(result, root);
-            } else if (token.type === TokenType.Identifier) {
-                switch (token.value[0]) {
-                    case "d": root = this.parseDrop(result, root); break;
-                    case "k": root = this.parseKeep(result, root); break;
-                    case "s": root = this.parseSort(result, root); break;
-                    default:
-                        this.errorToken(result, TokenType.Identifier, token);
-                        return root;
-                }
-            } else { break; }
-        }
         return root;
     }
 
@@ -413,6 +379,48 @@ export class DiceParser extends BasicParser {
         }
         if (lhs) { root.addChild(lhs); }
         root.addChild(this.parseSimpleFactor(result));
+        return root;
+    }
+
+    private parseDiceModifiers(result: ParseResult, root: Ast.ExpressionNode) {
+        while (true) {
+            const token = this.lexer.peekNextToken();
+            if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
+                root = this.parseCompareModifier(result, root);
+            } else if (token.type === TokenType.Identifier) {
+                switch (token.value[0]) {
+                    case "c": root = this.parseCritical(result, root); break;
+                    case "d": root = this.parseDrop(result, root); break;
+                    case "k": root = this.parseKeep(result, root); break;
+                    case "r": root = this.parseReroll(result, root); break;
+                    case "s": root = this.parseSort(result, root); break;
+                    default:
+                        this.errorToken(result, TokenType.Identifier, token);
+                        return root;
+                }
+            } else if (token.type === TokenType.Exclamation) {
+                root = this.parseExplode(result, root);
+            } else { break; }
+        }
+        return root;
+    }
+
+    private parseGroupModifiers(result: ParseResult, root: Ast.ExpressionNode) {
+        while (true) {
+            const token = this.lexer.peekNextToken();
+            if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
+                root = this.parseCompareModifier(result, root);
+            } else if (token.type === TokenType.Identifier) {
+                switch (token.value[0]) {
+                    case "d": root = this.parseDrop(result, root); break;
+                    case "k": root = this.parseKeep(result, root); break;
+                    case "s": root = this.parseSort(result, root); break;
+                    default:
+                        this.errorToken(result, TokenType.Identifier, token);
+                        return root;
+                }
+            } else { break; }
+        }
         return root;
     }
 }

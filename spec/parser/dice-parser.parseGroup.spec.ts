@@ -20,9 +20,9 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a group with one simple argument", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.Integer, 6, "10"),
-                new Token(TokenType.BraceClose, 8, "}")
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.BraceClose, 3, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
@@ -36,11 +36,11 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a group with one complex argument", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.Integer, 6, "10"),
-                new Token(TokenType.Asterisk, 8, "*"),
-                new Token(TokenType.Integer, 9, "2"),
-                new Token(TokenType.BraceClose, 10, "}")
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Asterisk, 3, "*"),
+                new Token(TokenType.Integer, 4, "2"),
+                new Token(TokenType.BraceClose, 5, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
@@ -58,11 +58,11 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a group with two arguments", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.Integer, 6, "10"),
-                new Token(TokenType.Comma, 8, ","),
-                new Token(TokenType.Integer, 9, "5"),
-                new Token(TokenType.BraceClose, 10, "}")
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Comma, 3, ","),
+                new Token(TokenType.Integer, 4, "5"),
+                new Token(TokenType.BraceClose, 5, "}")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
@@ -79,12 +79,12 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a group with a keep modifier", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.BraceOpen, 5, "{"),
-                new Token(TokenType.Integer, 6, "10"),
-                new Token(TokenType.Comma, 8, ","),
-                new Token(TokenType.Integer, 9, "5"),
-                new Token(TokenType.BraceClose, 10, "}"),
-                new Token(TokenType.Identifier, 11, "kh")
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Comma, 3, ","),
+                new Token(TokenType.Integer, 4, "5"),
+                new Token(TokenType.BraceClose, 5, "}"),
+                new Token(TokenType.Identifier, 6, "kh")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
@@ -94,6 +94,29 @@ describe("DiceParser", () => {
             expect(exp.getChildCount()).toBe(1);
 
             expect(exp.getChild(0).type).toBe(NodeType.Group);
+        });
+        it("can correctly parse a group with a repeating argument", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "2"),
+                new Token(TokenType.Identifier, 2, "d"),
+                new Token(TokenType.Integer, 3, "20"),
+                new Token(TokenType.Ellipsis, 5, "..."),
+                new Token(TokenType.Integer, 8, "10"),
+                new Token(TokenType.BraceClose, 10, "}")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const exp = parser.parseGroup(result);
+            expect(result.errors.length).toBe(0, `Unexpected errors occurred: ${result.errors.map(e => e.message).join(", ")}.`);
+            expect(exp.type).toBe(NodeType.Group, "A group node was not returned.");
+            expect(exp.getChildCount()).toBe(1, "Group does not have a single child.");
+
+            expect(exp.getChild(0).type).toBe(NodeType.Repeat, "Group node child is not of type repeat.");
+            expect(exp.getChild(0).getChildCount()).toBe(2, "Repeat node does not have two operands.");
+            expect(exp.getChild(0).getChild(0).type).toBe(NodeType.Dice, "Repeat node LHS is not of type Dice.");
+            expect(exp.getChild(0).getChild(1).type).toBe(NodeType.Integer, "Repeat node RHS is not of type Integer");
+            expect(exp.getChild(0).getChild(1).getAttribute("value")).toBe(10);
         });
     });
 });

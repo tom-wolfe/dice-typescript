@@ -45,6 +45,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
                 case Ast.NodeType.Integer: value = this.evaluateInteger(expression, errors); break;
                 case Ast.NodeType.Function: value = this.evaluateFunction(expression, errors); break;
                 case Ast.NodeType.Group: value = this.evaluateGroup(expression, errors); break;
+                case Ast.NodeType.Repeat: value = this.evaluateRepeat(expression, errors); break;
                 case Ast.NodeType.Explode: value = this.evaluateExplode(expression, errors); break;
                 case Ast.NodeType.Keep: value = this.evaluateKeep(expression, errors); break;
                 case Ast.NodeType.Drop: value = this.evaluateDrop(expression, errors); break;
@@ -141,10 +142,27 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         return result;
     }
 
-    private evaluateGroup(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+    evaluateGroup(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         let total = 0;
         for (let x = 0; x < expression.getChildCount(); x++) {
             total += this.evaluate(expression.getChild(x), errors);
+        }
+        return total;
+    }
+
+    evaluateRepeat(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+        this.expectChildCount(expression, 2, errors);
+        const lhs = expression.getChild(0);
+        const times = this.evaluate(expression.getChild(1), errors);
+
+        const parent = expression.getParent();
+        parent.removeChild(expression);
+
+        let total = 0;
+        for (let x = 0; x < times; x++) {
+            const copy = lhs.copy();
+            parent.addChild(copy);
+            total += this.evaluate(copy, errors);
         }
         return total;
     }

@@ -32,7 +32,7 @@ export class ExpressionNode {
         return this.insertChild(node);
     }
 
-    insertChild(node: ExpressionNode, index?: number, ): ExpressionNode {
+    insertChild(node: ExpressionNode, index?: number): ExpressionNode {
         if (node) {
             if (node === this) { throw new Error("Cannot add a node as a child of itself."); }
             if (!this.children) { this.children = []; }
@@ -44,6 +44,16 @@ export class ExpressionNode {
 
     clearChildren(): void {
         this.children = undefined;
+    }
+
+    removeChild(expression: ExpressionNode): ExpressionNode {
+        if (expression.parent !== this) { return null; }
+        this.children.splice(this.children.indexOf(expression, 1));
+        return expression;
+    }
+
+    getParent(): ExpressionNode {
+        return this.parent;
     }
 
     getChild(index: number): ExpressionNode {

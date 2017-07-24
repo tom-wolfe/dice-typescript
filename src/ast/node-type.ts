@@ -2,6 +2,7 @@ export enum NodeType {
     Function = <any>"Function",
 
     Group = <any>"Group",
+    Repeat = <any>"Repeat",
 
     Add = <any>"Add",
     Subtract = <any>"Subtract",

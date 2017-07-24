@@ -15,6 +15,24 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(group, errors);
             expect(group.getChildCount()).toBe(2);
         });
+         it("correctly evaluates a group with a repeat {5...2}.", () => {
+            const group = Ast.Factory.create(Ast.NodeType.Group);
+
+            const repeat = Ast.Factory.create(Ast.NodeType.Repeat);
+            repeat.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            repeat.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+
+            group.addChild(repeat);
+
+            const interpreter = new Interpreter.DiceInterpreter();
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(group, errors);
+            expect(group.getChildCount()).toBe(2);
+            expect(group.getChild(0).type).toEqual(Ast.NodeType.Integer);
+            expect(group.getChild(0).getAttribute("value")).toEqual(5);
+            expect(group.getChild(1).type).toEqual(Ast.NodeType.Integer);
+            expect(group.getChild(1).getAttribute("value")).toEqual(5);
+        });
         it("correctly evaluates a group with modifiers {5, 2, 4}kh2.", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Keep)
                 .setAttribute("type", "highest");
