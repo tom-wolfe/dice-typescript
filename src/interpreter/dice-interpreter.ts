@@ -330,7 +330,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         let total = 0;
         if (expression.type === Ast.NodeType.Dice) {
             expression.forEachChild(die => {
-                if (condition(die)) { total++; }
+                if (!die.getAttribute("drop") && condition(die)) { total++; }
             });
         } else {
             expression.forEachChild(die => {

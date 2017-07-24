@@ -27,10 +27,10 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
             const res = interpreter.interpret(exp);
 
-            expect(res.errors.length).toBe(0);
-            expect(res.successes).toBe(1);
-            expect(res.failures).toBe(0);
-            expect(res.total).toBe(15);
+            expect(res.errors.length).toBe(0, "Unexpected errors found.");
+            expect(res.successes).toBe(1, "Successes counted incorrectly");
+            expect(res.failures).toBe(0, "Failures counted incorrectly");
+            expect(res.total).toBe(15, "Total counted incorrectly");
         });
     });
 });

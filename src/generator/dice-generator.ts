@@ -154,7 +154,7 @@ export class DiceGenerator implements Generator<string> {
     generateReroll(expression: Ast.ExpressionNode): string {
         this.expectChildCount(expression, 1);
         let reroll = "r";
-        if (expression.getAttribute("times") === "once") { reroll += "o"; }
+        if (expression.getAttribute("once")) { reroll += "o"; }
         if (expression.getChildCount() > 1) { reroll += this.generate(expression.getChild(1)); }
         return this.generate(expression.getChild(0)) + reroll;
     }
