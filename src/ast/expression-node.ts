@@ -47,6 +47,9 @@ export class ExpressionNode {
     }
 
     getChild(index: number): ExpressionNode {
+        if (!this.children || this.children.length <= index) {
+            throw new Error(`Child node at index ${index} does not exist.`);
+        }
         return this.children[index];
     }
 

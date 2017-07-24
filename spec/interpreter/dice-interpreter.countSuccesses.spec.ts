@@ -26,5 +26,31 @@ describe("DiceInterpreter", () => {
 
             expect(res).toBe(3);
         });
+        it("evaluates successes in a group {1d20, 1d20, 1d20}>10.", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Greater);
+
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+
+            const group = Ast.Factory.create(Ast.NodeType.Group);
+            group.addChild(dice.copy());
+            group.addChild(dice.copy());
+            group.addChild(dice.copy());
+
+            exp.addChild(group);
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 10));
+
+            const mockList = new MockListRandomProvider();
+            mockList.numbers.push(8, 12, 20);
+
+            const interpreter = new Interpreter.DiceInterpreter(null, mockList);
+            const errors: ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
+
+            const res = interpreter.countSuccesses(exp, errors);
+
+            expect(res).toBe(2);
+        });
     });
 });

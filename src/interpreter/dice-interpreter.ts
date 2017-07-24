@@ -328,7 +328,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     private countSuccessOrFailure(expression: Ast.ExpressionNode,
         condition: (die: Ast.ExpressionNode) => boolean, errors: ErrorMessage[]): number {
         let total = 0;
-        if (expression.type === Ast.NodeType.Dice) {
+        if (expression.type === Ast.NodeType.Dice || expression.type === Ast.NodeType.Group) {
             expression.forEachChild(die => {
                 if (!die.getAttribute("drop") && condition(die)) { total++; }
             });
@@ -367,8 +367,8 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         const rhv = this.evaluate(expression.getChild(1), errors);
 
         let total = 0;
-        // TODO: What happens if this is a group?
-        this.findDiceOrGroupNode(expression, errors).forEachChild(die => {
+        const diceOrGroup = this.findDiceOrGroupNode(expression, errors);
+        diceOrGroup.forEachChild(die => {
             if (!die.getAttribute("drop")) {
                 const val = this.evaluate(die, errors);
                 const res = compare(this.evaluate(die, errors), rhv)

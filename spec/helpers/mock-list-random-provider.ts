@@ -12,6 +12,10 @@ export class MockListRandomProvider implements RandomProvider {
     }
 
     numberBetween(min: number, max: number) {
-        return this.numbers[++this.index];
+        this.index++
+        if (this.index >= this.numbers.length) {
+            throw new Error("Requested too many random numbers!");
+        }
+        return this.numbers[this.index];
     }
 }
