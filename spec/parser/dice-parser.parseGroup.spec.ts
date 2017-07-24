@@ -95,6 +95,42 @@ describe("DiceParser", () => {
 
             expect(exp.getChild(0).type).toBe(NodeType.Group);
         });
+        it("can correctly parse a group with a drop modifier", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Comma, 3, ","),
+                new Token(TokenType.Integer, 4, "5"),
+                new Token(TokenType.BraceClose, 5, "}"),
+                new Token(TokenType.Identifier, 6, "dl")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const exp = parser.parseGroup(result);
+            expect(result.errors.length).toBe(0);
+            expect(exp.type).toBe(NodeType.Drop);
+            expect(exp.getChildCount()).toBe(1);
+
+            expect(exp.getChild(0).type).toBe(NodeType.Group);
+        });
+        it("can correctly parse a group with a sort modifier", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Comma, 3, ","),
+                new Token(TokenType.Integer, 4, "5"),
+                new Token(TokenType.BraceClose, 5, "}"),
+                new Token(TokenType.Identifier, 6, "sa")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const exp = parser.parseGroup(result);
+            expect(result.errors.length).toBe(0);
+            expect(exp.type).toBe(NodeType.Sort);
+            expect(exp.getChildCount()).toBe(1);
+
+            expect(exp.getChild(0).type).toBe(NodeType.Group);
+        });
         it("can correctly parse a group with a repeating argument", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.BraceOpen, 0, "{"),

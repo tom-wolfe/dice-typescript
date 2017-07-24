@@ -30,6 +30,8 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         if (!expression) { errors.push(new ErrorMessage("Unexpected null node reference found.", expression)); return 0; }
         if (expression.type === Ast.NodeType.DiceRoll) {
             return this.evaluateDiceRoll(expression, errors);
+        } else if (expression.type === Ast.NodeType.Integer) {
+            return this.evaluateInteger(expression, errors);
         } else if (!expression.getAttribute("value")) {
             let value: any = 0;
             switch (expression.type) {
@@ -42,7 +44,6 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
                 case Ast.NodeType.Exponent: value = this.evaluateExponent(expression, errors); break;
                 case Ast.NodeType.DiceSides: value = this.evaluateDiceSides(expression, errors); break;
                 case Ast.NodeType.Dice: value = this.evaluateDice(expression, errors); break;
-                case Ast.NodeType.Integer: value = this.evaluateInteger(expression, errors); break;
                 case Ast.NodeType.Function: value = this.evaluateFunction(expression, errors); break;
                 case Ast.NodeType.Group: value = this.evaluateGroup(expression, errors); break;
                 case Ast.NodeType.Repeat: value = this.evaluateRepeat(expression, errors); break;

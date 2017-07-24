@@ -16,8 +16,16 @@ describe("ExpressionNode", () => {
             expect(root.copy()).not.toBe(root);
         });
     });
+    describe("getChild", () => {
+        it("should throw if index is out of bounds.", () => {
+            const root = Ast.Factory.create(Ast.NodeType.Integer);
+            expect(() => {
+                root.getChild(100);
+            }).toThrow();
+        });
+    });
     describe("insertChild", () => {
-        it("should be equal", () => {
+        it("should throw when adding a node as a child of itself.", () => {
             const root = Ast.Factory.create(Ast.NodeType.Integer);
             expect(() => {
                 root.insertChild(root, 0);
