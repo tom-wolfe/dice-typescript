@@ -42,7 +42,7 @@ describe("DiceParser", () => {
         it("can correctly parse a drop modifier with simple number (dl3).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "dl"),
-                new Token(TokenType.Integer, 2, "3")
+                new Token(TokenType.Number, 2, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
@@ -51,16 +51,16 @@ describe("DiceParser", () => {
             expect(mod.type).toBe(NodeType.Drop);
             expect(mod.getAttribute("type")).toBe("lowest");
             expect(mod.getChildCount()).toBe(1);
-            expect(mod.getChild(0).type).toBe(NodeType.Integer);
+            expect(mod.getChild(0).type).toBe(NodeType.Number);
             expect(mod.getChild(0).getAttribute("value")).toBe(3);
         });
         it("can correctly parse a drop modifier with simple number (dl(5+3)).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "dl"),
                 new Token(TokenType.ParenthesisOpen, 2, "("),
-                new Token(TokenType.Integer, 3, "5"),
+                new Token(TokenType.Number, 3, "5"),
                 new Token(TokenType.Plus, 4, "+"),
-                new Token(TokenType.Integer, 5, "3"),
+                new Token(TokenType.Number, 5, "3"),
                 new Token(TokenType.ParenthesisClose, 6, ")")
             ]);
             const parser = new Parser.DiceParser(lexer);
@@ -75,7 +75,7 @@ describe("DiceParser", () => {
         it("throws an error on unknown keep type (dg3).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "dg"),
-                new Token(TokenType.Integer, 2, "3")
+                new Token(TokenType.Number, 2, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
 

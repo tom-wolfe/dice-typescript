@@ -107,15 +107,15 @@ export class DiceParser extends BasicParser {
             case TokenType.BraceOpen:
                 root = this.parseGroup(result);
                 break;
-            case TokenType.Integer:
-                const number = this.parseInteger(result);
+            case TokenType.Number:
+                const number = this.parseNumber(result);
                 if (this.lexer.peekNextToken().type !== TokenType.Identifier) {
                     root = number;
                 } else {
                     root = this.parseDiceRoll(result, number);
                 }
                 break;
-            default: this.errorToken(result, TokenType.Integer, token);
+            default: this.errorToken(result, TokenType.Number, token);
         }
         return root;
     }
@@ -123,9 +123,9 @@ export class DiceParser extends BasicParser {
     parseSimpleFactor(result: ParseResult): Ast.ExpressionNode {
         const token = this.lexer.peekNextToken();
         switch (token.type) {
-            case TokenType.Integer: return this.parseInteger(result);
+            case TokenType.Number: return this.parseNumber(result);
             case TokenType.ParenthesisOpen: return this.parseBracketedExpression(result);
-            default: this.errorToken(result, TokenType.Integer, token);
+            default: this.errorToken(result, TokenType.Number, token);
         }
     }
 
@@ -151,9 +151,9 @@ export class DiceParser extends BasicParser {
         return root;
     }
 
-    parseInteger(result: ParseResult): Ast.ExpressionNode {
+    parseNumber(result: ParseResult): Ast.ExpressionNode {
         const numberToken = this.lexer.getNextToken();
-        return Ast.Factory.create(Ast.NodeType.Integer)
+        return Ast.Factory.create(Ast.NodeType.Number)
             .setAttribute("value", Number(numberToken.value));
     }
 
@@ -210,7 +210,7 @@ export class DiceParser extends BasicParser {
 
         switch (token.value) {
             case "d":
-                const sidesToken = this.expectAndConsume(result, TokenType.Integer);
+                const sidesToken = this.expectAndConsume(result, TokenType.Number);
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
                     .setAttribute("value", Number(sidesToken.value));
                 break;
@@ -295,7 +295,7 @@ export class DiceParser extends BasicParser {
         this.lexer.getNextToken(); // Consume.
 
         const tokenType = this.lexer.peekNextToken().type;
-        if (tokenType === TokenType.Integer || tokenType === TokenType.ParenthesisOpen) {
+        if (tokenType === TokenType.Number || tokenType === TokenType.ParenthesisOpen) {
             root.addChild(this.parseSimpleFactor(result));
         }
         return root;
@@ -319,7 +319,7 @@ export class DiceParser extends BasicParser {
         this.lexer.getNextToken(); // Consume.
 
         const tokenType = this.lexer.peekNextToken().type;
-        if (tokenType === TokenType.Integer || tokenType === TokenType.ParenthesisOpen) {
+        if (tokenType === TokenType.Number || tokenType === TokenType.ParenthesisOpen) {
             root.addChild(this.parseSimpleFactor(result));
         }
         return root;
@@ -369,13 +369,13 @@ export class DiceParser extends BasicParser {
     parseCompareModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const token = this.lexer.peekNextToken();
         let root: Ast.ExpressionNode;
-        if (token.type === TokenType.Integer) {
+        if (token.type === TokenType.Number) {
             root = Ast.Factory.create(Ast.NodeType.Equal);
         } else if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
             root = Ast.Factory.create(BooleanOperatorMap[token.type]);
             this.lexer.getNextToken();
         } else {
-            this.errorToken(result, TokenType.Integer, token);
+            this.errorToken(result, TokenType.Number, token);
         }
         if (lhs) { root.addChild(lhs); }
         root.addChild(this.parseSimpleFactor(result));

@@ -63,7 +63,7 @@ describe("DiceParser", () => {
                 new Token(TokenType.Exclamation, 0, "!"),
                 new Token(TokenType.Identifier, 1, "p"),
                 new Token(TokenType.Less, 2, "<"),
-                new Token(TokenType.Integer, 3, "3"),
+                new Token(TokenType.Number, 3, "3"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();

@@ -68,10 +68,8 @@ export class ExpressionNode {
     }
 
     forEachChild(fn: (child: ExpressionNode, index?: number) => boolean | void) {
-        for (let rollIndex = 0; rollIndex < this.getChildCount(); rollIndex++) {
-            const res = fn(this.getChild(rollIndex), rollIndex);
-            if (!res && res !== undefined) { break; }
-        }
+        const children = [...this.children || []];
+        children.forEach(fn);
     }
 
     getAttribute(key: string) {

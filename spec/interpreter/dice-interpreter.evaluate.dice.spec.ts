@@ -6,33 +6,35 @@ describe("DiceInterpreter", () => {
     describe("evaluate", () => {
         it("evaluates a simple dice expression (2d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(4));
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(dice, errors)).toBe(8);
+            expect(dice.getAttribute("value")).toBe(8);
         });
         it("evaluates a hidden simple dice expression (2d6 + 4).", () => {
             const add = Ast.Factory.create(Ast.NodeType.Add);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             add.addChild(dice);
-            add.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
+            add.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
 
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(3));
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(add, errors)).toBe(10);
+            expect(dice.getAttribute("value")).toBe(6);
         });
         it("evaluates a complex dice expression ((1 + 2)d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
 
             const add = Ast.Factory.create(Ast.NodeType.Add);
-            add.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
-            add.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            add.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 1));
+            add.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             dice.addChild(add);
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
@@ -40,10 +42,11 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(2));
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(dice, errors)).toBe(6);
+            expect(dice.getAttribute("value")).toBe(6);
         });
         it("reduces a simple dice expression (2d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             const interpreter = new Interpreter.DiceInterpreter();
@@ -61,7 +64,7 @@ describe("DiceInterpreter", () => {
         });
         it("reduces a simple fate dice expression (2dF).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", "fate"));
 
             const interpreter = new Interpreter.DiceInterpreter();
@@ -81,11 +84,11 @@ describe("DiceInterpreter", () => {
             const add = Ast.Factory.create(Ast.NodeType.Add);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             add.addChild(dice);
-            add.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
+            add.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
 
             const interpreter = new Interpreter.DiceInterpreter();
             const errors: Interpreter.ErrorMessage[] = [];
@@ -101,15 +104,15 @@ describe("DiceInterpreter", () => {
             expect(add.getChild(0).getChild(1).getAttribute("value")).toBeLessThanOrEqual(6);
             expect(add.getChild(0).getChild(1).getAttribute("value")).toBeGreaterThanOrEqual(1);
 
-            expect(add.getChild(1).type).toBe(Ast.NodeType.Integer);
+            expect(add.getChild(1).type).toBe(Ast.NodeType.Number);
             expect(add.getChild(1).getAttribute("value")).toBe(4);
         });
         it("reduces a complex dice expression ((1 + 2)d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
 
             const add = Ast.Factory.create(Ast.NodeType.Add);
-            add.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
-            add.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            add.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 1));
+            add.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             dice.addChild(add);
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
@@ -136,8 +139,8 @@ describe("DiceInterpreter", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
 
             const divide = Ast.Factory.create(Ast.NodeType.Divide);
-            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
-            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             dice.addChild(divide);
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
@@ -152,8 +155,8 @@ describe("DiceInterpreter", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
 
             const divide = Ast.Factory.create(Ast.NodeType.Divide);
-            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 7));
-            divide.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 7));
+            divide.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
 
             dice.addChild(divide);
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
@@ -168,7 +171,7 @@ describe("DiceInterpreter", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
 
             const negate = Ast.Factory.create(Ast.NodeType.Negate);
-            negate.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            negate.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
 
             dice.addChild(negate);
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
@@ -181,7 +184,7 @@ describe("DiceInterpreter", () => {
         });
          it("throws on an invalid dice expression (2d).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(4));
             const errors: Interpreter.ErrorMessage[] = [];

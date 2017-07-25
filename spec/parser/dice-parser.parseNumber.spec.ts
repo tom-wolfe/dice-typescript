@@ -12,17 +12,28 @@ describe("DiceParser", () => {
             }).not.toThrow();
         });
     });
-    describe("parseInteger", () => {
+    describe("parseNumber", () => {
         it("can correctly parse an integer", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.Integer, 0, "12")
+                new Token(TokenType.Number, 0, "12")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
-            const node = parser.parseInteger(result);
+            const node = parser.parseNumber(result);
             expect(result.errors.length).toBe(0);
-            expect(node.type).toBe(NodeType.Integer);
+            expect(node.type).toBe(NodeType.Number);
             expect(node.getAttribute("value")).toBe(12);
+        });
+        it("can correctly parse a real number", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.Number, 0, "12.56")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const node = parser.parseNumber(result);
+            expect(result.errors.length).toBe(0);
+            expect(node.type).toBe(NodeType.Number);
+            expect(node.getAttribute("value")).toBe(12.56);
         });
     });
 });

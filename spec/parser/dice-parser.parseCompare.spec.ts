@@ -9,7 +9,7 @@ describe("DiceParser", () => {
         it("can correctly parse a compare modifier (>3).", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Greater, 0, ">"),
-                new Token(TokenType.Integer, 1, "3"),
+                new Token(TokenType.Number, 1, "3"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
@@ -21,7 +21,7 @@ describe("DiceParser", () => {
         });
         it("can correctly parse a compare modifier (3).", () => {
             const lexer = new MockLexer([
-                new Token(TokenType.Integer, 0, "3"),
+                new Token(TokenType.Number, 0, "3"),
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();

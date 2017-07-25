@@ -3,11 +3,11 @@ explode_modifier =
 ;
 
 keep_modifier = 
-    "k", ["h" | "l"], [integer | bracketed_expression]
+    "k", ["h" | "l"], [number | bracketed_expression]
 ;
 
 drop_modifier =
-    "d", ["h" | "l"], [integer | bracketed_expression]
+    "d", ["h" | "l"], [number | bracketed_expression]
 ;
 
 critical_modifier = 
@@ -23,5 +23,5 @@ sort_modifier =
 ;
 
 compare_modifier = 
-    [boolean_operator], (integer | bracketed_expression)
+    [boolean_operator], (number | bracketed_expression)
 ;

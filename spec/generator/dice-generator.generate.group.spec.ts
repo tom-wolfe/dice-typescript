@@ -7,8 +7,8 @@ describe("DiceGenerator", () => {
         it("correctly evaluates a group {5, 2}.", () => {
             const group = Ast.Factory.create(Ast.NodeType.Group);
 
-            group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
-            group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            group.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
+            group.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             const generator = new Generator.DiceGenerator();
 
@@ -18,8 +18,8 @@ describe("DiceGenerator", () => {
             const group = Ast.Factory.create(Ast.NodeType.Group);
 
             const repeat = Ast.Factory.create(Ast.NodeType.Repeat);
-            repeat.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
-            repeat.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            repeat.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
+            repeat.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             group.addChild(repeat);
 
@@ -33,8 +33,8 @@ describe("DiceGenerator", () => {
 
             const group = Ast.Factory.create(Ast.NodeType.Group);
 
-            group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
-            group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            group.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
+            group.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             keep.addChild(group);
 

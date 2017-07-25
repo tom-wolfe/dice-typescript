@@ -10,11 +10,11 @@ describe("DiceInterpreter", () => {
                 .setAttribute("penetrate", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             const greater = Ast.Factory.create(Ast.NodeType.Greater);
-            greater.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 3));
+            greater.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
 
             exp.addChild(dice);
             exp.addChild(greater);
@@ -37,11 +37,11 @@ describe("DiceInterpreter", () => {
                 .setAttribute("penetrate", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             const greater = Ast.Factory.create(Ast.NodeType.Greater);
-            greater.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 3));
+            greater.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
 
             exp.addChild(dice);
             exp.addChild(greater);

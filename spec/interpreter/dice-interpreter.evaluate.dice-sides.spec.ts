@@ -9,6 +9,7 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter();
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(int, errors)).toBe("fate");
+            expect(int.getAttribute("value")).toBe("fate");
         });
     });
 });

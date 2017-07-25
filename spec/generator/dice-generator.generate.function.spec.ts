@@ -8,8 +8,8 @@ describe("DiceGenerator", () => {
             const func = Ast.Factory.create(Ast.NodeType.Function).setAttribute("name", "floor");
 
             const exp = Ast.Factory.create(Ast.NodeType.Divide);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             func.addChild(exp);
 
@@ -22,8 +22,8 @@ describe("DiceGenerator", () => {
             const func = Ast.Factory.create(Ast.NodeType.Function).setAttribute("name", "ceil");
 
             const exp = Ast.Factory.create(Ast.NodeType.Divide);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             func.addChild(exp);
 
@@ -34,7 +34,7 @@ describe("DiceGenerator", () => {
         });
         it("correctly evaluates a function(sqrt(9)).", () => {
             const func = Ast.Factory.create(Ast.NodeType.Function).setAttribute("name", "sqrt");
-            func.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 9));
+            func.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 9));
 
             const generator = new Generator.DiceGenerator();
 
@@ -45,7 +45,7 @@ describe("DiceGenerator", () => {
             const func = Ast.Factory.create(Ast.NodeType.Function).setAttribute("name", "abs");
 
             const negate = Ast.Factory.create(Ast.NodeType.Negate);
-            negate.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 9));
+            negate.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 9));
 
             func.addChild(negate);
 
@@ -56,8 +56,8 @@ describe("DiceGenerator", () => {
         });
         it("correctly evaluates multiple parameters function(round(5, 2)).", () => {
             const func = Ast.Factory.create(Ast.NodeType.Function).setAttribute("name", "round");
-            func.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
-            func.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            func.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
+            func.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             const generator = new Generator.DiceGenerator();
 

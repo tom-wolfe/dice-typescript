@@ -29,5 +29,5 @@ export enum NodeType {
     Dice = <any>"Dice",
     DiceSides = <any>"DiceSides",
     DiceRoll = <any>"DiceRoll",
-    Integer = <any>"Integer"
+    Number = <any>"Number"
 }
