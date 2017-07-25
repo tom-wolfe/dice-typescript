@@ -15,7 +15,8 @@ describe("DiceInterpreter", () => {
 
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(4));
             const errors: Interpreter.ErrorMessage[] = [];
-            expect(interpreter.evaluate(dice, errors)).toBe(8);
+            interpreter.evaluate(face, errors);
+            expect(errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

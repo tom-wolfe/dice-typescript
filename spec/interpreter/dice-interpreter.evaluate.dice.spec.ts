@@ -179,5 +179,14 @@ describe("DiceInterpreter", () => {
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(dice, errors)).toBe(0);
         });
+         it("throws on an invalid dice expression (2d).", () => {
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+
+            const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(4));
+            const errors: Interpreter.ErrorMessage[] = [];
+            interpreter.evaluate(dice, errors);
+            expect(errors.length).toBeGreaterThanOrEqual(1);
+        });
     });
 });
