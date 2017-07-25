@@ -1,4 +1,3 @@
-import { ErrorMessage } from "../../src/interpreter/error-message";
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
 import { MockRandomProvider } from "../helpers/mock-random-provider";
@@ -11,7 +10,7 @@ describe("DiceInterpreter", () => {
                 .setAttribute("value", 4);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(dice, errors)).toBe(0);
         });
         it("evaluates a simple dice roll expression (not dropped).", () => {
@@ -20,7 +19,7 @@ describe("DiceInterpreter", () => {
                 .setAttribute("value", 4);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(dice, errors)).toBe(4);
         });
     });

@@ -1,6 +1,5 @@
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
-import { ErrorMessage } from "../../src/interpreter/error-message";
 
 describe("DiceInterpreter", () => {
     describe("evaluate", () => {
@@ -11,7 +10,7 @@ describe("DiceInterpreter", () => {
             group.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(group, errors);
             expect(group.getChildCount()).toBe(2);
         });
@@ -25,7 +24,7 @@ describe("DiceInterpreter", () => {
             group.addChild(repeat);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(group, errors);
             expect(group.getChildCount()).toBe(2);
             expect(group.getChild(0).type).toEqual(Ast.NodeType.Integer);
@@ -47,7 +46,7 @@ describe("DiceInterpreter", () => {
             exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
             expect(group.getChildCount()).toBe(3);
             expect(group.getChild(0).getAttribute("drop")).toBe(false);

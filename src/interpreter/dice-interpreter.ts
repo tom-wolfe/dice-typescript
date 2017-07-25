@@ -32,6 +32,8 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
             return this.evaluateDiceRoll(expression, errors);
         } else if (expression.type === Ast.NodeType.Integer) {
             return this.evaluateInteger(expression, errors);
+        } else if (expression.type === Ast.NodeType.DiceSides) {
+            return this.evaluateDiceSides(expression, errors);
         } else if (!expression.getAttribute("value")) {
             let value: any = 0;
             switch (expression.type) {
@@ -42,7 +44,6 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
                 case Ast.NodeType.Modulo: value = this.evaluateModulo(expression, errors); break;
                 case Ast.NodeType.Negate: value = this.evaluateNegate(expression, errors); break;
                 case Ast.NodeType.Exponent: value = this.evaluateExponent(expression, errors); break;
-                case Ast.NodeType.DiceSides: value = this.evaluateDiceSides(expression, errors); break;
                 case Ast.NodeType.Dice: value = this.evaluateDice(expression, errors); break;
                 case Ast.NodeType.Function: value = this.evaluateFunction(expression, errors); break;
                 case Ast.NodeType.Group: value = this.evaluateGroup(expression, errors); break;
