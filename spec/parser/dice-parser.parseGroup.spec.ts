@@ -131,6 +131,27 @@ describe("DiceParser", () => {
 
             expect(exp.getChild(0).type).toBe(NodeType.Group);
         });
+        it("can correctly parse a group with a boolean condition {10, 5}>5", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Comma, 3, ","),
+                new Token(TokenType.Integer, 4, "5"),
+                new Token(TokenType.BraceClose, 5, "}"),
+                new Token(TokenType.Greater, 6, ">"),
+                new Token(TokenType.Integer, 7, "5")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const exp = parser.parseGroup(result);
+
+            expect(result.errors.length).toBe(0);
+            expect(exp.type).toBe(NodeType.Greater);
+            expect(exp.getChildCount()).toBe(2);
+
+            expect(exp.getChild(0).type).toBe(NodeType.Group);
+            expect(exp.getChild(1).type).toBe(NodeType.Integer);
+        });
         it("can correctly parse a group with a repeating argument", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.BraceOpen, 0, "{"),
