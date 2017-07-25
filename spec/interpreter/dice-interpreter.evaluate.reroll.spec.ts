@@ -95,5 +95,28 @@ describe("DiceInterpreter", () => {
             expect(interpreter.evaluate(exp, errors)).toBe(15);
             expect(dice.getChildCount()).toBe(4);
         });
+        it("errors on an invalid condition (4d6ro[dice]).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Reroll)
+                .setAttribute("once", true);
+
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+
+            const d2 = Ast.Factory.create(Ast.NodeType.Dice);
+            d2.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+            d2.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+
+            exp.addChild(dice);
+            exp.addChild(d2);
+
+            const mockList = new MockListRandomProvider();
+            mockList.numbers.push(6, 5, 6, 2, 1);
+
+            const interpreter = new Interpreter.DiceInterpreter(null, mockList);
+            const errors: Interpreter.ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
+            expect(errors.length).toBeGreaterThanOrEqual(1);
+        });
     });
 });
