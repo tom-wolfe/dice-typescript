@@ -154,5 +154,19 @@ describe("DiceParser", () => {
             expect(exp.getChild(0).getChild(1).type).toBe(NodeType.Integer, "Repeat node RHS is not of type Integer");
             expect(exp.getChild(0).getChild(1).getAttribute("value")).toBe(10);
         });
+        it("throws on group with bad modifier", () => {
+            const lexer = new MockLexer([
+                new Token(TokenType.BraceOpen, 0, "{"),
+                new Token(TokenType.Integer, 1, "10"),
+                new Token(TokenType.Comma, 3, ","),
+                new Token(TokenType.Integer, 4, "5"),
+                new Token(TokenType.BraceClose, 5, "}"),
+                new Token(TokenType.Identifier, 6, "ro")
+            ]);
+            const parser = new Parser.DiceParser(lexer);
+            const result = new ParseResult();
+            const exp = parser.parseGroup(result);
+            expect(result.errors.length).toBe(1);
+        });
     });
 });
