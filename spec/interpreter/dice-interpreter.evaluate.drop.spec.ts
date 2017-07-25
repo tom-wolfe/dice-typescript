@@ -22,6 +22,9 @@ describe("DiceInterpreter", () => {
             const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
 
+            expect(exp.getAttribute("value")).toBe(34);
+            expect(dice.getAttribute("value")).toBe(72);
+
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe(false);
             expect(dice.getChild(1).getAttribute("drop")).toBe(false);
@@ -45,6 +48,9 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
             const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
+
+            expect(exp.getAttribute("value")).toBe(52);
+            expect(dice.getAttribute("value")).toBe(72);
 
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe(false);
@@ -71,6 +77,9 @@ describe("DiceInterpreter", () => {
             const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
 
+            expect(exp.getAttribute("value")).toBe(52);
+            expect(dice.getAttribute("value")).toBe(72);
+
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe(true);
             expect(dice.getChild(1).getAttribute("drop")).toBe(true);
@@ -94,6 +103,9 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
             const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
+
+            expect(exp.getAttribute("value")).toBe(64);
+            expect(dice.getAttribute("value")).toBe(72);
 
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("drop")).toBe(true);

@@ -146,9 +146,9 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     evaluateGroup(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         let total = 0;
-        for (let x = 0; x < expression.getChildCount(); x++) {
-            total += this.evaluate(expression.getChild(x), errors);
-        }
+        expression.forEachChild(child => {
+            total += this.evaluate(child, errors);
+        });
         return total;
     }
 
@@ -276,8 +276,8 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
             const dieValue = this.evaluate(die, errors);
             if (this.evaluateComparison(dieValue, condition, errors)) {
                 die.setAttribute("critical", type);
+                total += dieValue;
             }
-            total += dieValue;
         });
 
         return total;

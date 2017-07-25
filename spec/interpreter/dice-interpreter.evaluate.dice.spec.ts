@@ -12,6 +12,7 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(4));
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(dice, errors)).toBe(8);
+            expect(dice.getAttribute("value")).toBe(8);
         });
         it("evaluates a hidden simple dice expression (2d6 + 4).", () => {
             const add = Ast.Factory.create(Ast.NodeType.Add);
@@ -26,6 +27,7 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(3));
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(add, errors)).toBe(10);
+            expect(dice.getAttribute("value")).toBe(6);
         });
         it("evaluates a complex dice expression ((1 + 2)d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
@@ -40,6 +42,7 @@ describe("DiceInterpreter", () => {
             const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(2));
             const errors: Interpreter.ErrorMessage[] = [];
             expect(interpreter.evaluate(dice, errors)).toBe(6);
+            expect(dice.getAttribute("value")).toBe(6);
         });
         it("reduces a simple dice expression (2d6).", () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);

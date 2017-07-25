@@ -1,4 +1,8 @@
 /* cSpell:disable */
+
+const watching = process.env.npm_lifecycle_script.indexOf("--single-run") === -1;
+console.log("Watching: " + watching);
+
 module.exports = function (config) {
     config.set({
         browserNoActivityTimeout: 20000,
@@ -9,9 +13,6 @@ module.exports = function (config) {
         ],
         preprocessors: {
             "**/*.ts": ["karma-typescript"],
-        },
-        compilerOptions: {
-            sourceMap: true
         },
         reporters: ["progress", "karma-typescript"],
         browsers: ["Chrome"],
@@ -27,8 +28,8 @@ module.exports = function (config) {
             }
         },
         karmaTypescriptConfig: {
-            compilerOptions: {
-                sourceMap: true
+            coverageOptions: {
+                instrumentation: true
             },
             reports: {
                 lcovonly: {
@@ -39,6 +40,11 @@ module.exports = function (config) {
             }
         }
     });
+
+    if (watching) {
+        config.karmaTypescriptConfig.coverageOptions.instrumentation = false;
+    }
+
     if (process.env.TRAVIS) {
         config.browsers = ["chromeTravisCi"];
     }

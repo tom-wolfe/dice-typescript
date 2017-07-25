@@ -33,7 +33,8 @@ describe("DiceInterpreter", () => {
 
             expect(sort.getAttribute("value")).toBe(11);
             expect(keep.getAttribute("value")).toBe(11);
-            // expect(dice.getAttribute("value")).toBe(11);
+            expect(dice.getAttribute("value")).toBe(13);
+            expect(exp.getAttribute("value")).toBe(18);
 
             expect(dice.getChildCount()).toBe(5);
             expect(dice.getChild(0).getAttribute("value")).toBe(1);

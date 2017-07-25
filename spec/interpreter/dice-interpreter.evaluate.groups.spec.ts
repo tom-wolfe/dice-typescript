@@ -31,6 +31,7 @@ describe("DiceInterpreter", () => {
             expect(group.getChild(0).getAttribute("value")).toEqual(5);
             expect(group.getChild(1).type).toEqual(Ast.NodeType.Number);
             expect(group.getChild(1).getAttribute("value")).toEqual(5);
+            expect(group.getAttribute("value")).toEqual(10);
         });
         it("correctly evaluates a group with modifiers {5, 2, 4}kh2.", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Keep)

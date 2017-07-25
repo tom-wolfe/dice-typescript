@@ -20,9 +20,16 @@ describe("DiceInterpreter", () => {
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
             const errors: Interpreter.ErrorMessage[] = [];
+
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
+            expect(dice.getAttribute("value")).toBe(29);
+            expect(dice.getChild(0).getAttribute("value")).toBe(1);
+            expect(dice.getChild(1).getAttribute("value")).toBe(2);
+            expect(dice.getChild(2).getAttribute("value")).toBe(6);
+            expect(dice.getChild(3).getAttribute("value")).toBe(20);
+
             expect(dice.getChild(0).getAttribute("success")).toBe(false);
             expect(dice.getChild(1).getAttribute("success")).toBe(false);
             expect(dice.getChild(2).getAttribute("success")).toBe(true);
@@ -46,6 +53,7 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
+            expect(dice.getAttribute("value")).toBe(28);
             expect(dice.getChild(0).getAttribute("success")).toBe(false);
             expect(dice.getChild(1).getAttribute("success")).toBe(false);
             expect(dice.getChild(2).getAttribute("success")).toBe(true);
@@ -69,6 +77,7 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
+            expect(dice.getAttribute("value")).toBe(28);
             expect(dice.getChild(0).getAttribute("success")).toBe(false);
             expect(dice.getChild(1).getAttribute("success")).toBe(false);
             expect(dice.getChild(2).getAttribute("success")).toBe(true);
@@ -92,6 +101,7 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
+            expect(dice.getAttribute("value")).toBe(28);
             expect(dice.getChild(0).getAttribute("success")).toBe(true);
             expect(dice.getChild(1).getAttribute("success")).toBe(true);
             expect(dice.getChild(2).getAttribute("success")).toBe(false);
@@ -115,6 +125,7 @@ describe("DiceInterpreter", () => {
             interpreter.evaluate(exp, errors);
 
             expect(dice.getChildCount()).toBe(4);
+            expect(dice.getAttribute("value")).toBe(28);
             expect(dice.getChild(0).getAttribute("success")).toBe(true);
             expect(dice.getChild(1).getAttribute("success")).toBe(true);
             expect(dice.getChild(2).getAttribute("success")).toBe(true);
