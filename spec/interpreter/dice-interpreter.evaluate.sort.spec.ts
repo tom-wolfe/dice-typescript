@@ -51,5 +51,34 @@ describe("DiceInterpreter", () => {
             expect(dice.getChild(2).getAttribute("value")).toBe(4);
             expect(dice.getChild(3).getAttribute("value")).toBe(3);
         });
+        it("errors on unknown sort direction (4d6s-).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Sort)
+                .setAttribute("direction", "face");
+
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+
+            exp.addChild(dice);
+
+            const mockList = new MockListRandomProvider();
+            mockList.numbers.push(6, 5, 4, 3);
+
+            const interpreter = new Interpreter.DiceInterpreter(null, mockList);
+            const errors: Interpreter.ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
+            expect(errors.length).toBeGreaterThanOrEqual(1);
+        });
+        it("errors on missing dice node (-sa).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Sort)
+                .setAttribute("direction", "ascending");
+
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+
+            const interpreter = new Interpreter.DiceInterpreter(null);
+            const errors: Interpreter.ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
+            expect(errors.length).toBeGreaterThanOrEqual(1);
+        });
     });
 });
