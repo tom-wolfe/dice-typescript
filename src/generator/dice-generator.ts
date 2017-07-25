@@ -4,7 +4,7 @@ import { Generator } from "./generator";
 export class DiceGenerator implements Generator<string> {
     generate(expression: Ast.ExpressionNode): string {
         switch (expression.type) {
-            case Ast.NodeType.Integer: return this.generateInteger(expression);
+            case Ast.NodeType.Number: return this.generateNumber(expression);
             case Ast.NodeType.Add: return this.generateAdd(expression);
             case Ast.NodeType.Subtract: return this.generateSubtract(expression);
             case Ast.NodeType.Multiply: return this.generateMultiply(expression);
@@ -33,7 +33,7 @@ export class DiceGenerator implements Generator<string> {
         }
     }
 
-    generateInteger(expression: Ast.ExpressionNode): string {
+    generateNumber(expression: Ast.ExpressionNode): string {
         return expression.getAttribute("value").toString();
     }
 

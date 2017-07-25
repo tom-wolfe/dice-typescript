@@ -8,7 +8,7 @@ describe("DiceGenerator", () => {
                 .setAttribute("once", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             exp.addChild(dice);
@@ -21,7 +21,7 @@ describe("DiceGenerator", () => {
                 .setAttribute("once", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             exp.addChild(dice);
@@ -34,12 +34,12 @@ describe("DiceGenerator", () => {
                 .setAttribute("once", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
             exp.addChild(dice);
 
             const less = Ast.Factory.create(Ast.NodeType.Less);
-            less.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 3));
+            less.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
             exp.addChild(less);
 
             const generator = new Generator.DiceGenerator();

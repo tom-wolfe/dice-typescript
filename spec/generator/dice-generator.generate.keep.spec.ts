@@ -8,7 +8,7 @@ describe("DiceGenerator", () => {
                 .setAttribute("type", "highest");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             exp.addChild(dice);
@@ -21,7 +21,7 @@ describe("DiceGenerator", () => {
                 .setAttribute("type", "lowest");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             exp.addChild(dice);

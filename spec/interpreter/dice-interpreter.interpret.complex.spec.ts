@@ -13,11 +13,11 @@ describe("DiceInterpreter", () => {
             keep.setAttribute("type", "lowest");
 
             exp.addChild(keep);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 14));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 14));
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             keep.addChild(dice);
 

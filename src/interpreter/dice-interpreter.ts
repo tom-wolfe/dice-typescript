@@ -30,8 +30,8 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         if (!expression) { errors.push(new ErrorMessage("Unexpected null node reference found.", expression)); return 0; }
         if (expression.type === Ast.NodeType.DiceRoll) {
             return this.evaluateDiceRoll(expression, errors);
-        } else if (expression.type === Ast.NodeType.Integer) {
-            return this.evaluateInteger(expression, errors);
+        } else if (expression.type === Ast.NodeType.Number) {
+            return this.evaluateNumber(expression, errors);
         } else if (expression.type === Ast.NodeType.DiceSides) {
             return this.evaluateDiceSides(expression, errors);
         } else if (!expression.getAttribute("value")) {
@@ -103,7 +103,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         return -this.evaluate(expression.getChild(0), errors);
     }
 
-    evaluateInteger(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
+    evaluateNumber(expression: Ast.ExpressionNode, errors: ErrorMessage[]): number {
         return expression.getAttribute("value");
     }
 
@@ -263,9 +263,9 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
             condition = Ast.Factory.create(Ast.NodeType.Equal);
             if (type === "success") {
                 this.expectChildCount(dice, 2, errors);
-                condition.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", dice.getAttribute("sides")));
+                condition.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", dice.getAttribute("sides")));
             } else {
-                condition.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
+                condition.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 1));
             }
         }
 

@@ -52,12 +52,18 @@ export class DiceLexer implements Lexer {
     }
 
     protected parseNumber(): Token {
-        // TODO: Support parsing of real numbers.
         let buffer = this.stream.getCurrentCharacter();
-        while (this.numCharRegex.test(this.stream.peekNextCharacter())) {
+        let hasDot = false;
+        let nextChar = this.stream.peekNextCharacter();
+        while (nextChar === "." || this.numCharRegex.test(nextChar)) {
+            if (nextChar === ".") {
+                if (hasDot) { break; }
+                hasDot = true;
+            }
             buffer += this.stream.getNextCharacter();
+            nextChar = this.stream.peekNextCharacter();
         }
-        return this.createToken(TokenType.Integer, buffer);
+        return this.createToken(TokenType.Number, buffer);
     }
 
     protected parseEllipsis(): Token {

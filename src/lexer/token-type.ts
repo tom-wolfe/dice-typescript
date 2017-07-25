@@ -15,7 +15,7 @@ export enum TokenType {
     Percent = <any>"%",
     Asterisk = <any>"*",
     Minus = <any>"-",
-    Integer = <any>"number",
+    Number = <any>"number",
     ParenthesisClose = <any>")",
     ParenthesisOpen = <any>"(",
     Terminator = <any>"terminator",

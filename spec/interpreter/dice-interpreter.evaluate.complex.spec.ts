@@ -19,10 +19,10 @@ describe("DiceInterpreter", () => {
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
             exp.addChild(dice)
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
-            keep.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            keep.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             const mockList = new MockListRandomProvider();
             mockList.numbers.push(1, 6, 4, 2, 5);

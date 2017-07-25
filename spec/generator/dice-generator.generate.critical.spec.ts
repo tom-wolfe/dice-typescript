@@ -8,7 +8,7 @@ describe("DiceGenerator", () => {
                 .setAttribute("type", "success");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
 
             exp.addChild(dice);
@@ -21,12 +21,12 @@ describe("DiceGenerator", () => {
                 .setAttribute("type", "success");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute("value", 6));
             exp.addChild(dice);
 
             const eq = Ast.Factory.create(Ast.NodeType.Equal);
-            eq.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            eq.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
             exp.addChild(eq);
 
             const generator = new Generator.DiceGenerator();

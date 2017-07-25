@@ -9,11 +9,11 @@ describe("DiceInterpreter", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Greater)
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             exp.addChild(dice);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
 
             const mockList = new MockListRandomProvider();
             mockList.numbers.push(1, 2, 6, 20);
@@ -32,11 +32,11 @@ describe("DiceInterpreter", () => {
             const exp = Ast.Factory.create(Ast.NodeType.GreaterOrEqual)
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             exp.addChild(dice);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
 
             const mockList = new MockListRandomProvider();
             mockList.numbers.push(1, 2, 5, 20);
@@ -55,11 +55,11 @@ describe("DiceInterpreter", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Equal)
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             exp.addChild(dice);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
 
             const mockList = new MockListRandomProvider();
             mockList.numbers.push(1, 2, 5, 20);
@@ -78,11 +78,11 @@ describe("DiceInterpreter", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Less)
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             exp.addChild(dice);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
 
             const mockList = new MockListRandomProvider();
             mockList.numbers.push(1, 2, 5, 20);
@@ -101,11 +101,11 @@ describe("DiceInterpreter", () => {
             const exp = Ast.Factory.create(Ast.NodeType.LessOrEqual)
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             exp.addChild(dice);
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 5));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 5));
 
             const mockList = new MockListRandomProvider();
             mockList.numbers.push(1, 2, 5, 20);

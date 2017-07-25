@@ -6,7 +6,7 @@ describe("ExpressionNode", () => {
         root.addChild(Ast.Factory.create(Ast.NodeType.Dice))
             .setAttribute("times", 4)
             .setAttribute("dice", 20);
-        root.addChild(Ast.Factory.create(Ast.NodeType.Integer))
+        root.addChild(Ast.Factory.create(Ast.NodeType.Number))
             .setAttribute("value", 10);
 
         it("should be equal", () => {
@@ -18,7 +18,7 @@ describe("ExpressionNode", () => {
     });
     describe("getChild", () => {
         it("should throw if index is out of bounds.", () => {
-            const root = Ast.Factory.create(Ast.NodeType.Integer);
+            const root = Ast.Factory.create(Ast.NodeType.Number);
             expect(() => {
                 root.getChild(100);
             }).toThrow();
@@ -26,7 +26,7 @@ describe("ExpressionNode", () => {
     });
     describe("insertChild", () => {
         it("should throw when adding a node as a child of itself.", () => {
-            const root = Ast.Factory.create(Ast.NodeType.Integer);
+            const root = Ast.Factory.create(Ast.NodeType.Number);
             expect(() => {
                 root.insertChild(root, 0);
             }).toThrow();

@@ -7,11 +7,11 @@ roll =
 ;
 
 basic_roll = 
-    (integer | bracketed_expression), "d", integer
+    (number | bracketed_expression), "d", number
 ;
 
 fate_roll = 
-    (integer | bracketed_expression), "d", "F"
+    (number | bracketed_expression), "d", "F"
 ;
 
 roll_modifiers = 

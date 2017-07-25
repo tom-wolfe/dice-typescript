@@ -10,8 +10,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("direction", "ascending");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             exp.addChild(dice);
 
@@ -33,8 +33,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("direction", "descending");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             exp.addChild(dice);
 
@@ -56,8 +56,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("direction", "face");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             exp.addChild(dice);
 
@@ -73,7 +73,7 @@ describe("DiceInterpreter", () => {
             const exp = Ast.Factory.create(Ast.NodeType.Sort)
                 .setAttribute("direction", "ascending");
 
-            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             const interpreter = new Interpreter.DiceInterpreter(null);
             const errors: Interpreter.ErrorMessage[] = [];

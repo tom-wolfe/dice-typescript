@@ -10,8 +10,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("type", "success");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             exp.addChild(dice);
 
@@ -33,11 +33,11 @@ describe("DiceInterpreter", () => {
                 .setAttribute("type", "success");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             const comp = Ast.Factory.create(Ast.NodeType.GreaterOrEqual);
-            comp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 18));
+            comp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 18));
 
             exp.addChild(dice);
             exp.addChild(comp);
@@ -60,8 +60,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("type", "fail");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             exp.addChild(dice);
 
@@ -83,11 +83,11 @@ describe("DiceInterpreter", () => {
                 .setAttribute("type", "fail");
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 20));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 20));
 
             const comp = Ast.Factory.create(Ast.NodeType.LessOrEqual);
-            comp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 3));
+            comp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
 
             exp.addChild(dice);
             exp.addChild(comp);

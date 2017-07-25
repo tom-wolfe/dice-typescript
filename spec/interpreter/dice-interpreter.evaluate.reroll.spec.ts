@@ -10,11 +10,11 @@ describe("DiceInterpreter", () => {
                 .setAttribute("once", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             const less = Ast.Factory.create(Ast.NodeType.Less);
-            less.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 3));
+            less.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
 
             exp.addChild(dice);
             exp.addChild(less);
@@ -35,11 +35,11 @@ describe("DiceInterpreter", () => {
                 .setAttribute("once", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             const less = Ast.Factory.create(Ast.NodeType.Less);
-            less.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 3));
+            less.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
 
             exp.addChild(dice);
             exp.addChild(less);
@@ -60,8 +60,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("once", false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
             exp.addChild(dice);
 
             const mockList = new MockListRandomProvider();
@@ -80,8 +80,8 @@ describe("DiceInterpreter", () => {
                 .setAttribute("once", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
             exp.addChild(dice);
 
             const mockList = new MockListRandomProvider();
@@ -100,12 +100,12 @@ describe("DiceInterpreter", () => {
                 .setAttribute("once", true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
 
             const d2 = Ast.Factory.create(Ast.NodeType.Dice);
-            d2.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 1));
-            d2.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 2));
+            d2.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 1));
+            d2.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
 
             exp.addChild(dice);
             exp.addChild(d2);

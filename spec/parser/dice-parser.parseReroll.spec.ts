@@ -32,7 +32,7 @@ describe("DiceParser", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "ro"),
                 new Token(TokenType.Less, 2, "<"),
-                new Token(TokenType.Integer, 3, "3")
+                new Token(TokenType.Number, 3, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
             const result = new ParseResult();
@@ -47,7 +47,7 @@ describe("DiceParser", () => {
             const lexer = new MockLexer([
                 new Token(TokenType.Identifier, 0, "dx"),
                 new Token(TokenType.Less, 2, "<"),
-                new Token(TokenType.Integer, 3, "3")
+                new Token(TokenType.Number, 3, "3")
             ]);
             const parser = new Parser.DiceParser(lexer);
 
