@@ -37,11 +37,11 @@ export abstract class BasicParser implements Parser {
 
     protected errorToken(result: ParseResult, expected: TokenType, actual: Token) {
         let message = `Error at position ${actual.position}.`;
-        message += `Expected token of type ${expected}, found token of type ${actual.type} of value "${actual.value}".`;
+        message += ` Expected token of type ${expected}, found token of type ${actual.type} of value "${actual.value}".`;
         this.errorMessage(result, message, actual);
     }
 
     protected errorMessage(result: ParseResult, message: string, token: Token) {
-        result.errors.push(new ErrorMessage(message, token));
+        result.errors.push(new ErrorMessage(message, token, new Error().stack));
     }
 }

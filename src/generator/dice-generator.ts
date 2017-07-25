@@ -17,6 +17,7 @@ export class DiceGenerator implements Generator<string> {
             case Ast.NodeType.DiceRoll: return this.generateDiceRoll(expression);
             case Ast.NodeType.Function: return this.generateFunction(expression);
             case Ast.NodeType.Group: return this.generateGroup(expression);
+            case Ast.NodeType.Repeat: return this.generateRepeat(expression);
             case Ast.NodeType.Equal: return this.generateEqual(expression);
             case Ast.NodeType.Greater: return this.generateGreater(expression);
             case Ast.NodeType.GreaterOrEqual: return this.generateGreaterOrEqual(expression);
@@ -95,6 +96,11 @@ export class DiceGenerator implements Generator<string> {
 
     generateGroup(expression: Ast.ExpressionNode): string {
         return "{" + this.generateCommaList(expression) + "}";
+    }
+
+    generateRepeat(expression: Ast.ExpressionNode): string {
+        this.expectChildCount(expression, 2);
+        return this.generate(expression.getChild(0)) + "..." + this.generate(expression.getChild(1));
     }
 
     generateEqual(expression: Ast.ExpressionNode): string {

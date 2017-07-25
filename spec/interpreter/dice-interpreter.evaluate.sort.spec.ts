@@ -1,4 +1,3 @@
-import { ErrorMessage } from "../../src/interpreter/error-message";
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
 import { MockListRandomProvider } from "../helpers/mock-list-random-provider";
@@ -20,7 +19,7 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(6, 5, 4, 3);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
             expect(dice.getChildCount()).toBe(4);
 
@@ -43,7 +42,7 @@ describe("DiceInterpreter", () => {
             mockList.numbers.push(3, 5, 4, 6);
 
             const interpreter = new Interpreter.DiceInterpreter(null, mockList);
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             interpreter.evaluate(exp, errors);
             expect(dice.getChildCount()).toBe(4);
 
@@ -51,6 +50,35 @@ describe("DiceInterpreter", () => {
             expect(dice.getChild(1).getAttribute("value")).toBe(5);
             expect(dice.getChild(2).getAttribute("value")).toBe(4);
             expect(dice.getChild(3).getAttribute("value")).toBe(3);
+        });
+        it("errors on unknown sort direction (4d6s-).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Sort)
+                .setAttribute("direction", "face");
+
+            const dice = Ast.Factory.create(Ast.NodeType.Dice);
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+
+            exp.addChild(dice);
+
+            const mockList = new MockListRandomProvider();
+            mockList.numbers.push(6, 5, 4, 3);
+
+            const interpreter = new Interpreter.DiceInterpreter(null, mockList);
+            const errors: Interpreter.ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
+            expect(errors.length).toBeGreaterThanOrEqual(1);
+        });
+        it("errors on missing dice node (-sa).", () => {
+            const exp = Ast.Factory.create(Ast.NodeType.Sort)
+                .setAttribute("direction", "ascending");
+
+            exp.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 6));
+
+            const interpreter = new Interpreter.DiceInterpreter(null);
+            const errors: Interpreter.ErrorMessage[] = [];
+            interpreter.evaluate(exp, errors);
+            expect(errors.length).toBeGreaterThanOrEqual(1);
         });
     });
 });

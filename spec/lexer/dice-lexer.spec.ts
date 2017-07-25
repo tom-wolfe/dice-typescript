@@ -99,9 +99,24 @@ describe("DiceLexer", () => {
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BraceClose, 37, "}"));
             expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Terminator, 38));
         });
+        it("interprets group repeater correctly", () => {
+            const lexer = new Lexer.DiceLexer("{2d10,...3}");
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BraceOpen, 0, "{"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 1, "2"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Identifier, 2, "d"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 3, "10"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Comma, 5, ","));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Ellipsis, 6, "..."));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.Integer, 9, "3"));
+            expect(lexer.getNextToken()).toEqual(new Lexer.Token(Lexer.TokenType.BraceClose, 10, "}"));
+        });
         it("throws on unrecognized tokens", () => {
             const lexer = new Lexer.DiceLexer("test_face");
             lexer.getNextToken();
+            expect(() => { lexer.getNextToken() }).toThrow();
+        });
+        it("throws on too short ellipsis", () => {
+            const lexer = new Lexer.DiceLexer("..");
             expect(() => { lexer.getNextToken() }).toThrow();
         });
         it("skips over whitespace.", () => {

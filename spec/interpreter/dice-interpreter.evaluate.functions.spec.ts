@@ -1,6 +1,5 @@
 import * as Ast from "../../src/ast";
 import * as Interpreter from "../../src/interpreter";
-import { ErrorMessage } from "../../src/interpreter/error-message";
 
 describe("DiceInterpreter", () => {
     describe("evaluate", () => {
@@ -14,7 +13,7 @@ describe("DiceInterpreter", () => {
             func.addChild(exp);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             const res = interpreter.evaluate(func, errors);
             expect(res).toBe(2);
         });
@@ -29,7 +28,7 @@ describe("DiceInterpreter", () => {
 
             const interpreter = new Interpreter.DiceInterpreter();
 
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             const res = interpreter.evaluate(func, errors);
             expect(res).toBe(3);
         });
@@ -38,7 +37,7 @@ describe("DiceInterpreter", () => {
             func.addChild(Ast.Factory.create(Ast.NodeType.Integer).setAttribute("value", 9));
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             const res = interpreter.evaluate(func, errors);
             expect(res).toBe(3);
         });
@@ -51,7 +50,7 @@ describe("DiceInterpreter", () => {
             func.addChild(negate);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             const res = interpreter.evaluate(func, errors);
             expect(res).toBe(9);
         });
@@ -65,7 +64,7 @@ describe("DiceInterpreter", () => {
             func.addChild(exp);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             const res = interpreter.evaluate(func, errors);
             expect(res).toBe(3);
         });
@@ -79,7 +78,7 @@ describe("DiceInterpreter", () => {
             func.addChild(exp);
 
             const interpreter = new Interpreter.DiceInterpreter();
-            const errors: ErrorMessage[] = [];
+            const errors: Interpreter.ErrorMessage[] = [];
             expect(() => interpreter.evaluate(func, errors)).toThrow();
         });
     });
