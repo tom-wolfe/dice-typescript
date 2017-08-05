@@ -1,6 +1,6 @@
-[![NPM version](https://badge.fury.io/js/dice-typescript.svg)](http://badge.fury.io/js/dice-typescript) [![Build Status](https://travis-ci.org/trwolfe13/dice-typescript.svg?branch=master)](https://travis-ci.org/trwolfe13/dice-typescript) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/31dad84d91994a0b9dfafb2505db9bc1)](https://www.codacy.com/app/trwolfe13/dice-typescript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=trwolfe13/dice-typescript&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/31dad84d91994a0b9dfafb2505db9bc1)](https://www.codacy.com/app/trwolfe13/dice-typescript?utm_source=github.com&utm_medium=referral&utm_content=trwolfe13/dice-typescript&utm_campaign=Badge_Coverage)
+# dice-typescript [![NPM version](https://badge.fury.io/js/dice-typescript.svg)](http://badge.fury.io/js/dice-typescript)
 
-# dice-typescript
+[![Build Status](https://travis-ci.org/trwolfe13/dice-typescript.svg?branch=master)](https://travis-ci.org/trwolfe13/dice-typescript) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/31dad84d91994a0b9dfafb2505db9bc1)](https://www.codacy.com/app/trwolfe13/dice-typescript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=trwolfe13/dice-typescript&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/31dad84d91994a0b9dfafb2505db9bc1)](https://www.codacy.com/app/trwolfe13/dice-typescript?utm_source=github.com&utm_medium=referral&utm_content=trwolfe13/dice-typescript&utm_campaign=Badge_Coverage)
 
 A TypeScript library for parsing dice rolling expressions, most commonly used in tabletop RPGs.
 
@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
-```
+```batchfile
 npm install dice-typescript
 ```
 
@@ -80,7 +80,7 @@ The dice rolling syntax is based on the system used by Roll20, a detailed explan
 
 In addition to the above syntax rules, some slightly more complicated variations are available. For example, you can roll a variable number of dice using an expression similar to the following:
 
-```
+```dice
     (4d4)d20
 ```
 
@@ -92,7 +92,7 @@ As per the Roll20 syntax, you can use conditional operators, such as in ```4d20>
 
 Sometimes it is necessary to roll complex groups of dice that aren't supported by the basic syntax. For example, rolling a saving throw at disadvantage for 10 creatures. For this, you can use the group repeater modifier, which works like this:
 
-```
+```dice
     {2d20kl...10}>=14
 ```
 
@@ -102,7 +102,7 @@ The above will roll 10 disadvantaged saving throws, reporting successes for thos
 
 Using the allowed syntax, it is possible to request a fractional number of dice to be rolled. Take the following example:
 
-```
+```dice
     (2 / 5)d6
 ```
 
@@ -114,25 +114,25 @@ This will first roll ```4d4``` dice, and use the outcome of that to determine ho
 
 Installing the dependencies is done using a standard ```npm i```, followed by ```typings install```. For convenience, this has been condensed to the following command:
 
-```
+```dice
 npm run install
 ```
 
 ## Running the Tests
 
-```
+```dice
 npm run test
 ```
 
 ## Building the project
 
-```
+```dice
 npm run build
 ```
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/trwolfe13/dice/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/trwolfe13/dice/tags).
 
 ## Authors
 
