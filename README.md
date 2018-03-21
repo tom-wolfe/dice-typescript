@@ -112,11 +112,7 @@ This will first roll ```4d4``` dice, and use the outcome of that to determine ho
 
 ## Installing Dependencies
 
-Installing the dependencies is done using a standard ```npm i```, followed by ```typings install```. For convenience, this has been condensed to the following command:
-
-```dice
-npm run install
-```
+Installing the dependencies is done using a standard ```npm i```.
 
 ## Running the Tests
 
