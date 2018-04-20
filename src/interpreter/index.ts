@@ -1,8 +1,8 @@
 
-export * from "./dice-result";
-export * from "./dice-interpreter";
-export * from "./error-message";
-export * from "./function-definition";
-export * from "./function-definition-list";
-export * from "./interpreter";
-export * from "./result";
+export * from './dice-result.class';
+export * from './dice-interpreter.class';
+export * from './error-message.class';
+export * from './function-definition-list.class';
+export * from './function-definition-list.class';
+export * from './dice-interpreter.class';
+export * from './dice-result.class';

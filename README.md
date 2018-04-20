@@ -32,12 +32,20 @@ The ```roll(expression: string)``` method  returns a ```DiceResult``` object tha
 
 #### Modifying Behavior
 
-The ```Dice``` class has several methods that can be overridden in order to modify the construction of the lexer/parser/interpreter:
+The ```Dice``` class has several methods that can be overridden in order to modify the construction of the lexer/parser/interpreter/generator:
 
 ```typescript
+// Used to control the breaking down of a string into tokens: (4d10) = LPAREN, NUMBER, DICE, NUMBER, RPAREN, etc.
 protected createLexer(input: string | CharacterStream): Lexer;
+
+// Used to control the construction of a stream of tokens into an abstract syntax tree.
 protected createParser(lexer: Lexer): Parser;
+
+// Used to actually process an abstract syntax tree, perform the appropriate dice rolls and figure out successes/failures.
 protected createInterpreter(): DiceInterpreter;
+
+// Used to control how an expression is 'rendered', that is, how an abstract syntax tree is converted back into a string.
+protected createGenerator(): DiceGenerator;
 ```
 
 Overriding any of the above methods will allow you to control the exact instance that is created for each part of the interpreting process.
