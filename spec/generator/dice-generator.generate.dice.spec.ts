@@ -91,7 +91,7 @@ describe('DiceGenerator', () => {
             // -5d6 will be interpreted as 0.
             expect(generator.generate(dice)).toBe('(-5)d6');
         });
-        it('generates dice roll values ((4, 5, 6)).', () => {
+        it('generates dice roll values ([4, 5, 6]).', () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice).setAttribute('sides', 6);
 
             dice.addChild(Ast.Factory.create(Ast.NodeType.DiceRoll).setAttribute('value', 4));
@@ -100,7 +100,7 @@ describe('DiceGenerator', () => {
 
             const generator = new Generator.DiceGenerator();
 
-            expect(generator.generate(dice)).toBe('(4, 5, 6)');
+            expect(generator.generate(dice)).toBe('[4, 5, 6]');
         });
         it('throws on malformed dice expression (2d).', () => {
             const dice = Ast.Factory.create(Ast.NodeType.Dice);

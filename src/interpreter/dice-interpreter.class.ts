@@ -1,4 +1,5 @@
 import * as Ast from '../ast';
+import { DiceGenerator } from '../generator';
 import { DefaultRandomProvider, RandomProvider } from '../random';
 import { DefaultFunctionDefinitions } from './default-function-definitions';
 import { DiceResult } from './dice-result.class';
@@ -9,11 +10,13 @@ import { Interpreter } from './interpreter.interface';
 export class DiceInterpreter implements Interpreter<DiceResult> {
     protected functions: FunctionDefinitionList;
     protected random: RandomProvider;
+    protected generator: DiceGenerator;
 
-    constructor(functions?: FunctionDefinitionList, random?: RandomProvider) {
+    constructor(functions?: FunctionDefinitionList, random?: RandomProvider, generator?: DiceGenerator) {
         this.functions = DefaultFunctionDefinitions;
         (<any>Object).assign(this.functions, functions);
         this.random = random || new DefaultRandomProvider();
+        this.generator = generator || new DiceGenerator();
     }
 
     interpret(expression: Ast.ExpressionNode): DiceResult {
@@ -22,7 +25,8 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
         const total = this.evaluate(exp, errors);
         const successes = this.countSuccesses(exp, errors);
         const fails = this.countFailures(exp, errors);
-        return new DiceResult(exp, total, successes, fails, errors);
+        const renderedExpression = this.generator.generate(exp);
+        return new DiceResult(exp, renderedExpression, total, successes, fails, errors);
     }
 
     evaluate(expression: Ast.ExpressionNode, errors: ErrorMessage[]): any {

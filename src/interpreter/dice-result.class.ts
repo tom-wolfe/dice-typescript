@@ -7,8 +7,15 @@ export class DiceResult extends Result {
     readonly failures: number;
     readonly errors: ErrorMessage[];
 
-    constructor(expression: ExpressionNode, total: number, successes: number, failures: number, errors: ErrorMessage[]) {
-        super(expression, total);
+    constructor(
+        expression: ExpressionNode,
+        renderedExpression: string,
+        total: number,
+        successes: number,
+        failures: number,
+        errors: ErrorMessage[]
+    ) {
+        super(expression, renderedExpression, total);
         this.successes = successes;
         this.failures = failures;
         this.errors = errors;
