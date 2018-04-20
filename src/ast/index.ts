@@ -1,5 +1,5 @@
 
-export * from "./expression-node";
-export * from "./factory";
-export * from "./node-attributes";
-export * from "./node-type";
+export * from './expression-node.class';
+export * from './factory.class';
+export * from './node-attributes.class';
+export * from './node-type.enum';

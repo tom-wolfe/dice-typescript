@@ -1,3 +1,1 @@
-
-export * from "./dice";
-export * from "./random-provider";
+export * from './dice.class';

@@ -1,1 +1,2 @@
-export * from "./dice-generator";
+export * from './dice-generator.class';
+export * from './generator.interface';

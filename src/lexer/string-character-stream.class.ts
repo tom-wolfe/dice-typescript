@@ -1,4 +1,4 @@
-import { CharacterStream } from "./character-stream";
+import { CharacterStream } from './character-stream.interface';
 
 export class StringCharacterStream implements CharacterStream {
     private index = -1;

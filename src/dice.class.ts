@@ -1,12 +1,11 @@
-import { DefaultRandomProvider } from "./default-random-provider";
-import { DiceResult } from "./interpreter";
-import { DiceInterpreter } from "./interpreter/dice-interpreter";
-import { FunctionDefinitionList } from "./interpreter/function-definition-list";
-import { CharacterStream, Lexer } from "./lexer";
-import { DiceLexer } from "./lexer/dice-lexer";
-import { Parser } from "./parser";
-import { DiceParser } from "./parser/dice-parser";
-import { RandomProvider } from "./random-provider";
+import { DiceResult } from './interpreter';
+import { DiceInterpreter } from './interpreter/dice-interpreter.class';
+import { FunctionDefinitionList } from './interpreter/function-definition-list.class';
+import { CharacterStream, Lexer } from './lexer';
+import { DiceLexer } from './lexer/dice-lexer.class';
+import { Parser } from './parser';
+import { DiceParser } from './parser/dice-parser.class';
+import { RandomProvider } from './random';
 
 export class Dice {
     constructor(protected functions?: FunctionDefinitionList, protected randomProvider?: RandomProvider) { }
@@ -30,4 +29,4 @@ export class Dice {
     protected createInterpreter(): DiceInterpreter {
         return new DiceInterpreter(this.functions, this.randomProvider);
     }
-};
+}

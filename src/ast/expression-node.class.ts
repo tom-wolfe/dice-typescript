@@ -1,16 +1,16 @@
-import { Factory } from "./factory";
-import { NodeAttributes } from "./node-attributes";
-import { NodeType } from "./node-type";
+import { Factory } from './factory.class';
+import { NodeAttributes } from './node-attributes.class';
+import { NodeType } from './node-type.enum';
 
 export class ExpressionNode {
     readonly type: NodeType;
-    private attributes;
+    private attributes: NodeAttributes;
     private parent: ExpressionNode;
     private children: ExpressionNode[];
 
     constructor(type: NodeType, parent: ExpressionNode = null) {
-        this.type = type
-        this.parent = parent
+        this.type = type;
+        this.parent = parent;
     }
 
     copy(): ExpressionNode {
@@ -23,7 +23,7 @@ export class ExpressionNode {
         if (this.children) {
             this.children.forEach(child => {
                 copy.addChild(child.copy());
-            })
+            });
         }
         return copy;
     }
@@ -34,7 +34,7 @@ export class ExpressionNode {
 
     insertChild(node: ExpressionNode, index?: number): ExpressionNode {
         if (node) {
-            if (node === this) { throw new Error("Cannot add a node as a child of itself."); }
+            if (node === this) { throw new Error('Cannot add a node as a child of itself.'); }
             if (!this.children) { this.children = []; }
             this.children.splice(index || this.children.length, 0, node);
             node.parent = this;
@@ -83,7 +83,7 @@ export class ExpressionNode {
     }
 
     toJSON(): any {
-        const keys = Object.keys(this).filter(k => k !== "parent");
+        const keys = Object.keys(this).filter(k => k !== 'parent');
         const obj = {};
         keys.forEach(k => obj[k] = this[k]);
         return obj;

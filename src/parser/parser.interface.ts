@@ -1,4 +1,4 @@
-import { ParseResult } from "./parse-result";
+import { ParseResult } from './parse-result.class';
 
 export interface Parser {
     parse(): ParseResult;

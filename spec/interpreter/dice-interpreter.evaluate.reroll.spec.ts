@@ -1,20 +1,19 @@
-import * as Ast from "../../src/ast";
-import * as Interpreter from "../../src/interpreter";
-import { MockListRandomProvider } from "../helpers/mock-list-random-provider";
-import { MockRandomProvider } from "../helpers/mock-random-provider";
+import * as Ast from '../../src/ast';
+import * as Interpreter from '../../src/interpreter';
+import { MockListRandomProvider } from '../helpers';
 
-describe("DiceInterpreter", () => {
-    describe("evaluate", () => {
-        it("evaluates rerolling dice (4d6r<3).", () => {
+describe('DiceInterpreter', () => {
+    describe('evaluate', () => {
+        it('evaluates rerolling dice (4d6r<3).', () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", false);
+                .setAttribute('once', false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 6));
 
             const less = Ast.Factory.create(Ast.NodeType.Less);
-            less.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
+            less.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 3));
 
             exp.addChild(dice);
             exp.addChild(less);
@@ -30,16 +29,16 @@ describe("DiceInterpreter", () => {
             expect(interpreter.evaluate(exp, errors)).toBe(21);
             expect(dice.getChildCount()).toBe(4);
         });
-        it("evaluates a rerolling dice (4d6ro<3).", () => {
+        it('evaluates a rerolling dice (4d6ro<3).', () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", true);
+                .setAttribute('once', true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 6));
 
             const less = Ast.Factory.create(Ast.NodeType.Less);
-            less.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 3));
+            less.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 3));
 
             exp.addChild(dice);
             exp.addChild(less);
@@ -55,13 +54,13 @@ describe("DiceInterpreter", () => {
             expect(interpreter.evaluate(exp, errors)).toBe(18);
             expect(dice.getChildCount()).toBe(4);
         });
-        it("evaluates rerolling dice (4d6r).", () => {
+        it('evaluates rerolling dice (4d6r).', () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", false);
+                .setAttribute('once', false);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 6));
             exp.addChild(dice);
 
             const mockList = new MockListRandomProvider();
@@ -75,13 +74,13 @@ describe("DiceInterpreter", () => {
             expect(interpreter.evaluate(exp, errors)).toBe(21);
             expect(dice.getChildCount()).toBe(4);
         });
-        it("evaluates a rerolling dice no condition (4d6ro).", () => {
+        it('evaluates a rerolling dice no condition (4d6ro).', () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", true);
+                .setAttribute('once', true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 6));
             exp.addChild(dice);
 
             const mockList = new MockListRandomProvider();
@@ -95,17 +94,17 @@ describe("DiceInterpreter", () => {
             expect(interpreter.evaluate(exp, errors)).toBe(15);
             expect(dice.getChildCount()).toBe(4);
         });
-        it("errors on an invalid condition (4d6ro[dice]).", () => {
+        it('errors on an invalid condition (4d6ro[dice]).', () => {
             const exp = Ast.Factory.create(Ast.NodeType.Reroll)
-                .setAttribute("once", true);
+                .setAttribute('once', true);
 
             const dice = Ast.Factory.create(Ast.NodeType.Dice);
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 4));
-            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 6));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 4));
+            dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 6));
 
             const d2 = Ast.Factory.create(Ast.NodeType.Dice);
-            d2.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 1));
-            d2.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute("value", 2));
+            d2.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 1));
+            d2.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 2));
 
             exp.addChild(dice);
             exp.addChild(d2);

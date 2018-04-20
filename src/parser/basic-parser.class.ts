@@ -1,7 +1,7 @@
-import { DiceLexer, Lexer, Token, TokenType } from "../lexer";
-import { ErrorMessage } from "./error-message";
-import { ParseResult } from "./parse-result";
-import { Parser } from "./parser";
+import { DiceLexer, Lexer, Token, TokenType } from '../lexer';
+import { ErrorMessage } from './error-message.class';
+import { ParseResult } from './parse-result.class';
+import { Parser } from './parser.interface';
 
 export abstract class BasicParser implements Parser {
     protected readonly lexer: Lexer;
@@ -9,10 +9,10 @@ export abstract class BasicParser implements Parser {
     constructor(input: Lexer | string) {
         if (this.isLexer(input)) {
             this.lexer = input;
-        } else if (typeof input === "string") {
+        } else if (typeof input === 'string') {
             this.lexer = new DiceLexer(input);
         } else {
-            throw new Error("Unrecognized input type. input must be of type 'Lexer | string'.")
+            throw new Error('Unrecognized input type. input must be of type \'Lexer | string\'.');
         }
     }
 

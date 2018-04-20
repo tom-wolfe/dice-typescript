@@ -1,6 +1,6 @@
-import { ExpressionNode } from "../ast";
-import { ErrorMessage } from "../parser/error-message";
-import { Result } from "./result";
+import { ExpressionNode } from '../ast';
+import { ErrorMessage } from '../parser/error-message.class';
+import { Result } from './result.class';
 
 export class DiceResult extends Result {
     readonly successes: number;

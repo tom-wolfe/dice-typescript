@@ -1,7 +1,7 @@
-import { ExpressionNode } from "../ast";
+import { ExpressionNode } from '../ast';
 
 export class Result {
-    readonly reducedExpression: ExpressionNode
+    readonly reducedExpression: ExpressionNode;
     readonly total: number;
 
     constructor(reducedExpression: ExpressionNode, total: number) {

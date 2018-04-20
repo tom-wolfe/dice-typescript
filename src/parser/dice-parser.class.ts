@@ -1,7 +1,7 @@
-import * as Ast from "../ast";
-import { Lexer, TokenType } from "../lexer";
-import { BasicParser } from "./basic-parser";
-import { ParseResult } from "./parse-result";
+import * as Ast from '../ast';
+import { Lexer, TokenType } from '../lexer';
+import { BasicParser } from './basic-parser.class';
+import { ParseResult } from './parse-result.class';
 
 const BooleanOperatorMap: { [token: string]: Ast.NodeType } = {};
 BooleanOperatorMap[TokenType.Equals] = Ast.NodeType.Equal;
@@ -132,9 +132,9 @@ export class DiceParser extends BasicParser {
     parseFunction(result: ParseResult): Ast.ExpressionNode {
         const functionName = this.expectAndConsume(result, TokenType.Identifier);
         const root = Ast.Factory.create(Ast.NodeType.Function)
-            .setAttribute("name", functionName.value);
+            .setAttribute('name', functionName.value);
 
-        this.expectAndConsume(result, TokenType.ParenthesisOpen)
+        this.expectAndConsume(result, TokenType.ParenthesisOpen);
 
         // Parse function arguments.
         const token = this.lexer.peekNextToken();
@@ -154,7 +154,7 @@ export class DiceParser extends BasicParser {
     parseNumber(result: ParseResult): Ast.ExpressionNode {
         const numberToken = this.lexer.getNextToken();
         return Ast.Factory.create(Ast.NodeType.Number)
-            .setAttribute("value", Number(numberToken.value));
+            .setAttribute('value', Number(numberToken.value));
     }
 
     parseBracketedExpression(result: ParseResult): Ast.ExpressionNode {
@@ -180,7 +180,7 @@ export class DiceParser extends BasicParser {
                     exp = this.parseRepeat(result, exp);
                 }
                 root.addChild(exp);
-            } while (this.lexer.peekNextToken().type === TokenType.Comma)
+            } while (this.lexer.peekNextToken().type === TokenType.Comma);
         }
 
         this.expectAndConsume(result, TokenType.BraceClose);
@@ -189,7 +189,7 @@ export class DiceParser extends BasicParser {
 
     parseRepeat(result: ParseResult, lhs: Ast.ExpressionNode): Ast.ExpressionNode {
         this.lexer.getNextToken(); // Consume the ellipsis.
-        const root = Ast.Factory.create(Ast.NodeType.Repeat)
+        const root = Ast.Factory.create(Ast.NodeType.Repeat);
         root.addChild(lhs);
         root.addChild(this.parseExpression(result));
         return root;
@@ -209,14 +209,14 @@ export class DiceParser extends BasicParser {
         root.addChild(rollTimes);
 
         switch (token.value) {
-            case "d":
+            case 'd':
                 const sidesToken = this.expectAndConsume(result, TokenType.Number);
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
-                    .setAttribute("value", Number(sidesToken.value));
+                    .setAttribute('value', Number(sidesToken.value));
                 break;
-            case "dF":
+            case 'dF':
                 root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
-                    .setAttribute("value", "fate");
+                    .setAttribute('value', 'fate');
                 break;
         }
 
@@ -225,8 +225,8 @@ export class DiceParser extends BasicParser {
 
     parseExplode(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Explode);
-        root.setAttribute("compound", false);
-        root.setAttribute("penetrate", false);
+        root.setAttribute('compound', false);
+        root.setAttribute('penetrate', false);
 
         if (lhs) { root.addChild(lhs); }
 
@@ -234,14 +234,14 @@ export class DiceParser extends BasicParser {
 
         let token = this.lexer.peekNextToken();
         if (token.type === TokenType.Exclamation) {
-            root.setAttribute("compound", true);
+            root.setAttribute('compound', true);
             this.lexer.getNextToken(); // Consume second !.
         }
 
         token = this.lexer.peekNextToken();
         if (token.type === TokenType.Identifier) {
-            if (token.value === "p") {
-                root.setAttribute("penetrate", true);
+            if (token.value === 'p') {
+                root.setAttribute('penetrate', true);
             }
             this.lexer.getNextToken(); // Consume p.
         }
@@ -255,15 +255,15 @@ export class DiceParser extends BasicParser {
 
     parseCritical(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Critical);
-        root.setAttribute("type", "success");
+        root.setAttribute('type', 'success');
         if (lhs) { root.addChild(lhs); }
 
         const token = this.lexer.peekNextToken();
         if (token.type === TokenType.Identifier) {
             switch (token.value) {
-                case "c": root.setAttribute("type", "success"); break;
-                case "cs": root.setAttribute("type", "success"); break;
-                case "cf": root.setAttribute("type", "failure"); break;
+                case 'c': root.setAttribute('type', 'success'); break;
+                case 'cs': root.setAttribute('type', 'success'); break;
+                case 'cf': root.setAttribute('type', 'failure'); break;
                 default: this.errorMessage(result, `Unknown critical type ${token.value}. Must be (c|cs|cf).`, token);
             }
         }
@@ -279,15 +279,15 @@ export class DiceParser extends BasicParser {
 
     parseKeep(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Keep);
-        root.setAttribute("type", "highest");
+        root.setAttribute('type', 'highest');
         if (lhs) { root.addChild(lhs); }
 
         const token = this.lexer.peekNextToken();
         if (token.type === TokenType.Identifier) {
             switch (token.value) {
-                case "k": root.setAttribute("type", "highest"); break;
-                case "kh": root.setAttribute("type", "highest"); break;
-                case "kl": root.setAttribute("type", "lowest"); break;
+                case 'k': root.setAttribute('type', 'highest'); break;
+                case 'kh': root.setAttribute('type', 'highest'); break;
+                case 'kl': root.setAttribute('type', 'lowest'); break;
                 default: this.errorMessage(result, `Unknown keep type ${token.value}. Must be (k|kh|kl).`, token);
             }
         }
@@ -303,15 +303,15 @@ export class DiceParser extends BasicParser {
 
     parseDrop(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Drop);
-        root.setAttribute("type", "lowest");
+        root.setAttribute('type', 'lowest');
         if (lhs) { root.addChild(lhs); }
 
         const token = this.lexer.peekNextToken();
         if (token.type === TokenType.Identifier) {
             switch (token.value) {
-                case "d": root.setAttribute("type", "lowest"); break;
-                case "dh": root.setAttribute("type", "highest"); break;
-                case "dl": root.setAttribute("type", "lowest"); break;
+                case 'd': root.setAttribute('type', 'lowest'); break;
+                case 'dh': root.setAttribute('type', 'highest'); break;
+                case 'dl': root.setAttribute('type', 'lowest'); break;
                 default: this.errorMessage(result, `Unknown drop type ${token.value}. Must be (d|dh|dl).`, token);
             }
         }
@@ -327,14 +327,14 @@ export class DiceParser extends BasicParser {
 
     parseReroll(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Reroll);
-        root.setAttribute("once", false);
+        root.setAttribute('once', false);
         if (lhs) { root.addChild(lhs); }
 
         const token = this.lexer.peekNextToken();
         if (token.type === TokenType.Identifier) {
             switch (token.value) {
-                case "r": root.setAttribute("once", false); break;
-                case "ro": root.setAttribute("once", true); break;
+                case 'r': root.setAttribute('once', false); break;
+                case 'ro': root.setAttribute('once', true); break;
                 default: this.errorMessage(result, `Unknown drop type ${token.value}. Must be (r|ro).`, token);
             }
         }
@@ -349,15 +349,15 @@ export class DiceParser extends BasicParser {
 
     parseSort(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
         const root = Ast.Factory.create(Ast.NodeType.Sort);
-        root.setAttribute("direction", "ascending");
+        root.setAttribute('direction', 'ascending');
         if (lhs) { root.addChild(lhs); }
 
         const token = this.lexer.peekNextToken();
         if (token.type === TokenType.Identifier) {
             switch (token.value) {
-                case "s": root.setAttribute("direction", "ascending"); break;
-                case "sa": root.setAttribute("direction", "ascending"); break;
-                case "sd": root.setAttribute("direction", "descending"); break;
+                case 's': root.setAttribute('direction', 'ascending'); break;
+                case 'sa': root.setAttribute('direction', 'ascending'); break;
+                case 'sd': root.setAttribute('direction', 'descending'); break;
                 default: this.errorMessage(result, `Unknown sort type ${token.value}. Must be (s|sa|sd).`, token);
             }
         }
@@ -389,11 +389,11 @@ export class DiceParser extends BasicParser {
                 root = this.parseCompareModifier(result, root);
             } else if (token.type === TokenType.Identifier) {
                 switch (token.value[0]) {
-                    case "c": root = this.parseCritical(result, root); break;
-                    case "d": root = this.parseDrop(result, root); break;
-                    case "k": root = this.parseKeep(result, root); break;
-                    case "r": root = this.parseReroll(result, root); break;
-                    case "s": root = this.parseSort(result, root); break;
+                    case 'c': root = this.parseCritical(result, root); break;
+                    case 'd': root = this.parseDrop(result, root); break;
+                    case 'k': root = this.parseKeep(result, root); break;
+                    case 'r': root = this.parseReroll(result, root); break;
+                    case 's': root = this.parseSort(result, root); break;
                     default:
                         this.errorToken(result, TokenType.Identifier, token);
                         return root;
@@ -412,9 +412,9 @@ export class DiceParser extends BasicParser {
                 root = this.parseCompareModifier(result, root);
             } else if (token.type === TokenType.Identifier) {
                 switch (token.value[0]) {
-                    case "d": root = this.parseDrop(result, root); break;
-                    case "k": root = this.parseKeep(result, root); break;
-                    case "s": root = this.parseSort(result, root); break;
+                    case 'd': root = this.parseDrop(result, root); break;
+                    case 'k': root = this.parseKeep(result, root); break;
+                    case 's': root = this.parseSort(result, root); break;
                     default:
                         this.errorToken(result, TokenType.Identifier, token);
                         return root;

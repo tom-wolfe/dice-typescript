@@ -1,8 +1,8 @@
-import { CharacterStream } from "./character-stream";
-import { Lexer } from "./lexer";
-import { StringCharacterStream } from "./string-character-stream";
-import { Token } from "./token";
-import { TokenType } from "./token-type";
+import { CharacterStream } from './character-stream.interface';
+import { Lexer } from './lexer.interface';
+import { StringCharacterStream } from './string-character-stream.class';
+import { Token } from './token.class';
+import { TokenType } from './token-type.enum';
 
 export class DiceLexer implements Lexer {
     protected stream: CharacterStream;
@@ -15,10 +15,10 @@ export class DiceLexer implements Lexer {
     constructor(input: CharacterStream | string) {
         if (this.isCharacterStream(input)) {
             this.stream = input;
-        } else if (typeof input === "string") {
+        } else if (typeof input === 'string') {
             this.stream = new StringCharacterStream(input);
         } else {
-            throw new Error("Unrecognized input type. input must be of type 'CharacterStream | string'.")
+            throw new Error('Unrecognized input type. input must be of type \'CharacterStream | string\'.');
         }
     }
 
@@ -55,8 +55,8 @@ export class DiceLexer implements Lexer {
         let buffer = this.stream.getCurrentCharacter();
         let hasDot = false;
         let nextChar = this.stream.peekNextCharacter();
-        while (nextChar === "." || this.numCharRegex.test(nextChar)) {
-            if (nextChar === ".") {
+        while (nextChar === '.' || this.numCharRegex.test(nextChar)) {
+            if (nextChar === '.') {
                 if (hasDot) { break; }
                 hasDot = true;
             }
@@ -68,12 +68,12 @@ export class DiceLexer implements Lexer {
 
     protected parseEllipsis(): Token {
         for (let x = 0; x < 2; x++) {
-            if (this.stream.peekNextCharacter() !== ".") {
-                throw new Error("Missing period in ellipsis.");
+            if (this.stream.peekNextCharacter() !== '.') {
+                throw new Error('Missing period in ellipsis.');
             }
             this.stream.getNextCharacter();
         }
-        return this.createToken(TokenType.Ellipsis, "...");
+        return this.createToken(TokenType.Ellipsis, '...');
     }
 
     private constructNextToken() {
@@ -82,34 +82,34 @@ export class DiceLexer implements Lexer {
             switch (true) {
                 case this.idCharRegex.test(curChar): return this.parseIdentifier();
                 case this.numCharRegex.test(curChar): return this.parseNumber();
-                case curChar === "{": return this.createToken(TokenType.BraceOpen, curChar);
-                case curChar === "}": return this.createToken(TokenType.BraceClose, curChar);
-                case curChar === ",": return this.createToken(TokenType.Comma, curChar);
-                case curChar === "(": return this.createToken(TokenType.ParenthesisOpen, curChar);
-                case curChar === ")": return this.createToken(TokenType.ParenthesisClose, curChar);
-                case curChar === "=": return this.createToken(TokenType.Equals, curChar);
-                case curChar === "+": return this.createToken(TokenType.Plus, curChar);
-                case curChar === "/": return this.createToken(TokenType.Slash, curChar);
-                case curChar === "-": return this.createToken(TokenType.Minus, curChar);
-                case curChar === "%": return this.createToken(TokenType.Percent, curChar);
-                case curChar === "!": return this.createToken(TokenType.Exclamation, curChar);
-                case curChar === ".": return this.parseEllipsis();
-                case curChar === "*":
-                    if (this.stream.peekNextCharacter() === "*") {
+                case curChar === '{': return this.createToken(TokenType.BraceOpen, curChar);
+                case curChar === '}': return this.createToken(TokenType.BraceClose, curChar);
+                case curChar === ',': return this.createToken(TokenType.Comma, curChar);
+                case curChar === '(': return this.createToken(TokenType.ParenthesisOpen, curChar);
+                case curChar === ')': return this.createToken(TokenType.ParenthesisClose, curChar);
+                case curChar === '=': return this.createToken(TokenType.Equals, curChar);
+                case curChar === '+': return this.createToken(TokenType.Plus, curChar);
+                case curChar === '/': return this.createToken(TokenType.Slash, curChar);
+                case curChar === '-': return this.createToken(TokenType.Minus, curChar);
+                case curChar === '%': return this.createToken(TokenType.Percent, curChar);
+                case curChar === '!': return this.createToken(TokenType.Exclamation, curChar);
+                case curChar === '.': return this.parseEllipsis();
+                case curChar === '*':
+                    if (this.stream.peekNextCharacter() === '*') {
                         this.stream.getNextCharacter();
                         return this.createToken(TokenType.DoubleAsterisk, curChar + this.stream.getCurrentCharacter());
                     } else {
                         return this.createToken(TokenType.Asterisk, curChar);
                     }
-                case curChar === ">":
-                    if (this.stream.peekNextCharacter() === "=") {
+                case curChar === '>':
+                    if (this.stream.peekNextCharacter() === '=') {
                         this.stream.getNextCharacter();
                         return this.createToken(TokenType.GreaterOrEqual, curChar + this.stream.getCurrentCharacter());
                     } else {
                         return this.createToken(TokenType.Greater, curChar);
                     }
-                case curChar === "<":
-                    if (this.stream.peekNextCharacter() === "=") {
+                case curChar === '<':
+                    if (this.stream.peekNextCharacter() === '=') {
                         this.stream.getNextCharacter();
                         return this.createToken(TokenType.LessOrEqual, curChar + this.stream.getCurrentCharacter());
                     } else {

@@ -1,5 +1,6 @@
-import { RandomProvider } from "./random-provider";
-import * as Random from "random-js";
+import * as Random from 'random-js';
+
+import { RandomProvider } from './random-provider.class';
 
 export class DefaultRandomProvider implements RandomProvider {
 

@@ -1,5 +1,4 @@
-import { Lexer, Token } from "../../src/lexer";
-import { TokenType } from "../../src/lexer/token-type";
+import { Lexer, Token, TokenType } from '../../src/lexer';
 
 export class MockLexer implements Lexer {
     private index = -1;

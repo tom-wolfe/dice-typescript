@@ -1,8 +1,8 @@
 
-export * from "./character-stream";
-export * from "./string-character-stream";
-export * from "./lexer";
-export * from "./dice-lexer";
-export * from "./non-global-definition-error";
-export * from "./token-type";
-export * from "./token";
+export * from './string-character-stream.class';
+export * from './character-stream.interface';
+export * from './lexer.interface';
+export * from './dice-lexer.class';
+export * from './non-global-definition-error.class';
+export * from './token-type.enum';
+export * from './token.class';

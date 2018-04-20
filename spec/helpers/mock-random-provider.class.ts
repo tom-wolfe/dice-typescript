@@ -1,4 +1,4 @@
-import { RandomProvider } from "../../src/random-provider";
+import { RandomProvider } from '../../src/random';
 
 export class MockRandomProvider implements RandomProvider {
     constructor(private number: number) { }
