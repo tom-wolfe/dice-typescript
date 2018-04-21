@@ -62,7 +62,7 @@ customFunctions["floor"] = (interpreter: DiceInterpreter, functionNode: Expressi
 
 const dice = new Dice(customFunctions);
 const result = dice.roll("floor(1d20 / 2)").total;
-console.log(result); // Outputs a random number between 1 and 20, divided by 20 then rounded down.
+console.log(result); // Outputs a random number between 1 and 20, divided by 2, then rounded down.
 ```
 
 #### Random Provider
