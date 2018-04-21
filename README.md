@@ -21,7 +21,7 @@ npm install dice-typescript
 At its simplest, the dice roller is very simple to use. Take the following example:
 
 ```typescript
-import * as Dice from "dice";
+import * as Dice from "dice-typescript";
 
 const dice = new Dice();
 const result = dice.roll("1d20").total;
