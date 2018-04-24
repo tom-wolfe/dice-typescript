@@ -67,7 +67,7 @@ console.log(result); // Outputs a random number between 1 and 20, divided by 2, 
 
 #### Random Provider
 
-By default, the Dice library uses Math.random to generate random numbers. In some instances, this may not be suitable, so this can be enhanced by a custom implementation of the ```RandomProvider``` interface as in the example below:
+By default, the Dice library uses [random-js](https://www.npmjs.com/package/random-js) to generate random numbers. In some instances, this may not be suitable, so this can be enhanced by a custom implementation of the ```RandomProvider``` interface as in the example below:
 
 ```typescript
 export class CustomRandom implements RandomProvider {
