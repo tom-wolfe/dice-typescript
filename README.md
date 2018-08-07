@@ -136,13 +136,13 @@ npm run build
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/trwolfe13/dice/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/trwolfe13/dice-typescript/tags).
 
 ## Authors
 
 * **Tom Wolfe** - *Initial work* - [trwolfe13](https://github.com/trwolfe13)
 
-See also the list of [contributors](https://github.com/trwolfe13/dice/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/trwolfe13/dice-typescript/contributors) who participated in this project.
 
 ## License
 
