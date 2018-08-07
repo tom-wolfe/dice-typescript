@@ -1,11 +1,11 @@
 {
   "name": "dice-typescript",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A TypeScript library for parsing dice rolling expressions, most commonly used in tabletop RPGs.",
   "main": "./dist/index.js",
   "scripts": {
     "build": "npm run clean && npm run lint && npm run tsc",
-    "clean": "rimraf ./dist && rimraf ./coverage",
+    "clean": "node ./node_modules/rimraf/bin ./dist && node ./node_modules/rimraf/bin ./coverage",
     "coverage": "istanbul coverage",
     "codacy": "cat ./coverage/lcov/lcov.info | codacy-coverage --verbose",
     "lint": "tslint -p ./tslint.json",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/trwolfe13/dice.git"
+    "url": "git+https://github.com/trwolfe13/dice-typescript.git"
   },
   "keywords": [
     "dice",
@@ -32,9 +32,9 @@
   "author": "Tom Wolfe <trwolfe13@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/trwolfe13/dice/issues"
+    "url": "https://github.com/trwolfe13/dice-typescript/issues"
   },
-  "homepage": "https://github.com/trwolfe13/dice#readme",
+  "homepage": "https://github.com/trwolfe13/dice-typescript#readme",
   "devDependencies": {
     "@types/jasmine": "^2.8.6",
     "@types/random-js": "^1.0.30",
