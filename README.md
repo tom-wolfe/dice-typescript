@@ -21,7 +21,7 @@ npm install dice-typescript
 At its simplest, the dice roller is very simple to use. Take the following example:
 
 ```typescript
-import * as Dice from "dice-typescript";
+import { Dice } from "dice-typescript";
 
 const dice = new Dice();
 const result = dice.roll("1d20").total;
@@ -57,7 +57,7 @@ In addition to the ```abs```, ```ceil```, ```floor```, ```round``` and ```sqrt``
 ```typescript
 const customFunctions = new FunctionDefinitionList();
 customFunctions["floor"] = (interpreter: DiceInterpreter, functionNode: ExpressionNode, errors: ErrorMessage[]): number => {
-    return Math.floor(interpreter.evaluate(functionNode.getChild(0), errors));
+  return Math.floor(interpreter.evaluate(functionNode.getChild(0), errors));
 }
 
 const dice = new Dice(customFunctions);
@@ -71,10 +71,10 @@ By default, the Dice library uses [random-js](https://www.npmjs.com/package/rand
 
 ```typescript
 export class CustomRandom implements RandomProvider {
-    numberBetween(min: number, max: number) {
-          return 4; // chosen by fair dice roll.
-                    // guaranteed to be random.
-    }
+  numberBetween(min: number, max: number) {
+    return 4; // chosen by fair dice roll.
+              // guaranteed to be random.
+  }
 }
 
 const dice = new Dice(null, new CustomRandom());
@@ -89,7 +89,7 @@ The dice rolling syntax is based on the system used by Roll20, a detailed explan
 In addition to the above syntax rules, some slightly more complicated variations are available. For example, you can roll a variable number of dice using an expression similar to the following:
 
 ```dice
-    (4d4)d20
+  (4d4)d20
 ```
 
 ##### Conditional Operators
@@ -101,7 +101,7 @@ As per the Roll20 syntax, you can use conditional operators, such as in ```4d20>
 Sometimes it is necessary to roll complex groups of dice that aren't supported by the basic syntax. For example, rolling a saving throw at disadvantage for 10 creatures. For this, you can use the group repeater modifier, which works like this:
 
 ```dice
-    {2d20kl...10}>=14
+  {2d20kl...10}>=14
 ```
 
 The above will roll 10 disadvantaged saving throws, reporting successes for those that break DC14.
@@ -111,7 +111,7 @@ The above will roll 10 disadvantaged saving throws, reporting successes for thos
 Using the allowed syntax, it is possible to request a fractional number of dice to be rolled. Take the following example:
 
 ```dice
-    (2 / 5)d6
+  (2 / 5)d6
 ```
 
 In this instance, the number of dice to be rolled will be rounded to the nearest integer (2.5 gets rounded up to 3).

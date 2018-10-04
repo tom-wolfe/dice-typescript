@@ -1,5 +1,5 @@
 import { Token } from '../lexer';
 
-export class ErrorMessage {
-    constructor(public message: string, token: Token, stackTrace: string) { }
+export class ParserError {
+  constructor(public message: string, public token: Token, public stackTrace: string) { }
 }

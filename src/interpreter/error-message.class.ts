@@ -1,5 +1,5 @@
 import { ExpressionNode } from '../ast';
 
-export class ErrorMessage {
-    constructor(public message: string, expression: ExpressionNode, stack: string = (new Error().stack)) { }
+export class InterpreterError {
+  constructor(public message: string, public expression: ExpressionNode, public stack: string = (new Error().stack)) { }
 }

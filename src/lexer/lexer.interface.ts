@@ -1,6 +1,6 @@
 import { Token } from './token.class';
 
 export interface Lexer {
-    peekNextToken(): Token;
-    getNextToken(): Token;
+  peekNextToken(): Token;
+  getNextToken(): Token;
 }

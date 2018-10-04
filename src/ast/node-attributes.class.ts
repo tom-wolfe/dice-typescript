@@ -1,4 +1,4 @@
 
 export class NodeAttributes {
-    [key: string]: any
+  [key: string]: any
 }

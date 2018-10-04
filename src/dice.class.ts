@@ -9,34 +9,32 @@ import { DiceParser } from './parser/dice-parser.class';
 import { RandomProvider } from './random';
 
 export class Dice {
-    constructor(
-        protected functions?: FunctionDefinitionList,
-        protected randomProvider?: RandomProvider,
-        protected generator?: DiceGenerator
-    ) { }
+  constructor(
+    protected functions?: FunctionDefinitionList,
+    protected randomProvider?: RandomProvider
+  ) { }
 
-    roll(input: string | CharacterStream): DiceResult {
-        const lexer = this.createLexer(input);
-        const parser = this.createParser(lexer);
-        const interpreter = this.createInterpreter();
-        const generator = this.createGenerator();
-        const parseResult = parser.parse();
-        return interpreter.interpret(parseResult.root);
-    }
+  roll(input: string | CharacterStream): DiceResult {
+    const lexer = this.createLexer(input);
+    const parser = this.createParser(lexer);
+    const interpreter = this.createInterpreter();
+    const parseResult = parser.parse();
+    return interpreter.interpret(parseResult.root);
+  }
 
-    protected createLexer(input: string | CharacterStream): Lexer {
-        return new DiceLexer(input);
-    }
+  protected createLexer(input: string | CharacterStream): Lexer {
+    return new DiceLexer(input);
+  }
 
-    protected createParser(lexer: Lexer): Parser {
-        return new DiceParser(lexer);
-    }
+  protected createParser(lexer: Lexer): Parser {
+    return new DiceParser(lexer);
+  }
 
-    protected createInterpreter(): DiceInterpreter {
-        return new DiceInterpreter(this.functions, this.randomProvider, this.generator);
-    }
+  protected createInterpreter(): DiceInterpreter {
+    return new DiceInterpreter(this.functions, this.randomProvider, this.createGenerator());
+  }
 
-    protected createGenerator(): DiceGenerator {
-        return new DiceGenerator();
-    }
+  protected createGenerator(): DiceGenerator {
+    return new DiceGenerator();
+  }
 }

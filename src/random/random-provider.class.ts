@@ -1,3 +1,3 @@
 export interface RandomProvider {
-    numberBetween(min: number, max: number): number;
+  numberBetween(min: number, max: number): number;
 }
