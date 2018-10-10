@@ -96,7 +96,11 @@ export class DiceParser extends BasicParser {
     const token = this.lexer.peekNextToken();
     switch (token.type) {
       case TokenType.Identifier:
-        root = this.parseFunction(result);
+        if (token.value === 'd' || token.value === 'dF') {
+          root = this.parseDice(result);
+        } else {
+          root = this.parseFunction(result);
+        }
         break;
       case TokenType.ParenthesisOpen:
         root = this.parseBracketedExpression(result);
@@ -125,6 +129,7 @@ export class DiceParser extends BasicParser {
     switch (token.type) {
       case TokenType.Number: return this.parseNumber(result);
       case TokenType.ParenthesisOpen: return this.parseBracketedExpression(result);
+      case TokenType.Identifier: return Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', Number(1));
       default: this.errorToken(result, TokenType.Number, token);
     }
   }
