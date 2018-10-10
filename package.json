@@ -1,6 +1,6 @@
 {
   "name": "dice-typescript",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "A TypeScript library for parsing dice rolling expressions, most commonly used in tabletop RPGs.",
   "main": "./dist/index.js",
   "scripts": {
