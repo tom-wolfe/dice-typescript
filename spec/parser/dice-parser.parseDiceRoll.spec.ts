@@ -40,6 +40,22 @@ describe('DiceParser', () => {
       expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
       expect(dice.getChild(1).getAttribute('value')).toBe(6);
     });
+    it('can correctly parse a simple dice roll without roll times.', () => {
+      const lexer = new MockLexer([
+          new Token(TokenType.Identifier, 0, 'd'),
+          new Token(TokenType.Number, 1, '6')
+      ]);
+      const parser = new Parser.DiceParser(lexer);
+      const result = new Parser.ParseResult();
+      const dice = parser.parseDiceRoll(result);
+      expect(result.errors.length).toBe(0);
+      expect(dice.type).toBe(NodeType.Dice);
+      expect(dice.getChildCount()).toBe(2);
+      expect(dice.getChild(0).type).toBe(NodeType.Number);
+      expect(dice.getChild(0).getAttribute('value')).toBe(1);
+      expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
+      expect(dice.getChild(1).getAttribute('value')).toBe(6);
+    });
     it('can correctly parse a simple fate dice roll', () => {
       const lexer = new MockLexer([
         new Token(TokenType.Number, 0, '10'),
@@ -53,6 +69,21 @@ describe('DiceParser', () => {
       expect(dice.getChildCount()).toBe(2);
       expect(dice.getChild(0).type).toBe(NodeType.Number);
       expect(dice.getChild(0).getAttribute('value')).toBe(10);
+      expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
+      expect(dice.getChild(1).getAttribute('value')).toBe('fate');
+    });
+    it('can correctly parse a simple fate dice roll without roll times', () => {
+      const lexer = new MockLexer([
+          new Token(TokenType.Identifier, 0, 'dF')
+      ]);
+      const parser = new Parser.DiceParser(lexer);
+      const result = new Parser.ParseResult();
+      const dice = parser.parseDiceRoll(result);
+      expect(result.errors.length).toBe(0);
+      expect(dice.type).toBe(NodeType.Dice);
+      expect(dice.getChildCount()).toBe(2);
+      expect(dice.getChild(0).type).toBe(NodeType.Number);
+      expect(dice.getChild(0).getAttribute('value')).toBe(1);
       expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
       expect(dice.getChild(1).getAttribute('value')).toBe('fate');
     });
@@ -99,17 +130,6 @@ describe('DiceParser', () => {
       expect(dice.getChild(0).getChild(1).getAttribute('value')).toBe(3);
       expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
       expect(dice.getChild(1).getAttribute('value')).toBe(6);
-    });
-    it('throws on missing roll times', () => {
-      const lexer = new MockLexer([
-        new Token(TokenType.Identifier, 0, 'd'),
-        new Token(TokenType.Number, 1, '10')
-      ]);
-      const parser = new Parser.DiceParser(lexer);
-
-      const result = new Parser.ParseResult();
-      const dice = parser.parseDiceRoll(result);
-      expect(result.errors.length).toBeGreaterThanOrEqual(1);
     });
     it('throws on missing dice value', () => {
       const lexer = new MockLexer([

@@ -6,6 +6,39 @@ import { MockLexer } from '../helpers';
 
 describe('DiceParser', () => {
   describe('parseDice', () => {
+    it('can correctly parse a simple dice roll without roll times.', () => {
+      const lexer = new MockLexer([
+          new Token(TokenType.Identifier, 0, 'd'),
+          new Token(TokenType.Number, 1, '6')
+      ]);
+      const parser = new Parser.DiceParser(lexer);
+      const result = new ParseResult();
+      const dice = parser.parseDice(result);
+      expect(result.errors.length).toBe(0);
+
+      expect(dice.type).toBe(NodeType.Dice);
+      expect(dice.getChildCount()).toBe(2);
+      expect(dice.getChild(0).type).toBe(NodeType.Number);
+      expect(dice.getChild(0).getAttribute('value')).toBe(1);
+      expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
+      expect(dice.getChild(1).getAttribute('value')).toBe(6);
+    });
+    it('can correctly parse a simple fate dice roll without roll times.', () => {
+      const lexer = new MockLexer([
+          new Token(TokenType.Identifier, 0, 'dF'),
+      ]);
+      const parser = new Parser.DiceParser(lexer);
+      const result = new ParseResult();
+      const dice = parser.parseDice(result);
+      expect(result.errors.length).toBe(0);
+
+      expect(dice.type).toBe(NodeType.Dice);
+      expect(dice.getChildCount()).toBe(2);
+      expect(dice.getChild(0).type).toBe(NodeType.Number);
+      expect(dice.getChild(0).getAttribute('value')).toBe(1);
+      expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
+      expect(dice.getChild(1).getAttribute('value')).toBe('fate');
+    });
     it('can correctly parse a simple dice roll with pre-parsed number.', () => {
       const lexer = new MockLexer([
         new Token(TokenType.Number, 0, '10'),
