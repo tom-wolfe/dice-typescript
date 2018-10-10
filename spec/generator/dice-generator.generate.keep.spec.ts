@@ -29,5 +29,19 @@ describe('DiceGenerator', () => {
       const generator = new Generator.DiceGenerator();
       expect(generator.generate(exp)).toBe('2d6kl');
     });
+    it('generates a keep with modifier (3d6kl2).', () => {
+      const exp = Ast.Factory.create(Ast.NodeType.Keep)
+        .setAttribute('type', 'lowest');
+
+      const dice = Ast.Factory.create(Ast.NodeType.Dice);
+      dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 3));
+      dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute('value', 6));
+
+      exp.addChild(dice);
+      exp.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 2));
+
+      const generator = new Generator.DiceGenerator();
+      expect(generator.generate(exp)).toBe('3d6kl2');
+    });
   });
 });

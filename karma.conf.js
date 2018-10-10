@@ -23,8 +23,8 @@ module.exports = function (config) {
     ],
     customLaunchers: {
       chromeDebugging: {
-        base: 'Chrome',
-        flags: [ '--remote-debugging-port=9333' ]
+        base: "Chrome",
+        flags: [ "--remote-debugging-port=9333" ]
       },
       chromeTravisCi: {
         base: "Chrome",

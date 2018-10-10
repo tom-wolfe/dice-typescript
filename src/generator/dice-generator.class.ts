@@ -134,18 +134,22 @@ export class DiceGenerator implements Generator<string> {
 
   generateKeep(expression: Ast.ExpressionNode): string {
     this.expectChildCount(expression, 1);
-    let keep = 'k';
-    if (expression.getAttribute('type') === 'highest') { keep += 'h'; }
-    if (expression.getAttribute('type') === 'lowest') { keep += 'l'; }
-    return this.generate(expression.getChild(0)) + keep;
+    let exp = 'k';
+    if (expression.getAttribute('type') === 'highest') { exp += 'h'; }
+    if (expression.getAttribute('type') === 'lowest') { exp += 'l'; }
+
+    if (expression.getChildCount() > 1) { exp += this.generate(expression.getChild(1)); }
+    return this.generate(expression.getChild(0)) + exp;
   }
 
   generateDrop(expression: Ast.ExpressionNode): string {
     this.expectChildCount(expression, 1);
-    let drop = 'd';
-    if (expression.getAttribute('type') === 'highest') { drop += 'h'; }
-    if (expression.getAttribute('type') === 'lowest') { drop += 'l'; }
-    return this.generate(expression.getChild(0)) + drop;
+    let exp = 'd';
+    if (expression.getAttribute('type') === 'highest') { exp += 'h'; }
+    if (expression.getAttribute('type') === 'lowest') { exp += 'l'; }
+
+    if (expression.getChildCount() > 1) { exp += this.generate(expression.getChild(1)); }
+    return this.generate(expression.getChild(0)) + exp;
   }
 
   generateCritical(expression: Ast.ExpressionNode): string {
