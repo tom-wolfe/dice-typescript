@@ -7,11 +7,13 @@ import { DiceLexer } from './lexer/dice-lexer.class';
 import { Parser } from './parser';
 import { DiceParser } from './parser/dice-parser.class';
 import { RandomProvider } from './random';
+import { InterpreterOptions } from './interpreter/interpreter-options.interface';
 
 export class Dice {
   constructor(
     protected functions?: FunctionDefinitionList,
-    protected randomProvider?: RandomProvider
+    protected randomProvider?: RandomProvider,
+    protected options?: InterpreterOptions,
   ) { }
 
   roll(input: string | CharacterStream): DiceResult {
@@ -31,7 +33,7 @@ export class Dice {
   }
 
   protected createInterpreter(): DiceInterpreter {
-    return new DiceInterpreter(this.functions, this.randomProvider, this.createGenerator());
+    return new DiceInterpreter(this.functions, this.randomProvider, this.createGenerator(), this.options);
   }
 
   protected createGenerator(): DiceGenerator {

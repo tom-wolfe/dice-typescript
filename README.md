@@ -82,6 +82,21 @@ const result = dice.roll("1d20").total;
 console.log(result); // Outputs 4.
 ```
 
+#### Limiting the number of rolls or sides
+
+Limit the number of rolls or dice sides by providing a configuration object to the `Dice` constructor:
+
+```typescript
+const dice = new Dice(null, null, {
+    maxRollTimes: 20, // limit to 20 rolls 
+    maxDiceSides: 100, // limit to 100 dice faces
+});
+const result1 = dice.roll("50d10");
+console.log(result1.errors); // Outputs ["Invalid number of rolls: 50. Maximum allowed: 20."]
+const result2 = dice.roll("10d500");
+console.log(result2.errors); // Outputs ["Invalid number of dice sides: 500. Maximum allowed: 500."]
+```
+
 #### Dice Expression Syntax
 
 The dice rolling syntax is based on the system used by Roll20, a detailed explanation of which can be found on the [Roll20 Wiki](https://wiki.roll20.net/Dice_Reference#Roll20_Dice_Specification).

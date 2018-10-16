@@ -191,5 +191,25 @@ describe('DiceInterpreter', () => {
       interpreter.evaluate(dice, errors);
       expect(errors.length).toBeGreaterThanOrEqual(1);
     });
+    it('throws on invalid number of rolls (if specified a limit of 3 rolls and rolls 5d6).', () => {
+      const dice = Ast.Factory.create(Ast.NodeType.Dice);
+      dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 5));
+      dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute('value', 6));
+
+      const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(4), null, {maxRollTimes: 3});
+      const errors: Interpreter.InterpreterError[] = [];
+      interpreter.evaluate(dice, errors);
+      expect(errors.length).toBeGreaterThanOrEqual(1);
+    });
+    it('throws on invalid number of dice sides (if specified a limit of 6 sides and rolls 2d10).', () => {
+      const dice = Ast.Factory.create(Ast.NodeType.Dice);
+      dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 2));
+      dice.addChild(Ast.Factory.create(Ast.NodeType.DiceSides).setAttribute('value', 10));
+
+      const interpreter = new Interpreter.DiceInterpreter(null, new MockRandomProvider(4), null, {maxDiceSides: 6});
+      const errors: Interpreter.InterpreterError[] = [];
+      interpreter.evaluate(dice, errors);
+      expect(errors.length).toBeGreaterThanOrEqual(1);
+    });
   });
 });
