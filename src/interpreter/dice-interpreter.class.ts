@@ -6,6 +6,7 @@ import { DiceResult } from './dice-result.class';
 import { InterpreterError } from './error-message.class';
 import { FunctionDefinitionList } from './function-definition-list.class';
 import { Interpreter } from './interpreter.interface';
+import { InterpreterOptions } from './interpreter-options.interface';
 
 interface SortedDiceRolls {
   rolls: Ast.ExpressionNode[];
@@ -16,12 +17,14 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
   protected functions: FunctionDefinitionList;
   protected random: RandomProvider;
   protected generator: DiceGenerator;
+  protected options: InterpreterOptions;
 
-  constructor(functions?: FunctionDefinitionList, random?: RandomProvider, generator?: DiceGenerator) {
+  constructor(functions?: FunctionDefinitionList, random?: RandomProvider, generator?: DiceGenerator, options?: InterpreterOptions) {
     this.functions = DefaultFunctionDefinitions;
     (<any>Object).assign(this.functions, functions);
     this.random = random || new DefaultRandomProvider();
     this.generator = generator || new DiceGenerator();
+    this.options = options || {};
   }
 
   interpret(expression: Ast.ExpressionNode): DiceResult {
@@ -129,8 +132,19 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
   evaluateDice(expression: Ast.ExpressionNode, errors: InterpreterError[]): number {
     if (!this.expectChildCount(expression, 2, errors)) { return 0; }
     const num = Math.round(this.evaluate(expression.getChild(0), errors));
+    const { maxRollTimes, maxDiceSides } = this.options;
+    if (maxRollTimes && num > maxRollTimes) {
+      errors.push(new InterpreterError(`Invalid number of rolls: ${num}. Maximum allowed: ${maxRollTimes}.`, expression));
+      return null;
+    }
+
     const sides = expression.getChild(1);
-    expression.setAttribute('sides', this.evaluate(sides, errors));
+    const sidesValue = this.evaluate(sides, errors);
+    if (maxDiceSides && sidesValue > maxDiceSides) {
+      errors.push(new InterpreterError(`Invalid number of dice sides: ${sidesValue}. Maximum allowed: ${maxDiceSides}.`, expression));
+      return null;
+    }
+    expression.setAttribute('sides', sidesValue);
 
     expression.clearChildren();
 
