@@ -36,18 +36,18 @@
   },
   "homepage": "https://github.com/trwolfe13/dice-typescript#readme",
   "devDependencies": {
-    "@types/jasmine": "^2.8.6",
-    "@types/random-js": "^1.0.30",
-    "codacy-coverage": "^2.0.2",
+    "@types/jasmine": "^2.8.9",
+    "@types/random-js": "^1.0.31",
+    "codacy-coverage": "^3.1.0",
     "istanbul": "^0.4.5",
-    "jasmine-core": "2.5.2",
+    "jasmine-core": "3.2.1",
     "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^1.1.0",
+    "karma-jasmine": "^1.1.2",
     "karma-typescript": "^3.0.13",
     "rimraf": "^2.6.1",
-    "tslint": "^5.4.3",
-    "typescript": "^2.4.1"
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.1"
   },
   "dependencies": {
     "random-js": "^1.0.8"
