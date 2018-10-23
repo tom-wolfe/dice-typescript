@@ -196,23 +196,31 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     if (!this.expectChildCount(expression, 1, errors)) { return 0; }
     const dice = this.findDiceOrGroupNode(expression, errors);
     if (!dice) { return 0; }
-    let condition: Ast.ExpressionNode;
     const penetrate = expression.getAttribute('penetrate');
+
+    const sides = dice.getAttribute('sides');
+
+    let condition: Ast.ExpressionNode;
     if (expression.getChildCount() > 1) {
       condition = expression.getChild(1);
+      if (this.wouldRollAgainForever(dice, condition, errors)) {
+        return 0;
+      }
+    } else {
+      condition = Ast.Factory.create(Ast.NodeType.Equal);
+      condition.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', sides));
     }
 
     this.evaluate(dice, errors);
 
     const newRolls: Ast.ExpressionNode[] = [];
-
     let total = 0;
-    const sides = dice.getAttribute('sides');
+
     dice.forEachChild(die => {
       if (!die.getAttribute('drop')) {
         let dieValue = this.evaluate(die, errors);
         total += dieValue;
-        while (condition && this.evaluateComparison(dieValue, condition, errors) || dieValue === sides) {
+        while (condition && this.evaluateComparison(dieValue, condition, errors)) {
           die = this.createDiceRoll(sides, errors);
           dieValue = this.evaluate(die, errors);
           if (penetrate) { dieValue -= 1; }
@@ -315,6 +323,12 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     if (expression.getChildCount() > 1) {
       condition = expression.getChild(1);
+      if (this.wouldRollAgainForever(dice, condition, errors)) {
+        return 0;
+      }
+    } else {
+      condition = Ast.Factory.create(Ast.NodeType.Equal);
+      condition.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 1));
     }
 
     this.evaluate(dice, errors);
@@ -324,7 +338,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     dice.forEachChild(die => {
       if (!die.getAttribute('drop')) {
         let dieValue = this.evaluate(die, errors);
-        while (condition && this.evaluateComparison(dieValue, condition, errors) || dieValue === 1) {
+        while (condition && this.evaluateComparison(dieValue, condition, errors)) {
           dieValue = this.createDiceRollValue(sides, errors);
           if (once) { break; }
         }
@@ -489,5 +503,24 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
       maxValue = Math.round(sides instanceof Ast.ExpressionNode ? this.evaluate(sides, errors) : sides);
     }
     return this.random.numberBetween(minValue, maxValue);
+  }
+
+  private wouldRollAgainForever(dice: Ast.ExpressionNode, expression: Ast.ExpressionNode, errors: InterpreterError[]): boolean {
+    const sides = dice.getAttribute('sides');
+    const value = expression.getChild(0).getAttribute('value');
+    let wouldRunForever = false;
+    switch (expression.type) {
+      case Ast.NodeType.Equal: wouldRunForever = sides === 1 && value === 1; break;
+      case Ast.NodeType.Greater: wouldRunForever = value < 1; break;
+      case Ast.NodeType.GreaterOrEqual: wouldRunForever = value <= 1; break;
+      case Ast.NodeType.Less: wouldRunForever = value > sides; break;
+      case Ast.NodeType.LessOrEqual: wouldRunForever = value >= sides;
+    }
+
+    if (wouldRunForever) {
+      errors.push(new InterpreterError('Condition to roll again includes all dice faces and would run forever.', expression));
+    }
+
+    return wouldRunForever;
   }
 }
