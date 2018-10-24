@@ -6,7 +6,7 @@ import { DiceResult } from './dice-result.class';
 import { InterpreterError } from './error-message.class';
 import { FunctionDefinitionList } from './function-definition-list.class';
 import { Interpreter } from './interpreter.interface';
-import { InterpreterOptions } from './interpreter-options.interface';
+import { Options } from '../options.interface';
 
 interface SortedDiceRolls {
   rolls: Ast.ExpressionNode[];
@@ -17,14 +17,14 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
   protected functions: FunctionDefinitionList;
   protected random: RandomProvider;
   protected generator: DiceGenerator;
-  protected options: InterpreterOptions;
+  protected options: Options;
 
-  constructor(functions?: FunctionDefinitionList, random?: RandomProvider, generator?: DiceGenerator, options?: InterpreterOptions) {
+  constructor(functions?: FunctionDefinitionList, random?: RandomProvider, generator?: DiceGenerator, options: Options = {}) {
     this.functions = DefaultFunctionDefinitions;
     (<any>Object).assign(this.functions, functions);
     this.random = random || new DefaultRandomProvider();
-    this.generator = generator || new DiceGenerator();
-    this.options = options || {};
+    this.generator = generator || new DiceGenerator(options);
+    this.options = options;
   }
 
   interpret(expression: Ast.ExpressionNode): DiceResult {
@@ -213,24 +213,25 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     this.evaluate(dice, errors);
 
-    const newRolls: Ast.ExpressionNode[] = [];
     let total = 0;
 
-    dice.forEachChild(die => {
+    dice.forEachChild((die, index) => {
       if (!die.getAttribute('drop')) {
         let dieValue = this.evaluate(die, errors);
         total += dieValue;
+        let loopCount = 0;
         while (condition && this.evaluateComparison(dieValue, condition, errors)) {
+          loopCount++;
+          die.setAttribute('explode', true);
           die = this.createDiceRoll(sides, errors);
           dieValue = this.evaluate(die, errors);
           if (penetrate) { dieValue -= 1; }
           total += dieValue;
-          newRolls.push(die);
+          dice.insertChild(die, index + loopCount);
         }
       }
     });
 
-    newRolls.forEach(newRoll => dice.addChild(newRoll));
     return total;
   }
 
@@ -335,14 +336,25 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     let total = 0;
     const sides = dice.getAttribute('sides');
-    dice.forEachChild(die => {
+    dice.forEachChild((die, index) => {
       if (!die.getAttribute('drop')) {
         let dieValue = this.evaluate(die, errors);
+        let loopCount = 0;
         while (condition && this.evaluateComparison(dieValue, condition, errors)) {
+          loopCount++;
+          die.setAttribute('reroll', true);
           dieValue = this.createDiceRollValue(sides, errors);
+          if (this.options.renderExpressionDecorators) {
+            die = Ast.Factory.create(Ast.NodeType.DiceRoll)
+              .setAttribute('value', dieValue)
+              .setAttribute('drop', false);
+            dice.insertChild(die, index + loopCount);
+          } else {
+            die.setAttribute('value', dieValue);
+          }
+
           if (once) { break; }
         }
-        die.setAttribute('value', dieValue);
         total += dieValue;
       }
     });

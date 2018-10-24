@@ -94,7 +94,41 @@ const dice = new Dice(null, null, {
 const result1 = dice.roll("50d10");
 console.log(result1.errors); // Outputs ["Invalid number of rolls: 50. Maximum allowed: 20."]
 const result2 = dice.roll("10d500");
-console.log(result2.errors); // Outputs ["Invalid number of dice sides: 500. Maximum allowed: 500."]
+console.log(result2.errors); // Outputs ["Invalid number of dice sides: 500. Maximum allowed: 100."]
+```
+
+#### Adding decorators to rolls in rendered expression
+
+When viewing individual roll results, its useful to know what was considered in the final result. The `renderExpressionDecorators` option inserts aditional information to roll results. The following symbols are added, depending on the executed rules:
+* reroll: ↻
+* explode: !
+* drop: ↓
+* critical: *
+* sucess: ✓
+
+```typescript
+const dice = new Dice(null, null, {
+    renderExpressionDecorators: true, // will render roll decorators
+});
+const result = dice.roll("4d10!");
+console.log(result.renderedExpression); // Outputs "[3, 10!, 6, 7, 6 ]!" (note the exclamation mark added to the exploded roll)
+```
+
+#### Using custom roll decorators
+
+You can also add your own roll decorators. Use the option `decorators` to specify, for each rule type, a string that will be added after the result or an array with strings that will be added before and after the roll value.
+
+```typescript
+const dice = new Dice(null, null, {
+    renderExpressionDecorators: true, // will render roll decorators
+    decorators: {
+        reroll: ['<r>', '</r>'], // example output: <r>1</r>
+        explode: ['<e>', '</e>'], // example output: <e>10</e>
+        drop: 'd', // example output: 2d
+        critical: 'c', // example output: 10c
+        success: 's', // example output: 9s
+    },
+});
 ```
 
 #### Dice Expression Syntax

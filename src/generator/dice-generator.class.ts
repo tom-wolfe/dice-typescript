@@ -1,7 +1,12 @@
 import * as Ast from '../ast';
 import { Generator } from './generator.interface';
+import { Options } from '../options.interface';
 
 export class DiceGenerator implements Generator<string> {
+  constructor(
+    protected options: Options = {},
+  ) { }
+
   generate(expression: Ast.ExpressionNode): string {
     switch (expression.type) {
       case Ast.NodeType.Number: return this.generateNumber(expression);
@@ -87,7 +92,15 @@ export class DiceGenerator implements Generator<string> {
   }
 
   generateDiceRoll(expression: Ast.ExpressionNode): string {
-    return expression.getAttribute('value').toString();
+    let exp = expression.getAttribute('value').toString();
+    if (this.options.renderExpressionDecorators) {
+      if (expression.getAttribute('reroll')) { exp = this.applyDecorator(exp, 'reroll', '↻'); }
+      if (expression.getAttribute('explode')) { exp = this.applyDecorator(exp, 'explode', '!'); }
+      if (expression.getAttribute('drop')) { exp = this.applyDecorator(exp, 'drop', '↓'); }
+      if (expression.getAttribute('critical')) { exp = this.applyDecorator(exp, 'critical', '*'); }
+      if (expression.getAttribute('success')) { exp = this.applyDecorator(exp, 'success', '✓'); }
+    }
+    return exp;
   }
 
   generateFunction(expression: Ast.ExpressionNode): string {
@@ -208,5 +221,16 @@ export class DiceGenerator implements Generator<string> {
     if (findCount < count) {
       throw new Error(`Expected ${expression.type} node to have ${count} children, but found ${findCount}.`);
     }
+  }
+
+  private applyDecorator (exp, type, defaultDecorator) {
+    const decorator = (this.options.decorators && this.options.decorators[type]) || defaultDecorator;
+    let decoratorLeft = '';
+    let decoratorRight = decorator;
+    if (decorator instanceof Array) {
+      decoratorLeft = decorator.length >= 1 ? decorator[0] : '';
+      decoratorRight = decorator.length >= 2 ? decorator[1] : '';
+    }
+    return `${decoratorLeft}${exp}${decoratorRight}`;
   }
 }

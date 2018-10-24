@@ -144,6 +144,34 @@ describe('DiceInterpreter', () => {
       expect(interpreter.evaluate(exp, errors)).toBe(10);
       expect(dice.getChildCount()).toBe(4);
     });
+    it('evaluates keeping rerolled results if renderExpressionDecorators is activated (4d6r).', () => {
+      const exp = Ast.Factory.create(Ast.NodeType.Reroll)
+        .setAttribute('once', false);
+
+      const dice = Ast.Factory.create(Ast.NodeType.Dice);
+      dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 4));
+      dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 6));
+
+      exp.addChild(dice);
+
+      const mockList = new MockListRandomProvider();
+      mockList.numbers.push(
+        2, 1, // This 1 should get re-rolled
+        3, 6, 4
+      );
+
+      const interpreter = new Interpreter.DiceInterpreter(null, mockList, null, {renderExpressionDecorators: true});
+      const errors: Interpreter.InterpreterError[] = [];
+      expect(interpreter.evaluate(exp, errors)).toBe(15);
+      expect(dice.getChildCount()).toBe(5);
+
+      expect(dice.getChild(0).getAttribute('value')).toBe(2);
+      expect(dice.getChild(1).getAttribute('value')).toBe(1); // previous value should be kept
+      expect(dice.getChild(1).getAttribute('reroll')).toBe(true); // previous value should be kept
+      expect(dice.getChild(2).getAttribute('value')).toBe(4); // new value should be added after rerolled value
+      expect(dice.getChild(3).getAttribute('value')).toBe(3);
+      expect(dice.getChild(4).getAttribute('value')).toBe(6);
+    });
     it('errors on an invalid condition (4d6ro[dice]).', () => {
       const exp = Ast.Factory.create(Ast.NodeType.Reroll)
         .setAttribute('once', true);

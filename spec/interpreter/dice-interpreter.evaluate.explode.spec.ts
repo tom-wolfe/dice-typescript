@@ -112,6 +112,34 @@ describe('DiceInterpreter', () => {
 
       expect(dice.getChildCount()).toBe(5);
     });
+    it('evaluates generating new roll after exploded die (4d6!).', () => {
+      const exp = Ast.Factory.create(Ast.NodeType.Explode)
+        .setAttribute('compound', false)
+        .setAttribute('penetrate', false);
+
+      const dice = Ast.Factory.create(Ast.NodeType.Dice);
+      dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 4));
+      dice.addChild(Ast.Factory.create(Ast.NodeType.Number).setAttribute('value', 6));
+
+      exp.addChild(dice);
+
+      const mockList = new MockListRandomProvider();
+      mockList.numbers.push(
+        4, 6, 5, 2, 3,
+      );
+
+      const interpreter = new Interpreter.DiceInterpreter(null, mockList);
+      const errors: Interpreter.InterpreterError[] = [];
+      expect(interpreter.evaluate(exp, errors)).toBe(20);
+
+      expect(dice.getChildCount()).toBe(5);
+      expect(dice.getChild(0).getAttribute('value')).toBe(4);
+      expect(dice.getChild(1).getAttribute('value')).toBe(6);
+      expect(dice.getChild(1).getAttribute('explode')).toBe(true);
+      expect(dice.getChild(2).getAttribute('value')).toBe(3); // next roll inserted after exploding die
+      expect(dice.getChild(3).getAttribute('value')).toBe(5);
+      expect(dice.getChild(4).getAttribute('value')).toBe(2);
+    });
     it('errors if condition includes all dice faces (4d6!>=1).', () => {
       const exp = Ast.Factory.create(Ast.NodeType.Explode)
         .setAttribute('compound', false)
