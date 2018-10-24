@@ -247,8 +247,8 @@ export class DiceParser extends BasicParser {
     if (token.type === TokenType.Identifier) {
       if (token.value === 'p') {
         root.setAttribute('penetrate', true);
+        this.lexer.getNextToken(); // Consume p.
       }
-      this.lexer.getNextToken(); // Consume p.
     }
 
     const tokenType = this.lexer.peekNextToken().type;

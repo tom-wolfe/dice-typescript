@@ -44,7 +44,7 @@ describe('DiceParser', () => {
       expect(mod.getAttribute('compound')).toBe(false);
       expect(mod.getAttribute('penetrate')).toBe(true);
     });
-    it('can correctly parse an explode modifier (!p).', () => {
+    it('can correctly parse an explode modifier (!!p).', () => {
       const lexer = new MockLexer([
         new Token(TokenType.Exclamation, 0, '!'),
         new Token(TokenType.Exclamation, 1, '!'),
