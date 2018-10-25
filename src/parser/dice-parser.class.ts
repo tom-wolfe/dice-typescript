@@ -96,7 +96,7 @@ export class DiceParser extends BasicParser {
     const token = this.lexer.peekNextToken();
     switch (token.type) {
       case TokenType.Identifier:
-        if (token.value === 'd' || token.value === 'dF') {
+        if (token.value === 'd' || token.value === 'D' || token.value === 'dF') {
           root = this.parseDice(result);
         } else {
           root = this.parseFunction(result);
@@ -215,6 +215,7 @@ export class DiceParser extends BasicParser {
 
     switch (token.value) {
       case 'd':
+      case 'D':
         const sidesToken = this.expectAndConsume(result, TokenType.Number);
         root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
           .setAttribute('value', Number(sidesToken.value));

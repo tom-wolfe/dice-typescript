@@ -39,6 +39,24 @@ describe('DiceParser', () => {
       expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
       expect(dice.getChild(1).getAttribute('value')).toBe('fate');
     });
+    it('can correctly parse a dice roll with an upper case D.', () => {
+      const lexer = new MockLexer([
+        new Token(TokenType.Number, 0, '4'),
+        new Token(TokenType.Identifier, 0, 'D'),
+        new Token(TokenType.Number, 1, '6')
+      ]);
+      const parser = new Parser.DiceParser(lexer);
+      const result = new ParseResult();
+      const dice = parser.parseDice(result);
+      expect(result.errors.length).toBe(0);
+
+      expect(dice.type).toBe(NodeType.Dice);
+      expect(dice.getChildCount()).toBe(2);
+      expect(dice.getChild(0).type).toBe(NodeType.Number);
+      expect(dice.getChild(0).getAttribute('value')).toBe(4);
+      expect(dice.getChild(1).type).toBe(NodeType.DiceSides);
+      expect(dice.getChild(1).getAttribute('value')).toBe(6);
+    });
     it('can correctly parse a simple dice roll with pre-parsed number.', () => {
       const lexer = new MockLexer([
         new Token(TokenType.Number, 0, '10'),
