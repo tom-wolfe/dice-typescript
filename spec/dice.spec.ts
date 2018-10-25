@@ -40,5 +40,11 @@ describe('Dice', () => {
       const exp = dice.roll('2d10kl');
       expect(exp.total).toBe(4);
     });
+    it('correctly handles explode with other operations (2d10!r)', () => {
+      const mock = new MockListRandomProvider([10, 1, 4, 2]);
+      const dice = new Dice(null, mock);
+      const exp = dice.roll('2d10!r');
+      expect(exp.total).toBe(16);
+    });
   });
 });
